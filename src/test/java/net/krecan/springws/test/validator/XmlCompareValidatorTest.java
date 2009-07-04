@@ -18,13 +18,18 @@ public class XmlCompareValidatorTest extends AbstractValidatorTest {
 	public XmlCompareValidatorTest() throws Exception
 	{
 		validator = new XmlCompareValidator();
-		validator.setControlResource(new ClassPathResource("xml/valid-message.xml"));
+		validator.setControlResource(new ClassPathResource("xml/control-message.xml"));
 	}
 	
 	@Test
 	public void testValid() throws IOException
 	{
 		validator.validate(null, getValidMessage());
+	}
+	@Test
+	public void testValidDifferent() throws IOException
+	{
+		validator.validate(null,createMessage("xml/valid-message2.xml"));
 	}
 	@Test
 	public void testInvalid() throws Exception

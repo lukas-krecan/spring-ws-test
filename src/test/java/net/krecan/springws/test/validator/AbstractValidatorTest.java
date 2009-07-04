@@ -15,10 +15,15 @@ public abstract class AbstractValidatorTest {
 		messageFactory.afterPropertiesSet();
 	}
 	protected WebServiceMessage getValidMessage() throws IOException {
-		return messageFactory.createWebServiceMessage(new ClassPathResource("xml/valid-message.xml").getInputStream());
+		return createMessage("xml/valid-message.xml");
 	}
 	protected WebServiceMessage getInvalidMessage() throws IOException {
-		return messageFactory.createWebServiceMessage(new ClassPathResource("xml/invalid-message.xml").getInputStream());
+		return createMessage("xml/invalid-message.xml");
+	}
+	
+	protected WebServiceMessage createMessage(String path) throws IOException
+	{
+		return messageFactory.createWebServiceMessage(new ClassPathResource(path).getInputStream());
 	}
 
 
