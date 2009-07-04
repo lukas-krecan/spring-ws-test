@@ -1,6 +1,9 @@
 package net.krecan.springws.test.validator;
 
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
+
 import net.krecan.springws.test.WsTestException;
 
 import org.junit.Test;
@@ -8,23 +11,21 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.WebServiceMessage;
 
 
-public class SchemaValidatorTest extends AbstractValidatorTest {
-	private SchemaValidator validator;
+
+public class XmlCompareValidatorTest extends AbstractValidatorTest {
+	private XmlCompareValidator validator;
 	
-	public SchemaValidatorTest() throws Exception
+	public XmlCompareValidatorTest() throws Exception
 	{
-		validator = new SchemaValidator();
-		validator.setSchema(new ClassPathResource("xml/schema.xsd"));
-		validator.afterPropertiesSet();
+		validator = new XmlCompareValidator();
+		validator.setControlResource(new ClassPathResource("xml/valid-message.xml"));
 	}
 	
 	@Test
-	public void testValid() throws Exception
+	public void testValid() throws IOException
 	{
-		WebServiceMessage message = getValidMessage();
-		validator.validate(null, message );
+		validator.validate(null, getValidMessage());
 	}
-
 	@Test
 	public void testInvalid() throws Exception
 	{
@@ -39,5 +40,4 @@ public class SchemaValidatorTest extends AbstractValidatorTest {
 			//ok
 		}
 	}
-
 }

@@ -13,10 +13,10 @@ import org.springframework.ws.WebServiceMessage;
 public interface RequestValidator {
 
 	/**
-	 * Validates the message. If it's not valid assertion fails.
+	 * Validates the message. If it's not valid throws {@link WsTestException}.
 	 * @param uri
 	 * @param message
 	 * @throws Exception 
 	 */
-	public void validate(URI uri, WebServiceMessage message) throws IOException;
+	public void validate(URI uri, WebServiceMessage message) throws IOException, WsTestException;
 }
