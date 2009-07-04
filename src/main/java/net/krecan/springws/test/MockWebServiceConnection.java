@@ -14,6 +14,8 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	
 	private RequestValidator requestValidator;
 	
+	private WebServiceMessage request;
+	
 	public MockWebServiceConnection(URI uri) {
 		this.uri = uri;
 	}
@@ -23,7 +25,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		{
 			requestValidator.validate(uri, message);
 		}
-		
+		request = message;
 	}
 
 	public WebServiceMessage receive(WebServiceMessageFactory messageFactory)
@@ -55,6 +57,10 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	public void setRequestValidator(RequestValidator requestValidator) {
 		this.requestValidator = requestValidator;
+	}
+
+	public WebServiceMessage getRequest() {
+		return request;
 	}
 
 
