@@ -1,5 +1,6 @@
 package net.krecan.springws.test;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.springframework.ws.WebServiceMessage;
@@ -17,5 +18,5 @@ public interface RequestValidator {
 	 * @param message
 	 * @throws Exception 
 	 */
-	public void validate(URI uri, WebServiceMessage message);
+	public void validate(URI uri, WebServiceMessage message) throws IOException;
 }
