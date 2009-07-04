@@ -1,5 +1,6 @@
 package net.krecan.springws.test;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.springframework.ws.WebServiceMessage;
@@ -11,5 +12,5 @@ import org.springframework.ws.WebServiceMessageFactory;
  *
  */
 public interface ResponseGenerator {
-	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request);
+	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request) throws IOException;
 }

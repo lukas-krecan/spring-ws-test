@@ -1,8 +1,8 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 	<soapenv:Header />
 	<soapenv:Body>
-		<testMessage xmlns="http://www.example.org/schema">
+		<test xmlns="http://www.example.org/schema">
 			<number>not-number</number>
-		</testMessage>
+		</test>
 	</soapenv:Body>
 </soapenv:Envelope>
