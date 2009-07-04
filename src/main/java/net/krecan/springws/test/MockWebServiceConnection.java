@@ -16,6 +16,8 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	
 	private WebServiceMessage request;
 	
+	private ResponseGenerator responseGenerator;
+	
 	public MockWebServiceConnection(URI uri) {
 		this.uri = uri;
 	}
@@ -28,10 +30,15 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		request = message;
 	}
 
-	public WebServiceMessage receive(WebServiceMessageFactory messageFactory)
-	throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+	public WebServiceMessage receive(WebServiceMessageFactory messageFactory) throws IOException {
+		if (responseGenerator!=null)
+		{
+			return responseGenerator.generateResponse(uri, messageFactory, request);
+		}
+		else
+		{
+			return messageFactory.createWebServiceMessage();
+		}
 	}
 	
 
@@ -61,6 +68,14 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	public WebServiceMessage getRequest() {
 		return request;
+	}
+
+	public ResponseGenerator getResponseGenerator() {
+		return responseGenerator;
+	}
+
+	public void setResponseGenerator(ResponseGenerator responseGenerator) {
+		this.responseGenerator = responseGenerator;
 	}
 
 
