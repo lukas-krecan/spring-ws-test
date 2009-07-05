@@ -5,7 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
 
@@ -24,7 +25,10 @@ public class PathBasedResponseGeneratorTest extends AbstractMessageTest{
 	private PathBasedResponseGenerator generator;
 	public PathBasedResponseGeneratorTest() {
 		generator = new PathBasedResponseGenerator();
-		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/test/',//ns:text,'-response.xml')", Collections.singletonMap("ns", "http://www.example.org/schema"));
+		Map<String, String> namespaceMap = new HashMap<String, String>();
+		namespaceMap.put("ns", "http://www.example.org/schema");
+		namespaceMap.put("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
+		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
 		generator.setResourceXPathExpression(resourceXpathExpression);
 	}
 	@Test
