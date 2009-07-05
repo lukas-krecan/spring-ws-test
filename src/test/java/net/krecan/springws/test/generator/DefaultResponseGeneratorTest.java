@@ -1,83 +1,68 @@
 package net.krecan.springws.test.generator;
 
 import static net.krecan.springws.test.util.XmlUtil.loadDocument;
+import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.resource.XPathResourceLookup;
+import net.krecan.springws.test.ResourceLookup;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.transform.ResourceSource;
-import org.springframework.xml.xpath.XPathExpression;
-import org.springframework.xml.xpath.XPathExpressionFactory;
 import org.w3c.dom.Document;
 
 
 public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 	
-	private DefaultResponseGenerator generator;
-	public DefaultResponseGeneratorTest() {
-		generator = new DefaultResponseGenerator();
-		
-		Map<String, String> namespaceMap = new HashMap<String, String>();
-		namespaceMap.put("ns", "http://www.example.org/schema");
-		namespaceMap.put("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
-		
-		
-		XPathResourceLookup resourceLookup = new XPathResourceLookup();
-		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
-				
-		XPathExpression defaultXPathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')", namespaceMap);
-		resourceLookup.setResourceXPathExpressions(new XPathExpression[]{resourceXpathExpression, defaultXPathExpression});
-		
-		generator.setResourceLookup(resourceLookup);
-	}
 	@Test
 	public void testDefaultResponse() throws IOException
 	{
-		WebServiceMessage response = generator.generateResponse(null, messageFactory, createMessage("xml/valid-message.xml"));
+		WebServiceMessage request = createMessage("xml/valid-message.xml");
+		ClassPathResource responseResource = new ClassPathResource("mock-responses/test/default-response.xml");
+
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
+		expect(resourceLookup.lookupResource(null, request)).andReturn(responseResource);
+		
+		generator.setResourceLookup(resourceLookup);
+
+		replay(resourceLookup);
+		
+		WebServiceMessage response = generator.generateResponse(null, messageFactory, request);
 		assertNotNull(response);
 		
-		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test/default-response.xml")));
+		Document controlDocument = loadDocument(new ResourceSource(responseResource));
 		Diff diff = new Diff(controlDocument, loadDocument(response));
 		assertTrue(diff.toString(), diff.similar());
+		
+		verify(resourceLookup);
 	}
 	@Test
-	public void testDefaultResponseTest2() throws IOException
+	public void testNoResourceFound() throws IOException
 	{
-		WebServiceMessage response = generator.generateResponse(null, messageFactory, createMessage("mock-responses/test2/default-response.xml"));
-		assertNotNull(response);
+		WebServiceMessage request = createMessage("xml/valid-message.xml");
 		
-		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test2/default-response.xml")));
-		Diff diff = new Diff(controlDocument, loadDocument(response));
-		assertTrue(diff.toString(), diff.similar());
-	}
-	@Test
-	public void testDifferentResponse() throws IOException
-	{
-		WebServiceMessage response = generator.generateResponse(null, messageFactory, createMessage("xml/valid-message2.xml"));
-		assertNotNull(response);
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
+		expect(resourceLookup.lookupResource(null, request)).andReturn(null);
 		
-		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test/different-response.xml")));
-		Diff diff = new Diff(controlDocument, loadDocument(response));
-		assertTrue(diff.toString(), diff.similar());
-	}
-	@Test
-	public void testDifferentResponseTest2() throws IOException
-	{
-		WebServiceMessage response = generator.generateResponse(null, messageFactory, createMessage("mock-responses/test2/default-response.xml"));
-		assertNotNull(response);
+		generator.setResourceLookup(resourceLookup);
 		
-		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test2/default-response.xml")));
-		Diff diff = new Diff(controlDocument, loadDocument(response));
-		assertTrue(diff.toString(), diff.similar());
+		replay(resourceLookup);
+		
+		WebServiceMessage response = generator.generateResponse(null, messageFactory, request);
+		assertNull(response);
+		
+		
+		verify(resourceLookup);
 	}
 }
