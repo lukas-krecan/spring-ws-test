@@ -10,7 +10,6 @@ import net.krecan.springws.test.WsTestException;
 import net.krecan.springws.test.resource.XPathResourceLookup;
 
 import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.xpath.XPathExpression;
 import org.springframework.xml.xpath.XPathExpressionFactory;

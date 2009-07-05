@@ -16,30 +16,33 @@ import org.springframework.xml.xpath.XPathExpression;
 import org.w3c.dom.Document;
 
 /**
- * Loads resources based on XPath expression and message content.
+ * Loads resources based on XPath expressions and message content. Iterates over
+ * expressions and looks for resources. If resource is found, it is returned, if
+ * it is not found another expression is applied. If no result is found, null is
+ * returned.
  * 
  * @author Lukas Krecan
  * 
  */
-//TODO array of xpaths
 public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware {
-	private XPathExpression resourceXPathExpression;
-
-	private XPathExpression defaultXPathExpression;
+	private XPathExpression[] resourceXPathExpressions;
 
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	public Resource lookupResource(URI uri, WebServiceMessage message) {
-		Resource resultResource = null;
-		if (resourceXPathExpression != null) {
-			resultResource = findResourceForXPath(resourceXPathExpression, message);
+		if (resourceXPathExpressions != null) {
+			for (int i = 0; i < resourceXPathExpressions.length; i++) {
+				
+				Resource resultResource = findResourceForXPath(resourceXPathExpressions[i], message);
+				if (resultResource!=null)
+				{
+					return resultResource;
+				}
+			}
 		}
-		if (resultResource == null && defaultXPathExpression != null) {
-			resultResource = findResourceForXPath(defaultXPathExpression, message);
-		}
-		return resultResource;
+		return null;
 	}
 
 	protected Resource findResourceForXPath(XPathExpression xpath, WebServiceMessage message) {
@@ -55,12 +58,16 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 		return XmlUtil.loadDocument(message);
 	}
 
-	public XPathExpression getResourceXPathExpression() {
-		return resourceXPathExpression;
+	public XPathExpression[] getResourceXPathExpressions() {
+		return resourceXPathExpressions;
 	}
 
+	public void setResourceXPathExpressions(XPathExpression[] resourceXpathExpressions) {
+		this.resourceXPathExpressions = resourceXpathExpressions;
+	}
+	
 	public void setResourceXPathExpression(XPathExpression resourceXpathExpression) {
-		this.resourceXPathExpression = resourceXpathExpression;
+		this.resourceXPathExpressions = new XPathExpression[]{resourceXpathExpression};
 	}
 
 	public ResourceLoader getResourceLoader() {
@@ -70,13 +77,4 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}
-
-	public XPathExpression getDefaultXPathExpression() {
-		return defaultXPathExpression;
-	}
-
-	public void setDefaultXPathExpression(XPathExpression defaultXPathExpression) {
-		this.defaultXPathExpression = defaultXPathExpression;
-	}
-
 }

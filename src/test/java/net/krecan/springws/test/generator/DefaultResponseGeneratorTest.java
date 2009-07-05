@@ -34,10 +34,9 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		
 		XPathResourceLookup resourceLookup = new XPathResourceLookup();
 		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
-		resourceLookup.setResourceXPathExpression(resourceXpathExpression);
-		
+				
 		XPathExpression defaultXPathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')", namespaceMap);
-		resourceLookup.setDefaultXPathExpression(defaultXPathExpression);
+		resourceLookup.setResourceXPathExpressions(new XPathExpression[]{resourceXpathExpression, defaultXPathExpression});
 		
 		generator.setResourceLookup(resourceLookup);
 	}
