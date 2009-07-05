@@ -31,9 +31,13 @@ public final class XmlUtil {
 	}
 
 	public static Document loadDocument(WebServiceMessage message) {
+		return loadDocument(getEnvelopeSource(message));
+	}
+
+	public static Source getEnvelopeSource(WebServiceMessage message) {
 		if (message instanceof SoapMessage) {
 			SoapMessage soapMessage = (SoapMessage) message;
-			return loadDocument(soapMessage.getEnvelope().getSource());
+			return soapMessage.getEnvelope().getSource();
 		}
 		else
 		{

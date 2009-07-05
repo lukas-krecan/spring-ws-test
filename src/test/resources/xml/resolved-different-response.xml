@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="windows-1250"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-	<xsl:template match="/">
 		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 			<soapenv:Header />
 			<soapenv:Body>
 				<test xmlns="http://www.example.org/schema">
 					<number>2</number>
-					<text><xsl:value-of select="concat(//text,//number)"/></text>
+					<text>text2</text>
 				</test>
 			</soapenv:Body>
 		</soapenv:Envelope>
-	</xsl:template>
-</xsl:stylesheet>
 
 

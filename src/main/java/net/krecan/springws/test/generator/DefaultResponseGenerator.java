@@ -12,30 +12,36 @@ import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 
-//TODO refactor, logging
+/**
+ * Looks-up resource using {@link ResourceLookup} and generates {@link WebServiceMessage} based on the resource. 
+ * @author Lukas Krecan
+ *
+ */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private ResourceLookup resourceLookup;
 
-	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,
-			WebServiceMessage request) throws IOException {
+	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
 		if (resultResource == null) {
 			logger.debug("Resource not found, returning null.");
 			return null;
 		} else {
-			return createResponse(messageFactory, resultResource);
+			WebServiceMessage message = messageFactory.createWebServiceMessage(resultResource.getInputStream());
+			postprocessMessage(message, uri, messageFactory, request);
+			return message;
 		}
 	}
 
-	protected WebServiceMessage createResponse(WebServiceMessageFactory messageFactory, Resource resultResource)
-			throws IOException {
-		return messageFactory.createWebServiceMessage(resultResource.getInputStream());
+	protected void postprocessMessage(WebServiceMessage message, URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) {
+		
 	}
 
-	protected Resource getResultResource(URI uri, WebServiceMessage request) {
+
+
+	protected Resource getResultResource(URI uri, WebServiceMessage request) throws IOException {
 		return resourceLookup.lookupResource(uri, request);
 	}
 
