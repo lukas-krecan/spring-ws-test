@@ -24,24 +24,45 @@ public class PathBasedResponseGenerator implements ResponseGenerator, ResourceLo
 	
 	private XPathExpression resourceXPathExpression;
 	
+	private XPathExpression defaultXPathExpression;
+	
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 	
 	protected final Log logger = LogFactory.getLog(getClass());
 	
 	public WebServiceMessage generateResponse(URI uri,	WebServiceMessageFactory messageFactory, WebServiceMessage request) throws IOException {
+		Resource resultResource = getResultResource(request);
+		if (resultResource==null)
+		{
+			logger.debug("Resource not found, returning null.");
+			return null;
+		}
+		else
+		{
+			return messageFactory.createWebServiceMessage(resultResource.getInputStream());
+		}
+	}
+
+	protected Resource getResultResource(WebServiceMessage request) {
 		Resource resultResource = null;
 		if (resourceXPathExpression!=null)
 		{
-			String resourcePath = resourceXPathExpression.evaluateAsString(loadDocument(request));
-			logger.debug("Looking for classpath resource \""+resourcePath+"\"");
-			resultResource = resourceLoader.getResource(resourcePath);
+			resultResource = findResourceForXPath(resourceXPathExpression, request);
 		}
-		if (resultResource==null || !resultResource.exists())
+		if (resultResource==null && defaultXPathExpression!=null)
 		{
-			logger.debug("Resource not found, using default.");
-			resultResource = resourceLoader.getResource("mock-responses/test/default-response.xml");
+			resultResource = findResourceForXPath(defaultXPathExpression, request);
 		}
-		return messageFactory.createWebServiceMessage(resultResource.getInputStream());
+		return resultResource;
+	}
+
+	protected Resource findResourceForXPath(XPathExpression xpath, WebServiceMessage request) {
+		Resource resultResource;
+		String resourcePath = xpath.evaluateAsString(loadDocument(request));
+		logger.debug("Looking for classpath resource \""+resourcePath+"\"");
+		resultResource = resourceLoader.getResource(resourcePath);
+		resultResource = resultResource.exists()?resultResource:null;
+		return resultResource;
 	}
 
 	public XPathExpression getResourceXPathExpression() {
@@ -63,6 +84,14 @@ public class PathBasedResponseGenerator implements ResponseGenerator, ResourceLo
 
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
+	}
+
+	public XPathExpression getDefaultXPathExpression() {
+		return defaultXPathExpression;
+	}
+
+	public void setDefaultXPathExpression(XPathExpression defaultXPathExpression) {
+		this.defaultXPathExpression = defaultXPathExpression;
 	}
 
 }

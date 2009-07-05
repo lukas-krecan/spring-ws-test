@@ -25,11 +25,16 @@ public class PathBasedResponseGeneratorTest extends AbstractMessageTest{
 	private PathBasedResponseGenerator generator;
 	public PathBasedResponseGeneratorTest() {
 		generator = new PathBasedResponseGenerator();
+		
 		Map<String, String> namespaceMap = new HashMap<String, String>();
 		namespaceMap.put("ns", "http://www.example.org/schema");
 		namespaceMap.put("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
+		
 		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
 		generator.setResourceXPathExpression(resourceXpathExpression);
+		
+		XPathExpression defaultXPathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')", namespaceMap);
+		generator.setDefaultXPathExpression(defaultXPathExpression);
 	}
 	@Test
 	public void testDefaultResponse() throws IOException
@@ -42,12 +47,32 @@ public class PathBasedResponseGeneratorTest extends AbstractMessageTest{
 		assertTrue(diff.toString(), diff.similar());
 	}
 	@Test
+	public void testDefaultResponseTest2() throws IOException
+	{
+		WebServiceMessage response = generator.generateResponse(null, messageFactory, createMessage("mock-responses/test2/default-response.xml"));
+		assertNotNull(response);
+		
+		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test2/default-response.xml")));
+		Diff diff = new Diff(controlDocument, loadDocument(response));
+		assertTrue(diff.toString(), diff.similar());
+	}
+	@Test
 	public void testDifferentResponse() throws IOException
 	{
 		WebServiceMessage response = generator.generateResponse(null, messageFactory, createMessage("xml/valid-message2.xml"));
 		assertNotNull(response);
 		
 		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test/different-response.xml")));
+		Diff diff = new Diff(controlDocument, loadDocument(response));
+		assertTrue(diff.toString(), diff.similar());
+	}
+	@Test
+	public void testDifferentResponseTest2() throws IOException
+	{
+		WebServiceMessage response = generator.generateResponse(null, messageFactory, createMessage("mock-responses/test2/default-response.xml"));
+		assertNotNull(response);
+		
+		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test2/default-response.xml")));
 		Diff diff = new Diff(controlDocument, loadDocument(response));
 		assertTrue(diff.toString(), diff.similar());
 	}
