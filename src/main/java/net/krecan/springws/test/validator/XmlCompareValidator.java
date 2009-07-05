@@ -52,7 +52,6 @@ public class XmlCompareValidator implements RequestValidator {
 
 	protected Diff createDiff(Document controlDocument, Document messageDocument) {
 		return new Diff(controlDocument, messageDocument) {
-			@Override
 			public int differenceFound(Difference difference) {
 				if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue())) {
 					return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;

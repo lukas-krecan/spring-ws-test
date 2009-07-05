@@ -1,8 +1,10 @@
 package net.krecan.springws.test.generator;
 
 import static net.krecan.springws.test.util.XmlUtil.loadDocument;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -14,7 +16,6 @@ import net.krecan.springws.test.ResourceLookup;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.transform.ResourceSource;
