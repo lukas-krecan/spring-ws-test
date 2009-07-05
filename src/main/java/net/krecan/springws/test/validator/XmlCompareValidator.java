@@ -6,6 +6,7 @@ import java.net.URI;
 import javax.xml.transform.Source;
 
 import net.krecan.springws.test.RequestValidator;
+import net.krecan.springws.test.ResourceLookup;
 import net.krecan.springws.test.WsTestException;
 import net.krecan.springws.test.util.XmlUtil;
 
@@ -24,58 +25,62 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public class XmlCompareValidator  implements RequestValidator{
+public class XmlCompareValidator implements RequestValidator {
 
-	private Resource controlResource;
-	
-    protected final Log logger = LogFactory.getLog(getClass());
-	
+	private ResourceLookup controlResourceLookup;
 
+	protected final Log logger = LogFactory.getLog(getClass());
 
 	public void validate(URI uri, WebServiceMessage message) throws IOException {
 		Document messageDocument = loadDocument(message);
 
-		Document controlDocument = loadDocument(new ResourceSource(controlResource));
-
-		Diff diff = createDiff(controlDocument, messageDocument);
-		if (!diff.similar())
+		Resource controlResource = controlResourceLookup.lookupResource(uri, message);
+		if (controlResource!=null)
 		{
-			throw new WsTestException("Message is different "+diff.toString());
+			Document controlDocument = loadDocument(controlResource);
+	
+			Diff diff = createDiff(controlDocument, messageDocument);
+			if (!diff.similar()) {
+				throw new WsTestException("Message is different " + diff.toString());
+			}
+		}
+		else
+		{
+			logger.warn("Can not find resource to validate with.");
 		}
 	}
 
-	
-
 	protected Diff createDiff(Document controlDocument, Document messageDocument) {
-		return new Diff(controlDocument, messageDocument){
+		return new Diff(controlDocument, messageDocument) {
 			@Override
 			public int differenceFound(Difference difference) {
-				if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue()))
-				{
+				if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue())) {
 					return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
-				}
-				else
-				{
+				} else {
 					return super.differenceFound(difference);
 				}
 			}
 		};
 	}
 
-	protected Document loadDocument(WebServiceMessage message) {
+	protected Document loadDocument(WebServiceMessage message) throws IOException {
 		return XmlUtil.loadDocument(message);
 	}
-	
-	protected Document loadDocument(Source source)  {
+
+	protected Document loadDocument(Resource resource) throws IOException {
+		return XmlUtil.loadDocument(new ResourceSource(resource));
+	}
+
+	protected Document loadDocument(Source source) throws IOException {
 		return XmlUtil.loadDocument(source);
 	}
 
-	public Resource getControlResource() {
-		return controlResource;
+	public ResourceLookup getControlResourceLookup() {
+		return controlResourceLookup;
 	}
 
-	public void setControlResource(Resource controlResource) {
-		this.controlResource = controlResource;
+	public void setControlResourceLookup(ResourceLookup controlResourceLookup) {
+		this.controlResourceLookup = controlResourceLookup;
 	}
 
 }

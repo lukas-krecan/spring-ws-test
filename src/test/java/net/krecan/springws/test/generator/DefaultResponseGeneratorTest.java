@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
+import net.krecan.springws.test.resource.XPathResourceLookup;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
@@ -20,21 +21,25 @@ import org.springframework.xml.xpath.XPathExpressionFactory;
 import org.w3c.dom.Document;
 
 
-public class PathBasedResponseGeneratorTest extends AbstractMessageTest{
+public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 	
-	private PathBasedResponseGenerator generator;
-	public PathBasedResponseGeneratorTest() {
-		generator = new PathBasedResponseGenerator();
+	private DefaultResponseGenerator generator;
+	public DefaultResponseGeneratorTest() {
+		generator = new DefaultResponseGenerator();
 		
 		Map<String, String> namespaceMap = new HashMap<String, String>();
 		namespaceMap.put("ns", "http://www.example.org/schema");
 		namespaceMap.put("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
 		
+		
+		XPathResourceLookup resourceLookup = new XPathResourceLookup();
 		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
-		generator.setResourceXPathExpression(resourceXpathExpression);
+		resourceLookup.setResourceXPathExpression(resourceXpathExpression);
 		
 		XPathExpression defaultXPathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')", namespaceMap);
-		generator.setDefaultXPathExpression(defaultXPathExpression);
+		resourceLookup.setDefaultXPathExpression(defaultXPathExpression);
+		
+		generator.setResourceLookup(resourceLookup);
 	}
 	@Test
 	public void testDefaultResponse() throws IOException
