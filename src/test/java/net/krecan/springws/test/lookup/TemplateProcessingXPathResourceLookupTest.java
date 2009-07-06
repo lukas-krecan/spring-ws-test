@@ -1,4 +1,4 @@
-package net.krecan.springws.test.resource;
+package net.krecan.springws.test.lookup;
 
 import static net.krecan.springws.test.util.XmlUtil.loadDocument;
 import static net.krecan.springws.test.util.XmlUtil.serializeDocument;
@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
+import net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

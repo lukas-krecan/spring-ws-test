@@ -3,8 +3,7 @@ package net.krecan.springws.test.generator;
 import java.io.IOException;
 import java.net.URI;
 
-import net.krecan.springws.test.ResourceLookup;
-import net.krecan.springws.test.ResponseGenerator;
+import net.krecan.springws.test.lookup.ResourceLookup;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

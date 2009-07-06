@@ -9,6 +9,9 @@ import static org.junit.Assert.assertSame;
 
 import java.net.URI;
 
+import net.krecan.springws.test.generator.ResponseGenerator;
+import net.krecan.springws.test.validator.RequestValidator;
+
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;

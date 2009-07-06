@@ -1,9 +1,8 @@
-package net.krecan.springws.test.resource;
+package net.krecan.springws.test.lookup;
 
 import java.io.IOException;
 import java.net.URI;
 
-import net.krecan.springws.test.ResourceLookup;
 import net.krecan.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
@@ -49,7 +48,7 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 	protected Resource findResourceForXPath(XPathExpression xpath, WebServiceMessage message) {
 		Resource resultResource;
 		String resourcePath = xpath.evaluateAsString(loadDocument(message));
-		logger.debug("Looking for classpath resource \"" + resourcePath + "\"");
+		logger.debug("Looking for resource \"" + resourcePath + "\"");
 		resultResource = resourceLoader.getResource(resourcePath);
 		resultResource = resultResource.exists() ? resultResource : null;
 		return resultResource;

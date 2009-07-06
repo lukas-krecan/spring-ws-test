@@ -5,9 +5,8 @@ import java.net.URI;
 
 import javax.xml.transform.Source;
 
-import net.krecan.springws.test.RequestValidator;
-import net.krecan.springws.test.ResourceLookup;
 import net.krecan.springws.test.WsTestException;
+import net.krecan.springws.test.lookup.ResourceLookup;
 import net.krecan.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;

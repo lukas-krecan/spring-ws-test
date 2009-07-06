@@ -1,7 +1,9 @@
-package net.krecan.springws.test;
+package net.krecan.springws.test.validator;
 
 import java.io.IOException;
 import java.net.URI;
+
+import net.krecan.springws.test.WsTestException;
 
 import org.springframework.ws.WebServiceMessage;
 

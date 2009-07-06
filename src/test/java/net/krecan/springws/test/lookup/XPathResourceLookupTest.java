@@ -1,4 +1,4 @@
-package net.krecan.springws.test.resource;
+package net.krecan.springws.test.lookup;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.resource.XPathResourceLookup;
+import net.krecan.springws.test.lookup.XPathResourceLookup;
 
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;

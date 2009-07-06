@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 import javax.xml.transform.Source;
 
-import net.krecan.springws.test.RequestValidator;
 import net.krecan.springws.test.WsTestException;
 
 import org.apache.commons.logging.Log;

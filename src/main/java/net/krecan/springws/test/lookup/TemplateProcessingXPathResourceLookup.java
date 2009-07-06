@@ -1,4 +1,4 @@
-package net.krecan.springws.test.resource;
+package net.krecan.springws.test.lookup;
 
 import static net.krecan.springws.test.util.XmlUtil.*;
 

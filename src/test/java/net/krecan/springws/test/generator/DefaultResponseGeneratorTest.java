@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.ResourceLookup;
+import net.krecan.springws.test.lookup.ResourceLookup;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;

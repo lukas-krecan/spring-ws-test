@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import net.krecan.springws.test.generator.ResponseGenerator;
+import net.krecan.springws.test.validator.RequestValidator;
+
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceConnection;

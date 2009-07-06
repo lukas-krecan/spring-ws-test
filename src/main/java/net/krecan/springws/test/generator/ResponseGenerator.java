@@ -1,4 +1,4 @@
-package net.krecan.springws.test;
+package net.krecan.springws.test.generator;
 
 import java.io.IOException;
 import java.net.URI;

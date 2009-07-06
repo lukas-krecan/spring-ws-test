@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.WsTestException;
-import net.krecan.springws.test.resource.XPathResourceLookup;
+import net.krecan.springws.test.lookup.XPathResourceLookup;
 
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
