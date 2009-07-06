@@ -13,7 +13,7 @@ import java.io.IOException;
 import javax.xml.transform.dom.DOMSource;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.MessageLookup;
+import net.krecan.springws.test.ResourceLookup;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +34,7 @@ public class XsltResponseGeneratorTest extends AbstractMessageTest{
 		ClassPathResource responseResource = new ClassPathResource("mock-responses/test/different-response.xml");
 
 		XsltResponseGenerator generator = new XsltResponseGenerator();
-		MessageLookup resourceLookup = createMock(MessageLookup.class);
+		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
 		expect(resourceLookup.lookupResource(null, request)).andReturn(responseResource);
 		
 		generator.setResourceLookup(resourceLookup);

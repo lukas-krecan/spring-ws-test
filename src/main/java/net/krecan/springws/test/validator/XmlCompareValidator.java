@@ -6,7 +6,7 @@ import java.net.URI;
 import javax.xml.transform.Source;
 
 import net.krecan.springws.test.RequestValidator;
-import net.krecan.springws.test.MessageLookup;
+import net.krecan.springws.test.ResourceLookup;
 import net.krecan.springws.test.WsTestException;
 import net.krecan.springws.test.util.XmlUtil;
 
@@ -27,7 +27,7 @@ import org.w3c.dom.Document;
  */
 public class XmlCompareValidator implements RequestValidator {
 
-	private MessageLookup controlResourceLookup;
+	private ResourceLookup controlResourceLookup;
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -74,11 +74,11 @@ public class XmlCompareValidator implements RequestValidator {
 		return XmlUtil.loadDocument(source);
 	}
 
-	public MessageLookup getControlResourceLookup() {
+	public ResourceLookup getControlResourceLookup() {
 		return controlResourceLookup;
 	}
 
-	public void setControlResourceLookup(MessageLookup controlResourceLookup) {
+	public void setControlResourceLookup(ResourceLookup controlResourceLookup) {
 		this.controlResourceLookup = controlResourceLookup;
 	}
 

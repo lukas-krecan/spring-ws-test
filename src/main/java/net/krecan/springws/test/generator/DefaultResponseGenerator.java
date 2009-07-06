@@ -3,7 +3,7 @@ package net.krecan.springws.test.generator;
 import java.io.IOException;
 import java.net.URI;
 
-import net.krecan.springws.test.MessageLookup;
+import net.krecan.springws.test.ResourceLookup;
 import net.krecan.springws.test.ResponseGenerator;
 
 import org.apache.commons.logging.Log;
@@ -13,7 +13,7 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 
 /**
- * Looks-up resource using {@link MessageLookup} and generates {@link WebServiceMessage} based on the resource. 
+ * Looks-up resource using {@link ResourceLookup} and generates {@link WebServiceMessage} based on the resource. 
  * @author Lukas Krecan
  *
  */
@@ -21,7 +21,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	private MessageLookup resourceLookup;
+	private ResourceLookup resourceLookup;
 
 	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
@@ -45,11 +45,11 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 		return resourceLookup.lookupResource(uri, request);
 	}
 
-	public MessageLookup getResourceLookup() {
+	public ResourceLookup getResourceLookup() {
 		return resourceLookup;
 	}
 
-	public void setResourceLookup(MessageLookup resourceLookup) {
+	public void setResourceLookup(ResourceLookup resourceLookup) {
 		this.resourceLookup = resourceLookup;
 	}
 }

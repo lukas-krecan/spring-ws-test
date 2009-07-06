@@ -11,7 +11,7 @@ import org.springframework.ws.WebServiceMessage;
  * @author Lukas Krecan
  * 
  */
-public interface MessageLookup {
+public interface ResourceLookup {
 	/**
 	 * Looks for appropriate resource.
 	 * 

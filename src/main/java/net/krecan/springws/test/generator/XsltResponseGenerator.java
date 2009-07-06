@@ -11,7 +11,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
-import net.krecan.springws.test.MessageLookup;
+import net.krecan.springws.test.ResourceLookup;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -19,7 +19,7 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.transform.ResourceSource;
 
 /**
- * Looks-up resource using {@link MessageLookup}, this resource is used as XSLT template on request {@link WebServiceMessage}.
+ * Looks-up resource using {@link ResourceLookup}, this resource is used as XSLT template on request {@link WebServiceMessage}.
  * Result of the transformation is used as source for the message.  
  * @author Lukas Krecan
  *

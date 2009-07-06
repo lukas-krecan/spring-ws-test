@@ -1,8 +1,8 @@
-package net.krecan.springws.test.message;
+package net.krecan.springws.test.resource;
 
 import java.net.URI;
 
-import net.krecan.springws.test.MessageLookup;
+import net.krecan.springws.test.ResourceLookup;
 import net.krecan.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public class XPathMessageLookup implements MessageLookup, ResourceLoaderAware {
+public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware {
 	private XPathExpression[] resourceXPathExpressions;
 
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
