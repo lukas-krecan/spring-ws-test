@@ -1,5 +1,6 @@
 package net.krecan.springws.test;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.springframework.core.io.Resource;
@@ -18,6 +19,7 @@ public interface ResourceLookup {
 	 * @param uri
 	 * @param message
 	 * @return null if not found.
+	 * @throws IOException 
 	 */
-	public Resource lookupResource(URI uri, WebServiceMessage message);
+	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException;
 }

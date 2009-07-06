@@ -4,7 +4,7 @@
 			<soapenv:Body>
 				<test xmlns="http://www.example.org/schema">
 					<number>2</number>
-					<text>text0</text>
+					<text>different0</text>
 				</test>
 			</soapenv:Body>
 		</soapenv:Envelope>

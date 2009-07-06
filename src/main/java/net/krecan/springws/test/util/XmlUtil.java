@@ -1,5 +1,7 @@
 package net.krecan.springws.test.util;
 
+import java.io.IOException;
+
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -7,8 +9,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
+import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.SoapMessage;
+import org.springframework.xml.transform.ResourceSource;
 import org.springframework.xml.transform.StringResult;
 import org.w3c.dom.Document;
 
@@ -28,6 +32,10 @@ public final class XmlUtil {
 		transform(source, messageContent);
 		return (Document)messageContent.getNode();
 	}
+	public static final Document loadDocument(Resource resource) throws IOException
+	{
+		return loadDocument(new ResourceSource(resource));
+	}
 
 	public static void transform(Source source, Result result) {
 		try {
@@ -37,7 +45,14 @@ public final class XmlUtil {
 			throw new RuntimeException("Unexpected exception",e);
 		}
 	}
-
+	public static void transform(Source template, Source source, Result result) {
+		try {
+			TRANSFORMER_FACTORY.newTransformer(template).transform(source, result);
+		} catch (TransformerException e) {
+			//FIXME throw better exception here.
+			throw new RuntimeException("Unexpected exception",e);
+		}
+	}
 	public static Document loadDocument(WebServiceMessage message) {
 		return loadDocument(getEnvelopeSource(message));
 	}

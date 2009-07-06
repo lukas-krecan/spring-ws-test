@@ -1,5 +1,6 @@
 package net.krecan.springws.test.resource;
 
+import java.io.IOException;
 import java.net.URI;
 
 import net.krecan.springws.test.ResourceLookup;
@@ -31,7 +32,7 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	public Resource lookupResource(URI uri, WebServiceMessage message) {
+	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException {
 		if (resourceXPathExpressions != null) {
 			for (int i = 0; i < resourceXPathExpressions.length; i++) {
 				
