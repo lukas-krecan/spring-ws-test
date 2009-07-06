@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.ResourceLookup;
+import net.krecan.springws.test.MessageLookup;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		ClassPathResource responseResource = new ClassPathResource("mock-responses/test/default-response.xml");
 
 		DefaultResponseGenerator generator = new DefaultResponseGenerator();
-		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
+		MessageLookup resourceLookup = createMock(MessageLookup.class);
 		expect(resourceLookup.lookupResource(null, request)).andReturn(responseResource);
 		
 		generator.setResourceLookup(resourceLookup);
@@ -53,7 +53,7 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		WebServiceMessage request = createMessage("xml/valid-message.xml");
 		
 		DefaultResponseGenerator generator = new DefaultResponseGenerator();
-		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
+		MessageLookup resourceLookup = createMock(MessageLookup.class);
 		expect(resourceLookup.lookupResource(null, request)).andReturn(null);
 		
 		generator.setResourceLookup(resourceLookup);

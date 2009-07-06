@@ -1,4 +1,4 @@
-package net.krecan.springws.test.resource;
+package net.krecan.springws.test.lookup;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
+import net.krecan.springws.test.message.XPathMessageLookup;
 
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -16,16 +17,16 @@ import org.springframework.xml.xpath.XPathExpression;
 import org.springframework.xml.xpath.XPathExpressionFactory;
 
 
-public class XPathResourceLookupTest extends AbstractMessageTest {
-	private XPathResourceLookup resourceLookup;
-	public XPathResourceLookupTest() {
+public class XPathMessageLookupTest extends AbstractMessageTest {
+	private XPathMessageLookup resourceLookup;
+	public XPathMessageLookupTest() {
 		
 		Map<String, String> namespaceMap = new HashMap<String, String>();
 		namespaceMap.put("ns", "http://www.example.org/schema");
 		namespaceMap.put("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
 		
 		
-		resourceLookup = new XPathResourceLookup();
+		resourceLookup = new XPathMessageLookup();
 		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
 				
 		XPathExpression defaultXPathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')", namespaceMap);
@@ -35,7 +36,7 @@ public class XPathResourceLookupTest extends AbstractMessageTest {
 	@Test
 	public void testEmpty() throws IOException
 	{
-		XPathResourceLookup emptyResourceLookup = new XPathResourceLookup();
+		XPathMessageLookup emptyResourceLookup = new XPathMessageLookup();
 		assertNull(emptyResourceLookup.lookupResource(null, createMessage("xml/valid-message.xml")));
 	}
 	@Test

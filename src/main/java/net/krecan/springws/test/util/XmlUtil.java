@@ -1,12 +1,15 @@
 package net.krecan.springws.test.util;
 
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.SoapMessage;
+import org.springframework.xml.transform.StringResult;
 import org.w3c.dom.Document;
 
 public final class XmlUtil {
@@ -21,11 +24,16 @@ public final class XmlUtil {
 	
 	public static final Document loadDocument(Source source)
 	{
+		DOMResult messageContent = new DOMResult();
+		transform(source, messageContent);
+		return (Document)messageContent.getNode();
+	}
+
+	public static void transform(Source source, Result result) {
 		try {
-			DOMResult messageContent = new DOMResult();
-			TRANSFORMER_FACTORY.newTransformer().transform(source, messageContent);
-			return (Document)messageContent.getNode();
+			TRANSFORMER_FACTORY.newTransformer().transform(source, result);
 		} catch (TransformerException e) {
+			//FIXME throw better exception here.
 			throw new RuntimeException("Unexpected exception",e);
 		}
 	}
@@ -43,5 +51,16 @@ public final class XmlUtil {
 		{
 			throw new UnsupportedOperationException("Can not load message that is not SoapMessage");
 		}
+	}
+	
+	public static String serializeDocument(Source source)
+	{
+		StringResult result = new StringResult();
+		transform(source, result);
+		return result.toString();
+	}
+	public static String serializeDocument(Document document)
+	{
+		return serializeDocument(new DOMSource(document));
 	}
 }

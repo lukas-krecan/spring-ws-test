@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.WsTestException;
-import net.krecan.springws.test.resource.XPathResourceLookup;
+import net.krecan.springws.test.message.XPathMessageLookup;
 
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
@@ -27,7 +27,7 @@ public class XmlCompareValidatorTest extends AbstractValidatorTest {
 		namespaceMap.put("ns", "http://www.example.org/schema");
 		namespaceMap.put("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
 		
-		XPathResourceLookup resourceLookup = new XPathResourceLookup();
+		XPathMessageLookup resourceLookup = new XPathMessageLookup();
 		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('xml/control-message-',name(//soapenv:Body/*[1]),'.xml')", namespaceMap);
 		resourceLookup.setResourceXPathExpression(resourceXpathExpression);
 		

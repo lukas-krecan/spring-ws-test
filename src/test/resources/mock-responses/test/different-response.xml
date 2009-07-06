@@ -4,10 +4,10 @@
 		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 			<soapenv:Header />
 			<soapenv:Body>
-				<test xmlns="http://www.example.org/schema">
-					<number>2</number>
-					<text><xsl:value-of select="concat(//text,//number)"/></text>
-				</test>
+				<ns:test xmlns:ns="http://www.example.org/schema">
+					<ns:number>2</ns:number>
+					<ns:text><xsl:value-of select="concat(//ns:text,//ns:number)"/></ns:text>
+				</ns:test>
 			</soapenv:Body>
 		</soapenv:Envelope>
 	</xsl:template>
