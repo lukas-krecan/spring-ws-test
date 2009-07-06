@@ -1,6 +1,6 @@
 package net.krecan.springws.test.lookup;
 
-import static net.krecan.springws.test.util.XmlUtil.*;
+import static net.krecan.springws.test.util.XmlUtil.getEnvelopeSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.lookup.XPathResourceLookup;
 
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;

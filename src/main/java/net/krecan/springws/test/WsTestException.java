@@ -6,6 +6,7 @@ package net.krecan.springws.test;
  *
  */
 public class WsTestException extends RuntimeException {
+	private static final long serialVersionUID = 1746522483177610502L;
 
 	public WsTestException() {
 		super();

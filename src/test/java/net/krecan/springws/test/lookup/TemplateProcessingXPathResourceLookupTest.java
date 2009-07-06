@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup;
+import net.krecan.springws.test.context.WsTestContextHolder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,16 +47,19 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 	@Test
 	public void testTemplate() throws IOException
 	{
+		WsTestContextHolder.getTestContext().setAttribute("number", 2);
+		
 		WebServiceMessage request = createMessage("xml/valid-message2.xml");
 		Resource resource = resourceLookup.lookupResource(null, request);
 		
 		
 		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("xml/resolved-different-response.xml")));
 		Document responseDocument = loadDocument(resource);
-		logger.trace("Comapring "+serializeDocument(controlDocument)+"\n to \n"+serializeDocument(responseDocument));
+		logger.trace("Comparing "+serializeDocument(controlDocument)+"\n to \n"+serializeDocument(responseDocument));
 		Diff diff = new Diff(controlDocument, responseDocument);
 		assertTrue(diff.toString(), diff.similar());
 		
+		WsTestContextHolder.getTestContext().clear();
 	}
 	@Test
 	public void testIsTemplate() throws IOException
@@ -70,20 +73,20 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 		Resource resource = new ClassPathResource("mock-responses/test/default-response.xml");
 		assertFalse(resourceLookup.isTemplate(resource));		
 	}
-//	@Test
-//	public void testNormalXml() throws IOException
-//	{
-//		WebServiceMessage request = createMessage("xml/valid-message.xml");
-//		Resource resource = resourceLookup.lookupResource(null, request);
-//		
-//		
-//		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("xml/resolved-different-response.xml")));
-//		Document responseDocument = loadDocument(resource);
-//		logger.trace("Comapring "+serializeDocument(controlDocument)+"\n to \n"+serializeDocument(responseDocument));
-//		Diff diff = new Diff(controlDocument, responseDocument);
-//		assertTrue(diff.toString(), diff.similar());
-//		
-//	}
+	@Test
+	public void testNormalXml() throws IOException
+	{
+		WebServiceMessage request = createMessage("xml/valid-message.xml");
+		Resource resource = resourceLookup.lookupResource(null, request);
+		
+		
+		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test/default-response.xml")));
+		Document responseDocument = loadDocument(resource);
+		logger.trace("Comparing "+serializeDocument(controlDocument)+"\n to \n"+serializeDocument(responseDocument));
+		Diff diff = new Diff(controlDocument, responseDocument);
+		assertTrue(diff.toString(), diff.similar());
+		
+	}
 	
 	
 }
