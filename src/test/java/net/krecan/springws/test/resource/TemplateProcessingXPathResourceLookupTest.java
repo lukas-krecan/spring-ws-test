@@ -2,6 +2,7 @@ package net.krecan.springws.test.resource;
 
 import static net.krecan.springws.test.util.XmlUtil.loadDocument;
 import static net.krecan.springws.test.util.XmlUtil.serializeDocument;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -56,6 +57,32 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 		assertTrue(diff.toString(), diff.similar());
 		
 	}
+	@Test
+	public void testIsTemplate() throws IOException
+	{
+		Resource resource = new ClassPathResource("mock-responses/test/different-response.xml");
+		assertTrue(resourceLookup.isTemplate(resource));		
+	}
+	@Test
+	public void testIsNotTemplate() throws IOException
+	{
+		Resource resource = new ClassPathResource("mock-responses/test/default-response.xml");
+		assertFalse(resourceLookup.isTemplate(resource));		
+	}
+//	@Test
+//	public void testNormalXml() throws IOException
+//	{
+//		WebServiceMessage request = createMessage("xml/valid-message.xml");
+//		Resource resource = resourceLookup.lookupResource(null, request);
+//		
+//		
+//		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("xml/resolved-different-response.xml")));
+//		Document responseDocument = loadDocument(resource);
+//		logger.trace("Comapring "+serializeDocument(controlDocument)+"\n to \n"+serializeDocument(responseDocument));
+//		Diff diff = new Diff(controlDocument, responseDocument);
+//		assertTrue(diff.toString(), diff.similar());
+//		
+//	}
 	
 	
 }
