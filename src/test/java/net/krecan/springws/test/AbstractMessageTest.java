@@ -7,7 +7,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 
-public class AbstractMessageTest {
+public abstract class AbstractMessageTest {
 	protected SaajSoapMessageFactory messageFactory;
 
 	public AbstractMessageTest() {
