@@ -27,7 +27,7 @@ public class TestWsXPathVariableResolver implements XPathVariableResolver {
 		return uri;
 	}
 	
-	public Map getConttext()
+	public Map getContext()
 	{
 		return WsTestContextHolder.getTestContext().getAttributeMap();
 	}

@@ -6,6 +6,8 @@ import java.net.URI;
 
 import javax.xml.namespace.QName;
 
+import net.krecan.springws.test.context.WsTestContextHolder;
+
 import org.junit.Test;
 
 public class TestWsXPathVariableResolverTest {
@@ -13,9 +15,12 @@ public class TestWsXPathVariableResolverTest {
 	@Test
 	public void testUri() throws Exception
 	{
+		WsTestContextHolder.getTestContext().setAttribute("name", "aaa");
+		
 		URI uri = new URI("http://example.org/context/path");
 		TestWsXPathVariableResolver resolver = new TestWsXPathVariableResolver(uri);
 		assertEquals(uri, resolver.resolveVariable(new QName("uri")));
 		assertEquals(uri.getHost(), resolver.resolveVariable(new QName("uri.host")));
+		assertEquals("aaa", resolver.resolveVariable(new QName("context[name]")));
 	}
 }
