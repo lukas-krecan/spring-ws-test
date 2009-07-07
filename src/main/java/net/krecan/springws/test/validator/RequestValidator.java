@@ -15,7 +15,7 @@ import org.springframework.ws.WebServiceMessage;
 public interface RequestValidator {
 
 	/**
-	 * Validates the message. If it's not valid throws {@link WsTestException}.
+	 * Validates the message. If it's not valid throws {@link WsTestException}. If the validator is not applicable, returns null.
 	 * @param uri
 	 * @param message
 	 * @throws Exception 
