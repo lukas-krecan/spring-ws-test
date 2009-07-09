@@ -20,8 +20,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.transform.ResourceSource;
-import org.springframework.xml.xpath.XPathExpression;
-import org.springframework.xml.xpath.XPathExpressionFactory;
 import org.w3c.dom.Document;
 
 
@@ -38,10 +36,11 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 		
 		
 		resourceLookup = new TemplateProcessingXPathResourceLookup();
-		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
+		String resourceXpath = "concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')";
 				
-		XPathExpression defaultXPathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')", namespaceMap);
-		resourceLookup.setResourceXPathExpressions(new XPathExpression[]{resourceXpathExpression, defaultXPathExpression});
+		String defaultXPath = "concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')";
+		resourceLookup.setResourceXPaths(new String[]{resourceXpath, defaultXPath});
+		resourceLookup.setNamespaceMap(namespaceMap);
 	}
 	
 	@Test

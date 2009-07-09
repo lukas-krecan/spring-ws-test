@@ -11,8 +11,6 @@ import net.krecan.springws.test.lookup.XPathResourceLookup;
 
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
-import org.springframework.xml.xpath.XPathExpression;
-import org.springframework.xml.xpath.XPathExpressionFactory;
 
 
 
@@ -28,8 +26,9 @@ public class XmlCompareValidatorTest extends AbstractValidatorTest {
 		namespaceMap.put("soapenv", "http://schemas.xmlsoap.org/soap/envelope/");
 		
 		XPathResourceLookup resourceLookup = new XPathResourceLookup();
-		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('xml/control-message-',name(//soapenv:Body/*[1]),'.xml')", namespaceMap);
-		resourceLookup.setResourceXPathExpression(resourceXpathExpression);
+		String resourceXpath = "concat('xml/control-message-',name(//soapenv:Body/*[1]),'.xml')";
+		resourceLookup.setResourceXPath(resourceXpath);
+		resourceLookup.setNamespaceMap(namespaceMap);
 		
 		validator.setControlResourceLookup(resourceLookup);
 	}

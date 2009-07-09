@@ -12,8 +12,6 @@ import net.krecan.springws.test.AbstractMessageTest;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.xml.xpath.XPathExpression;
-import org.springframework.xml.xpath.XPathExpressionFactory;
 
 
 public class XPathResourceLookupTest extends AbstractMessageTest {
@@ -26,10 +24,11 @@ public class XPathResourceLookupTest extends AbstractMessageTest {
 		
 		
 		resourceLookup = new XPathResourceLookup();
-		XPathExpression resourceXpathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')", namespaceMap);
+		String resourceXpath = "concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')";
 				
-		XPathExpression defaultXPathExpression = XPathExpressionFactory.createXPathExpression("concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')", namespaceMap);
-		resourceLookup.setResourceXPathExpressions(new XPathExpression[]{resourceXpathExpression, defaultXPathExpression});
+		String defaultXPath = "concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')";
+		resourceLookup.setResourceXPaths(new String[]{resourceXpath, defaultXPath});
+		resourceLookup.setNamespaceMap(namespaceMap);
 	}
 	
 	@Test

@@ -1,4 +1,4 @@
-package net.krecan.springws.test.xpath;
+package net.krecan.springws.test.lookup;
 
 import java.net.URI;
 import java.util.Map;
@@ -10,10 +10,10 @@ import net.krecan.springws.test.context.WsTestContextHolder;
 
 import org.springframework.beans.BeanWrapperImpl;
 
-public class TestWsXPathVariableResolver implements XPathVariableResolver {
+public class WsTestXPathVariableResolver implements XPathVariableResolver {
 	private final URI uri;
 	
-	public TestWsXPathVariableResolver(URI uri) {
+	public WsTestXPathVariableResolver(URI uri) {
 		super();
 		this.uri = uri;
 	}
