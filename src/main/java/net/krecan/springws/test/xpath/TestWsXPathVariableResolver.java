@@ -1,7 +1,6 @@
 package net.krecan.springws.test.xpath;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.namespace.QName;

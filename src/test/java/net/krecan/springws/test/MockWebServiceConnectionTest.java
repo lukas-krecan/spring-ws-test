@@ -57,11 +57,11 @@ public class MockWebServiceConnectionTest {
 		
 		RequestValidator requestValidator = createMock(RequestValidator.class);
 		requestValidator.validate(uri, request);
-		connection.setRequestValidator(requestValidator);
+		connection.setRequestValidators(new RequestValidator[]{requestValidator});
 		
 		ResponseGenerator responseGenerator = createMock(ResponseGenerator.class);
 		WebServiceMessage response = createMock(WebServiceMessage.class);
-		connection.setResponseGenerator(responseGenerator);
+		connection.setResponseGenerators(new ResponseGenerator[]{responseGenerator});
 		expect(responseGenerator.generateResponse(uri, messageFactory, request)).andReturn(response);
 		
 		

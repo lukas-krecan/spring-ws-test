@@ -83,10 +83,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		this.requestValidators = requestValidators;
 	}
 
-	public void setRequestValidator(RequestValidator requestValidator) {
-		setRequestValidators(new RequestValidator[]{requestValidator});
-	}
-
+	
 	public WebServiceMessage getRequest() {
 		return request;
 	}
@@ -98,12 +95,4 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	public void setResponseGenerators(ResponseGenerator[] responseGenerators) {
 		this.responseGenerators = responseGenerators;
 	}
-
-	public void setResponseGenerator(ResponseGenerator responseGenerator) {
-		setResponseGenerators(new ResponseGenerator[]{responseGenerator});
-	}
-	
-	
-
-
 }
