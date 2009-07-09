@@ -14,34 +14,48 @@ import org.springframework.ws.transport.WebServiceConnection;
 public class MockWebServiceConnection implements WebServiceConnection {
 
 	private final URI uri;
-	
-	private RequestValidator requestValidator;
-	
+
 	private WebServiceMessage request;
 	
-	private ResponseGenerator responseGenerator;
+	private RequestValidator[] requestValidators;
+		
+	private ResponseGenerator[] responseGenerators;
 	
 	public MockWebServiceConnection(URI uri) {
 		this.uri = uri;
 	}
 
 	public void send(WebServiceMessage message) throws IOException {
-		if (requestValidator!=null)
-		{
-			requestValidator.validate(uri, message);
-		}
+		validate(message);
 		request = message;
 	}
 
+	protected void validate(WebServiceMessage message) throws IOException {
+		if (requestValidators!=null)
+		{
+			for(RequestValidator requestValidator: requestValidators)
+			requestValidator.validate(uri, message);
+		}
+	}
+
 	public WebServiceMessage receive(WebServiceMessageFactory messageFactory) throws IOException {
-		if (responseGenerator!=null)
+		return generateResponse(messageFactory);
+	}
+
+	protected WebServiceMessage generateResponse(WebServiceMessageFactory messageFactory) throws IOException {
+		WebServiceMessage response = null;
+		if (responseGenerators!=null)
 		{
-			return responseGenerator.generateResponse(uri, messageFactory, request);
+			for (ResponseGenerator responseGenerator: responseGenerators)
+			{
+				response = responseGenerator.generateResponse(uri, messageFactory, request);
+				if (response!=null)
+				{
+					return response;
+				}
+			}
 		}
-		else
-		{
-			return messageFactory.createWebServiceMessage();
-		}
+		return null;
 	}
 	
 
@@ -61,25 +75,35 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		return false;
 	}
 
-	public RequestValidator getRequestValidator() {
-		return requestValidator;
+	public RequestValidator[] getRequestValidators() {
+		return requestValidators;
+	}
+
+	public void setRequestValidators(RequestValidator[] requestValidators) {
+		this.requestValidators = requestValidators;
 	}
 
 	public void setRequestValidator(RequestValidator requestValidator) {
-		this.requestValidator = requestValidator;
+		setRequestValidators(new RequestValidator[]{requestValidator});
 	}
 
 	public WebServiceMessage getRequest() {
 		return request;
 	}
 
-	public ResponseGenerator getResponseGenerator() {
-		return responseGenerator;
+	public ResponseGenerator[] getResponseGenerators() {
+		return responseGenerators;
+	}
+
+	public void setResponseGenerators(ResponseGenerator[] responseGenerators) {
+		this.responseGenerators = responseGenerators;
 	}
 
 	public void setResponseGenerator(ResponseGenerator responseGenerator) {
-		this.responseGenerator = responseGenerator;
+		setResponseGenerators(new ResponseGenerator[]{responseGenerator});
 	}
+	
+	
 
 
 }
