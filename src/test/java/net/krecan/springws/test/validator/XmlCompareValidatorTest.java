@@ -15,11 +15,11 @@ import org.springframework.ws.WebServiceMessage;
 
 
 public class XmlCompareValidatorTest extends AbstractValidatorTest {
-	private XmlCompareValidator validator;
+	private XmlCompareRequestValidator validator;
 	
 	public XmlCompareValidatorTest() throws Exception
 	{
-		validator = new XmlCompareValidator();
+		validator = new XmlCompareRequestValidator();
 		
 		Map<String, String> namespaceMap = new HashMap<String, String>();
 		namespaceMap.put("ns", "http://www.example.org/schema");

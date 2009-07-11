@@ -28,7 +28,7 @@ import org.xml.sax.SAXParseException;
  * @author Lukas Krecan
  *
  */
-public class SchemaValidator implements RequestValidator, InitializingBean{
+public class SchemaRequestValidator implements RequestValidator, InitializingBean{
 
     private XmlValidator validator;
     

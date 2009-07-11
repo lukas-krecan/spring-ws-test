@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public class XmlCompareValidator implements RequestValidator {
+public class XmlCompareRequestValidator implements RequestValidator {
 
 	private ResourceLookup controlResourceLookup;
 

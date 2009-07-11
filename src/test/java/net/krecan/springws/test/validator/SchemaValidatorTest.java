@@ -9,11 +9,11 @@ import org.springframework.ws.WebServiceMessage;
 
 
 public class SchemaValidatorTest extends AbstractValidatorTest {
-	private SchemaValidator validator;
+	private SchemaRequestValidator validator;
 	
 	public SchemaValidatorTest() throws Exception
 	{
-		validator = new SchemaValidator();
+		validator = new SchemaRequestValidator();
 		validator.setSchema(new ClassPathResource("xml/schema.xsd"));
 		validator.afterPropertiesSet();
 	}

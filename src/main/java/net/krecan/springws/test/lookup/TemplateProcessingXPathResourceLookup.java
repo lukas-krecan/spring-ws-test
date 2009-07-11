@@ -10,6 +10,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import net.krecan.springws.test.util.XmlUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
@@ -18,6 +20,8 @@ import org.w3c.dom.Document;
 
 public class TemplateProcessingXPathResourceLookup extends XPathResourceLookup {
 	private static final String XSL_NAMESPACE = "http://www.w3.org/1999/XSL/Transform";
+	
+	private final Log logger = LogFactory.getLog(getClass());
 
 	@Override
 	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException {
@@ -51,6 +55,10 @@ public class TemplateProcessingXPathResourceLookup extends XPathResourceLookup {
 	protected Resource transform(Resource resource, WebServiceMessage message) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		XmlUtil.transform(new ResourceSource(resource), getEnvelopeSource(message), new StreamResult(baos));
+		if (logger.isTraceEnabled())
+		{
+			logger.trace("Transformation result:\n"+new String(baos.toByteArray(),"UTF-8"));
+		}
 		return new ByteArrayResource(baos.toByteArray());
 	}
 }
