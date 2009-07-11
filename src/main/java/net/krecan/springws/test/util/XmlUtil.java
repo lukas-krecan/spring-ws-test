@@ -87,6 +87,10 @@ public final class XmlUtil {
 		transform(source, result);
 		return result.toString();
 	}
+	public static String serializeDocument(WebServiceMessage message)
+	{
+		return serializeDocument(getEnvelopeSource(message));
+	}
 	public static String serializeDocument(Document document)
 	{
 		return serializeDocument(new DOMSource(document));

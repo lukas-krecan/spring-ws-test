@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.krecan.springws.test.generator.ResponseGenerator;
+import net.krecan.springws.test.util.XmlUtil;
 import net.krecan.springws.test.validator.RequestValidator;
 
 import org.springframework.ws.WebServiceMessage;
@@ -55,7 +56,11 @@ public class MockWebServiceConnection implements WebServiceConnection {
 				}
 			}
 		}
-		return null;
+		return handleResponseNotFound(messageFactory);
+	}
+
+	protected WebServiceMessage handleResponseNotFound(WebServiceMessageFactory messageFactory) {
+		throw new ResponseGeneratorNotSpecifiedException("No response generator configured for uri "+uri+".");
 	}
 	
 

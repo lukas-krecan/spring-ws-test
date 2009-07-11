@@ -41,9 +41,15 @@ public class MockWebServiceConnectionTest {
 		connection.send(message);
 		assertSame(message, connection.getRequest());
 
-		WebServiceMessage response = connection.receive(messageFactory);
-		assertNull(response);
-		
+		try
+		{
+			connection.receive(messageFactory);
+			fail("Exception expected here");
+		}
+		catch (ResponseGeneratorNotSpecifiedException e)
+		{
+			//ok
+		}
 		verify(message);
 	}
 	@Test
