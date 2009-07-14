@@ -5,15 +5,17 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import net.krecan.springws.test.generator.ResponseGenerator;
+import net.krecan.springws.test.util.DefaultXmlUtil;
 import net.krecan.springws.test.validator.RequestValidator;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
@@ -21,7 +23,30 @@ import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 
 public class MockWebServiceConnectionTest {
 	protected SaajSoapMessageFactory messageFactory;
+	private MockWebServiceConnection connection;
+	private URI uri;
 
+	
+	@Before
+	public void setUp() throws URISyntaxException
+	{
+		uri = new URI("http://example.org/");
+		connection = new MockWebServiceConnection(uri);
+		connection.setXmlUtil(
+				new DefaultXmlUtil()
+				{
+					@Override
+					public String serializeDocument(WebServiceMessage message) {
+						try {
+							return serializeDocument(getEnvelopeSource(message));
+						} catch (UnsupportedOperationException e) {
+							return "Mock";
+						}
+					}
+				}
+		);
+	}
+	
 	public MockWebServiceConnectionTest() throws Exception {
 		messageFactory = new SaajSoapMessageFactory();
 		messageFactory.afterPropertiesSet();
@@ -30,10 +55,6 @@ public class MockWebServiceConnectionTest {
 	@Test
 	public void testSendReceiveWithoutValidatorAndGenerator() throws Exception
 	{
-		URI uri = new URI("http://example.org/");
-		
-		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
-		
 		WebServiceMessage message = createMock(WebServiceMessage.class);
 		
 		replay(message);
@@ -55,10 +76,6 @@ public class MockWebServiceConnectionTest {
 	@Test
 	public void testSendReceive() throws Exception
 	{
-		URI uri = new URI("http://example.org/");
-		
-		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
-
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
 		RequestValidator requestValidator = createMock(RequestValidator.class);
@@ -83,10 +100,6 @@ public class MockWebServiceConnectionTest {
 	@Test
 	public void testSendReceiveWithTwoGenerators() throws Exception
 	{
-		URI uri = new URI("http://example.org/");
-		
-		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
-		
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		WebServiceMessage response = createMock(WebServiceMessage.class);
 		
@@ -114,9 +127,6 @@ public class MockWebServiceConnectionTest {
 	@Test
 	public void testSendWithTwoValidatorsSecondFails() throws Exception
 	{
-		URI uri = new URI("http://example.org/");
-		
-		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
 		RequestValidator requestValidator1 = createMock(RequestValidator.class);
@@ -146,9 +156,6 @@ public class MockWebServiceConnectionTest {
 	@Test
 	public void testSendWithTwoValidatorsFirstFails() throws Exception
 	{
-		URI uri = new URI("http://example.org/");
-		
-		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
 		RequestValidator requestValidator1 = createMock(RequestValidator.class);

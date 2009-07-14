@@ -9,6 +9,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import net.krecan.springws.test.util.DefaultXmlUtil;
 import net.krecan.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
@@ -40,6 +41,8 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 	
 	protected final Log logger = LogFactory.getLog(getClass());
+	
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 
 	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException {
 		if (resourceXPaths != null) {
@@ -48,6 +51,7 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 				Resource resultResource = findResourceForXPath(resourceXPaths[i], uri, document);
 				if (resultResource!=null)
 				{
+					logger.debug("Found resource "+resultResource);
 					return resultResource;
 				}
 			}
@@ -77,7 +81,7 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 	}
 
 	protected Document loadDocument(WebServiceMessage message) {
-		return XmlUtil.loadDocument(message);
+		return getXmlUtil().loadDocument(message);
 	}
 
 
@@ -113,6 +117,14 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 
 	public void setNamespaceContext(NamespaceContext namespaceContext) {
 		this.namespaceContext = namespaceContext;
+	}
+
+	public XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
 	}
 
 }

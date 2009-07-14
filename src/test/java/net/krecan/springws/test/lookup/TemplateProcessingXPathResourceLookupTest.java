@@ -1,7 +1,5 @@
 package net.krecan.springws.test.lookup;
 
-import static net.krecan.springws.test.util.XmlUtil.loadDocument;
-import static net.krecan.springws.test.util.XmlUtil.serializeDocument;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -11,6 +9,7 @@ import java.util.Map;
 
 import net.krecan.springws.test.AbstractMessageTest;
 import net.krecan.springws.test.context.WsTestContextHolder;
+import net.krecan.springws.test.util.DefaultXmlUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +18,6 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
-import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
 
@@ -52,7 +50,7 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 		Resource resource = resourceLookup.lookupResource(null, request);
 		
 		
-		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("xml/resolved-different-response.xml")));
+		Document controlDocument = loadDocument(new ClassPathResource("xml/resolved-different-response.xml"));
 		Document responseDocument = loadDocument(resource);
 		logger.trace("Comparing "+serializeDocument(controlDocument)+"\n to \n"+serializeDocument(responseDocument));
 		Diff diff = new Diff(controlDocument, responseDocument);
@@ -60,6 +58,14 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 		
 		WsTestContextHolder.getTestContext().clear();
 	}
+	private String serializeDocument(Document document) {
+		return DefaultXmlUtil.getInstance().serializeDocument(document); 
+	}
+
+	private Document loadDocument(Resource resource) throws IOException {
+		return DefaultXmlUtil.getInstance().loadDocument(resource); 
+	}
+
 	@Test
 	public void testIsTemplate() throws IOException
 	{
@@ -79,7 +85,7 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 		Resource resource = resourceLookup.lookupResource(null, request);
 		
 		
-		Document controlDocument = loadDocument(new ResourceSource(new ClassPathResource("mock-responses/test/default-response.xml")));
+		Document controlDocument = loadDocument(new ClassPathResource("mock-responses/test/default-response.xml"));
 		Document responseDocument = loadDocument(resource);
 		logger.trace("Comparing "+serializeDocument(controlDocument)+"\n to \n"+serializeDocument(responseDocument));
 		Diff diff = new Diff(controlDocument, responseDocument);

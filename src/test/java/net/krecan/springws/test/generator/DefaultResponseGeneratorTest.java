@@ -1,6 +1,5 @@
 package net.krecan.springws.test.generator;
 
-import static net.krecan.springws.test.util.XmlUtil.loadDocument;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -13,12 +12,13 @@ import java.io.IOException;
 
 import net.krecan.springws.test.AbstractMessageTest;
 import net.krecan.springws.test.lookup.ResourceLookup;
+import net.krecan.springws.test.util.DefaultXmlUtil;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
-import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
 
@@ -41,11 +41,17 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		WebServiceMessage response = generator.generateResponse(null, messageFactory, request);
 		assertNotNull(response);
 		
-		Document controlDocument = loadDocument(new ResourceSource(responseResource));
+		Document controlDocument = loadDocument(responseResource);
 		Diff diff = new Diff(controlDocument, loadDocument(response));
 		assertTrue(diff.toString(), diff.similar());
 		
 		verify(resourceLookup);
+	}
+	private Document loadDocument(WebServiceMessage message) {
+		return DefaultXmlUtil.getInstance().loadDocument(message);
+	}
+	private Document loadDocument(Resource resource) throws IOException {
+		return DefaultXmlUtil.getInstance().loadDocument(resource);
 	}
 	@Test
 	public void testNoResourceFound() throws IOException

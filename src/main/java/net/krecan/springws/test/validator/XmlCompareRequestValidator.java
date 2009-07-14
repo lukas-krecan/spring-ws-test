@@ -7,6 +7,7 @@ import javax.xml.transform.Source;
 
 import net.krecan.springws.test.WsTestException;
 import net.krecan.springws.test.lookup.ResourceLookup;
+import net.krecan.springws.test.util.DefaultXmlUtil;
 import net.krecan.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
@@ -29,6 +30,8 @@ public class XmlCompareRequestValidator implements RequestValidator {
 	private ResourceLookup controlResourceLookup;
 
 	protected final Log logger = LogFactory.getLog(getClass());
+	
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 
 	public void validate(URI uri, WebServiceMessage message) throws IOException {
 		Document messageDocument = loadDocument(message);
@@ -62,15 +65,15 @@ public class XmlCompareRequestValidator implements RequestValidator {
 	}
 
 	protected Document loadDocument(WebServiceMessage message) throws IOException {
-		return XmlUtil.loadDocument(message);
+		return getXmlUtil().loadDocument(message);
 	}
 
 	protected Document loadDocument(Resource resource) throws IOException {
-		return XmlUtil.loadDocument(new ResourceSource(resource));
+		return getXmlUtil().loadDocument(new ResourceSource(resource));
 	}
 
 	protected Document loadDocument(Source source) throws IOException {
-		return XmlUtil.loadDocument(source);
+		return getXmlUtil().loadDocument(source);
 	}
 
 	public ResourceLookup getControlResourceLookup() {
@@ -79,6 +82,14 @@ public class XmlCompareRequestValidator implements RequestValidator {
 
 	public void setControlResourceLookup(ResourceLookup controlResourceLookup) {
 		this.controlResourceLookup = controlResourceLookup;
+	}
+
+	public XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
 	}
 
 }

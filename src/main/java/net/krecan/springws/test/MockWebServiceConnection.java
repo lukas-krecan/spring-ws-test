@@ -5,9 +5,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.krecan.springws.test.generator.ResponseGenerator;
+import net.krecan.springws.test.util.DefaultXmlUtil;
 import net.krecan.springws.test.util.XmlUtil;
 import net.krecan.springws.test.validator.RequestValidator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceConnection;
@@ -22,14 +25,23 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		
 	private ResponseGenerator[] responseGenerators;
 	
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
+	protected final Log logger = LogFactory.getLog(getClass());
+	
 	public MockWebServiceConnection(URI uri) {
 		this.uri = uri;
 	}
 
 	public void send(WebServiceMessage message) throws IOException {
+		if (logger.isDebugEnabled())
+		{
+			logger.debug("Processing message \""+xmlUtil.serializeDocument(message)+"\" for URI \""+uri+"\"");
+		}
 		validate(message);
 		request = message;
 	}
+
 
 	protected void validate(WebServiceMessage message) throws IOException {
 		if (requestValidators!=null)
@@ -99,5 +111,13 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	public void setResponseGenerators(ResponseGenerator[] responseGenerators) {
 		this.responseGenerators = responseGenerators;
+	}
+
+	public XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
 	}
 }

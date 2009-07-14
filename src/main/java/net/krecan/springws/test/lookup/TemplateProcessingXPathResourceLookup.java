@@ -1,14 +1,10 @@
 package net.krecan.springws.test.lookup;
 
-import static net.krecan.springws.test.util.XmlUtil.getEnvelopeSource;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 
 import javax.xml.transform.stream.StreamResult;
-
-import net.krecan.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,12 +45,12 @@ public class TemplateProcessingXPathResourceLookup extends XPathResourceLookup {
 	}
 	
 	protected Document loadDocument(Resource resource) throws IOException {
-		return XmlUtil.loadDocument(resource);
+		return getXmlUtil().loadDocument(resource);
 	}
 
 	protected Resource transform(Resource resource, WebServiceMessage message) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		XmlUtil.transform(new ResourceSource(resource), getEnvelopeSource(message), new StreamResult(baos));
+		getXmlUtil().transform(new ResourceSource(resource), getXmlUtil().getEnvelopeSource(message), new StreamResult(baos));
 		if (logger.isTraceEnabled())
 		{
 			logger.trace("Transformation result:\n"+new String(baos.toByteArray(),"UTF-8"));
