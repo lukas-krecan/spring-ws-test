@@ -1,5 +1,10 @@
 package net.krecan.springws.test.context;
 
+/**
+ * Holds {@link WsTestContext}.
+ * @author Lukas Krecan
+ *
+ */
 public final class WsTestContextHolder {
 	private WsTestContextHolder()
 	{

@@ -9,6 +9,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
 
+/**
+ * Common XML manipulating code.
+ * @author Lukas Krecan
+ *
+ */
 public interface XmlUtil {
 
 	public abstract Document loadDocument(Source source);

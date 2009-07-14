@@ -14,6 +14,11 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
+/**
+ * Extends {@link XPathResourceLookup} by adding XSLT template processing. 
+ * @author Lukas Krecan
+ *
+ */
 public class TemplateProcessingXPathResourceLookup extends XPathResourceLookup {
 	private static final String XSL_NAMESPACE = "http://www.w3.org/1999/XSL/Transform";
 	

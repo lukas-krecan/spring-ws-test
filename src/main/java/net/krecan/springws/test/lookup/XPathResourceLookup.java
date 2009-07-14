@@ -24,10 +24,19 @@ import org.w3c.dom.Document;
 
 
 /**
- * Loads resources based on XPaths and message content. Iterates over
+ *  Loads resources based on XPaths and message content. Iterates over
  * expressions and looks for resources. If resource is found, it is returned, if
  * it is not found another expression is applied. If no result is found, null is
- * returned. 
+ * returned.
+ * 
+ * <br/> 
+ * 
+ * Following variables can be used:
+ * <ul>
+ * <li><code>$uri</code> for service URI.</li>
+ * <li><Context attributes like <code>$context.departureTime</code></li>
+ * <li>Expressions like <code>$uri.host</code>
+ * </ul>
  * 
  * @author Lukas Krecan
  * 
@@ -58,7 +67,14 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 		}
 		return null;
 	}
-
+	
+	/**
+	 * Looks for a resource using XPath.
+	 * @param xpath
+	 * @param uri
+	 * @param document
+	 * @return
+	 */
 	protected Resource findResourceForXPath(String xpath, URI uri, Document document) {
 		Resource resultResource;
 		String resourcePath = evaluateXpath(xpath, uri, document);
@@ -68,6 +84,13 @@ public class XPathResourceLookup implements ResourceLookup, ResourceLoaderAware 
 		return resultResource;
 	}
 
+	/**
+	 * Evaluates the XPath expression.
+	 * @param xpathExpression
+	 * @param uri
+	 * @param document
+	 * @return
+	 */
 	protected String evaluateXpath(String xpathExpression, URI uri, Document document) {
 		XPathFactory factory = XPathFactory.newInstance();
 		factory.setXPathVariableResolver(new WsTestXPathVariableResolver(uri));

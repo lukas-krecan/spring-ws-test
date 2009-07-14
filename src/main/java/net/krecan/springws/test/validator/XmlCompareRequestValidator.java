@@ -20,7 +20,7 @@ import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
 /**
- * Compares message with control message.
+ * Compares message with the control message.
  * 
  * @author Lukas Krecan
  * 

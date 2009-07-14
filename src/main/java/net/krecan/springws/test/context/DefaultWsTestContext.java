@@ -3,6 +3,11 @@ package net.krecan.springws.test.context;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Default WS test context implementation.
+ * @author Lukas Krecan
+ *
+ */
 class DefaultWsTestContext implements WsTestContext {
 	private Map<String, Object> attributeMap = new HashMap<String, Object>();
 	

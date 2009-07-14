@@ -39,7 +39,13 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 	}
 
 
-
+	/**
+	 * Looks for the resource that should be used for result generation.
+	 * @param uri
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
 	protected Resource getResultResource(URI uri, WebServiceMessage request) throws IOException {
 		return resourceLookup.lookupResource(uri, request);
 	}

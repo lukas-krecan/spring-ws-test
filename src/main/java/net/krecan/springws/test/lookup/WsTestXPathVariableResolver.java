@@ -10,6 +10,11 @@ import net.krecan.springws.test.context.WsTestContextHolder;
 
 import org.springframework.beans.BeanWrapperImpl;
 
+/**
+ * Resolves XPath variables.
+ * @author Lukas Krecan
+ *
+ */
 public class WsTestXPathVariableResolver implements XPathVariableResolver {
 	private final URI uri;
 	
