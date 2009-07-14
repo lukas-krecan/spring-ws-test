@@ -104,5 +104,98 @@ Tutorial
 
   Instead of simple XML response, we have XSLT that uses the <<<serviceClass>>> from the request and <<<departureTime>>> from the test context
   (more about the context later).   
+  
+* Validating request
+
+  In the case you want to validate requests. You can configure request validator. Currently, two validators are supported.
+  
+** SchemaRequestValidator
+
+  Configuration of this validator is at the end of the following XML fragment.
+  
+---
+<bean id="messageSender" class="net.krecan.springws.test.MockWebServiceMessageSender">
+		<property name="responseGenerator">
+			<bean class="net.krecan.springws.test.generator.DefaultResponseGenerator">
+				<property name="resourceLookup">
+					<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
+						<property name="resourceXPaths">
+							<list>
+								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+							</list>
+						</property>
+						<property name="namespaceMap">
+							<map>
+								<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+								<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+							</map>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<property name="requestValidators">
+			<list>
+				<bean class="net.krecan.springws.test.validator.SchemaRequestValidator">
+					<property name="schemas">
+						<list>
+							<value>xsd/messages.xsd</value>
+							<value>xsd/types.xsd</value>
+						</list>
+					</property>
+				</bean>			
+			</list>
+		</property>
+	</bean>
+---	
+
+   When configured like this, every request is validated using specified schemas. If the request is not valid <<<WsTestException>>> is thrown.
+   
+** XmlCompareRequestValidator
+
+  For contract first development, you can find this validator useful. It compares the request with specified file
+  
+---
+<bean class="net.krecan.springws.test.validator.XmlCompareRequestValidator">
+	<property name="controlResourceLookup">
+		<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
+			<property name="resourceXPaths">
+				<list>
+					<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
+				</list>
+			</property>
+			<property name="namespaceMap">
+				<map>
+					<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+					<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+				</map>
+			</property>
+		</bean>
+	</property>
+</bean>			 
+---
+
+  It's similar to the request generator, only instead of generating responses it validates the request. You can use XSLT templates here as well. 
+  You can also specify special placeholder <<<${IGNORE}>>> for values that should be ignored.
+
+* Test context
+
+  Test context is useful, when you need test specific configuration. For example you want to set expected departure time
+ 
+---
+WsTestContextHolder.getTestContext().setAttribute("departureTime", "2009-07-14");
+--- 
+
+  You can set the attribute in the test method and then use it 
+  
+  * In the XSLT template as a template parameter.
+  
+  * In the XPath using <<<$context.departureTime>>>
+  
+  * Programatically
+  
+  It's a good idea to clear the test context at the tearDown() method.
+  
     
      
