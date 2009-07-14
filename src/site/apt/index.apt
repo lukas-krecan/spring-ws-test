@@ -1,0 +1,108 @@
+Spring Web Service Mock
+ 
+  Spring Web Service Mock project is intended to simplify functional testing of Spring WS client application. It's useful when you want to test
+  an application that calls external services useing Spring WS. Until now, you had basically two choices. You could either call test instance of the WS or 
+  you could create a mock WS using SoapUI, WSUnit or similar tool. Both of those approaches have one big fault. You have to depend on a external service
+  running when executing your test. It makes test configuration much more complex and error prone.
+  
+  Spring Web Service Mock gives you the opportunity to write functional test using JUnit and Spring test support. Mock responses are generated internally, in the same
+  JVM, therefore the setup is much easier. This project can be used mainly in the following scenarios:
+  
+  * Tests of Spring configuration. Unit test are nice, but we also need to test the configuration. Spring WS mock gives you the opportunity to test most of the configuration without having to depend on external systems running.
+  * Contract First Development. You can define application in terms of requests sent and reactions on responses received. Using Spring WS Mock it will be much easier.
+  * ...
+  
+Tutorial
+
+	Let's imagine that we write Airline Aggregator application. This application calls underlying Airline web services and aggregates the results. It is possible to write Unit test, but let's imagine that we want to write
+	more complex automated tests, that include actual external WS call. We have to generate mock responses.
+	
+	First of all, we have to configure the WebServiceTemplate like this
+	
+---
+	<bean id="wsTemplate" class="org.springframework.ws.client.core.WebServiceTemplate">
+		<property name="messageSender" ref="messageSender"/>
+		<!-- Other settings here -->
+	</bean>	
+---     
+
+* Simple mock response
+
+	In other configuration file we can define the actual <<<messageSender>>> like <<<HttpUrlMessageSender>>>.  But for test we can define
+	mock message sender that generates mock responses instead of actually sending the request over HTTP. We can for example set up a message sender like this.
+	
+---
+  		<bean id="messageSender" class="net.krecan.springws.test.MockWebServiceMessageSender">
+		<property name="responseGenerator">
+			<bean class="net.krecan.springws.test.generator.DefaultResponseGenerator">
+				<property name="resourceLookup">
+					<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
+						<property name="resourceXPaths">
+							<list>
+								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+							</list>
+						</property>
+						<property name="namespaceMap">
+							<map>
+								<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+								<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+							</map>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+---  
+  This rather scary definition (it needs to be simplified) says that for every request the XPath <<<concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')>>> should be evaluated first.
+  Result of the evaluation can be for example <<<mock-responses/www.csa.cz/GetFlightsRequest/PRG-JFK-response.xml>>>. If this file exists, its content will be returned as 
+  the response. If the file does not exists, next XPath is evaluated. If even <<<mock-responses/www.csa.cz/GetFlightsRequest/default-response.xml>>> does not exist, an exception is thrown.
+  
+  If we have this or similar configuration, adding an extra mock response consists only from creating new file with correct path and name.
+  
+* XSLT mock response
+  
+  Sometimes creating an extra response file for every possible request is just too much work. Luckily you can use a XSLT template to generate the response
+  based on the request. For example you can specify response like this
+  
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+	<xsl:param name="departureTime"/>
+	<xsl:template match="/">
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			<soapenv:Header />
+			<soapenv:Body>
+				<GetFlightsResponse
+					xmlns="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"
+					xmlns:msg="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"
+					xmlns:tps="http://www.springframework.org/spring-ws/samples/airline/schemas/types">
+					<flight>
+						<tps:number>OK0651</tps:number>
+						<tps:departureTime><xsl:value-of select="$departureTime"/></tps:departureTime>
+						<tps:from>
+							<tps:code>PRG</tps:code>
+							<tps:name>Prague</tps:name>
+							<tps:city>Prague</tps:city>
+						</tps:from>
+						<tps:arrivalTime>2001-12-31T12:00:00
+						</tps:arrivalTime>
+						<tps:to>
+							<tps:code>CDG</tps:code>
+							<tps:name>CDG</tps:name>
+							<tps:city>Paris</tps:city>
+						</tps:to>
+						<tps:serviceClass><xsl:value-of select="//msg:serviceClass"/></tps:serviceClass>
+					</flight>
+				</GetFlightsResponse>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	</xsl:template>
+</xsl:stylesheet>
+---
+
+  Instead of simple XML response, we have XSLT that uses the <<<serviceClass>>> from the request and <<<departureTime>>> from the test context
+  (more about the context later).   
+    
+     
