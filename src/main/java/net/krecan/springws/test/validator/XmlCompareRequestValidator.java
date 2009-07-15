@@ -27,6 +27,25 @@ import org.w3c.dom.Document;
  */
 public class XmlCompareRequestValidator implements RequestValidator {
 
+	/**
+	 * Diff that ignores "${IGNORE}" placeholder
+	 * @author Lukas Krecan
+	 *
+	 */
+	private static final class IgnoringDiff extends Diff {
+		private IgnoringDiff(Document controlDoc, Document testDoc) {
+			super(controlDoc, testDoc);
+		}
+
+		public int differenceFound(Difference difference) {
+			if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue())) {
+				return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
+			} else {
+				return super.differenceFound(difference);
+			}
+		}
+	}
+
 	private ResourceLookup controlResourceLookup;
 
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -53,15 +72,7 @@ public class XmlCompareRequestValidator implements RequestValidator {
 	}
 
 	protected Diff createDiff(Document controlDocument, Document messageDocument) {
-		return new Diff(controlDocument, messageDocument) {
-			public int differenceFound(Difference difference) {
-				if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue())) {
-					return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
-				} else {
-					return super.differenceFound(difference);
-				}
-			}
-		};
+		return new IgnoringDiff(controlDocument, messageDocument);
 	}
 
 	protected Document loadDocument(WebServiceMessage message) throws IOException {
