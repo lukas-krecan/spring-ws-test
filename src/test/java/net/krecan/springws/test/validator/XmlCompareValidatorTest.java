@@ -27,7 +27,7 @@ public class XmlCompareValidatorTest extends AbstractValidatorTest {
 		
 		XPathResourceLookup resourceLookup = new XPathResourceLookup();
 		String resourceXpath = "concat('xml/control-message-',name(//soapenv:Body/*[1]),'.xml')";
-		resourceLookup.setResourceXPath(resourceXpath);
+		resourceLookup.setResourceExpressions(new String[]{resourceXpath});
 		resourceLookup.setNamespaceMap(namespaceMap);
 		
 		validator.setControlResourceLookup(resourceLookup);

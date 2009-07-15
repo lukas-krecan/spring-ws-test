@@ -37,7 +37,7 @@ public class TemplateProcessingXPathResourceLookupTest extends AbstractMessageTe
 		String resourceXpath = "concat('mock-responses/',name(//soapenv:Body/*[1]),'/',//ns:text,'-response.xml')";
 				
 		String defaultXPath = "concat('mock-responses/',name(//soapenv:Body/*[1]),'/default-response.xml')";
-		resourceLookup.setResourceXPaths(new String[]{resourceXpath, defaultXPath});
+		resourceLookup.setResourceExpressions(new String[]{resourceXpath, defaultXPath});
 		resourceLookup.setNamespaceMap(namespaceMap);
 	}
 	

@@ -9,7 +9,7 @@ Spring Web Service Mock
   JVM, therefore the setup is much easier. This project can be used mainly in the following scenarios:
   
   * Tests of Spring configuration. Unit test are nice, but we also need to test the configuration. Spring WS mock gives you the opportunity to test most of the configuration without having to depend on external systems running.
-  * Contract First Development. You can define application in terms of requests sent and reactions on responses received. Using Spring WS Mock it will be much easier.
+  * Test Driven Development. You can define application in terms of requests sent and reactions on responses received. Using Spring WS Mock it will be much easier.
   * ...
   
 Tutorial
@@ -37,7 +37,7 @@ Tutorial
 			<bean class="net.krecan.springws.test.generator.DefaultResponseGenerator">
 				<property name="resourceLookup">
 					<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
-						<property name="resourceXPaths">
+						<property name="resourceExpressions">
 							<list>
 								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
 								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
@@ -119,7 +119,7 @@ Tutorial
 			<bean class="net.krecan.springws.test.generator.DefaultResponseGenerator">
 				<property name="resourceLookup">
 					<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
-						<property name="resourceXPaths">
+						<property name="resourceExpressions">
 							<list>
 								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
 								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
@@ -154,13 +154,13 @@ Tutorial
    
 ** XmlCompareRequestValidator
 
-  For contract first development, you can find this validator useful. It compares the request with specified file
+  For Test Driven Development, you can find this validator useful. It compares the request with specified file
   
 ---
 <bean class="net.krecan.springws.test.validator.XmlCompareRequestValidator">
 	<property name="controlResourceLookup">
 		<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
-			<property name="resourceXPaths">
+			<property name="resourceExpressions">
 				<list>
 					<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
 				</list>
