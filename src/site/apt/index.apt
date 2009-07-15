@@ -1,15 +1,17 @@
-Spring Web Service Mock
+Spring Web Service Test
  
-  Spring Web Service Mock project is intended to simplify functional testing of Spring WS client application. It's useful when you want to test
-  an application that calls external services useing Spring WS. Until now, you had basically two choices. You could either call test instance of the WS or 
-  you could create a mock WS using SoapUI, WSUnit or similar tool. Both of those approaches have one big fault. You have to depend on a external service
-  running when executing your test. It makes test configuration much more complex and error prone.
+  Goal of Spring Web Service Test project is to simplify functional testing of Spring WS client application. It's useful when you want to test
+  an application that calls external services using Spring WS. Until now, you had basically two choices. You could either call test instance of the WS or 
+  you could create a mock WS using SoapUI, WSUnit or similar tool. Both of those approaches have one big fault. You have to depend on the fact that an external service
+  is running when executing your test. It makes test configuration much more complex and error prone.
   
   Spring Web Service Mock gives you the opportunity to write functional test using JUnit and Spring test support. Mock responses are generated internally, in the same
   JVM, therefore the setup is much easier. This project can be used mainly in the following scenarios:
   
-  * Tests of Spring configuration. Unit test are nice, but we also need to test the configuration. Spring WS mock gives you the opportunity to test most of the configuration without having to depend on external systems running.
-  * Test Driven Development. You can define application in terms of requests sent and reactions on responses received. Using Spring WS Mock it will be much easier.
+  * Tests of Spring configuration. Unit test are nice, but we also need to test the configuration. Spring WS Test gives you the opportunity to test most of the configuration without having to depend on external systems running.
+ 
+  * Test Driven Development. You can define application in terms of requests sent and reactions on responses received. Using Spring WS Test makes it much easier.
+ 
   * ...
   
 Tutorial
