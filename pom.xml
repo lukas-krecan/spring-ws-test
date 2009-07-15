@@ -6,12 +6,19 @@
 	<packaging>jar</packaging>
 	<version>0.1-SNAPSHOT</version>
 	<name>spring-ws-test</name>
-	<url>http://mvnindex.org/spring-ws-test/</url>
+	<url>http://mvnindex.org/spring-ws-test/
+	</url>
 
 	<scm>
-		<connection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</connection>
-		<developerConnection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</developerConnection>
-		<url>https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</url>
+		<connection>
+			scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
+		</connection>
+		<developerConnection>
+			scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
+		</developerConnection>
+		<url>
+			https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
+		</url>
 	</scm>
 
 
@@ -22,6 +29,12 @@
 				scp://mvnindex.org:/var/www/vhosts/mvnindex.org/httpdocs/spring-ws-test
 			</url>
 		</site>
+		<repository>
+			<id>repository</id>
+			<name>Mvnindex file system</name>
+			<url>scp://mvnindex.org:/var/www/vhosts/mvnindex.org/httpdocs/spring-ws-test-files/</url>
+		</repository>
+
 	</distributionManagement>
 
 	<dependencies>
