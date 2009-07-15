@@ -8,7 +8,7 @@
 	<name>spring-ws-test</name>
 	<url>http://mvnindex.org/spring-ws-test/
 	</url>
-
+ 
 	<scm>
 		<connection>
 			scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
