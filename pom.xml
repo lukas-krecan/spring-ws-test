@@ -7,6 +7,14 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>spring-ws-test</name>
 	<url>http://maven.apache.org</url>
+
+	<distributionManagement>
+		<site>
+			<id>website</id>
+			<url>scp://mvnindex.org:/var/www/vhosts/mvnindex.org/httpdocs/spring-ws-test</url>
+		</site>
+	</distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
@@ -48,6 +56,12 @@
 			<version>1.2.12</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.cobertura</groupId>
+			<artifactId>cobertura</artifactId>
+			<version>1.9.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -75,4 +89,18 @@
 			</plugin>
 		</plugins>
 	</build>
+	 <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+    </plugins>
+  </reporting>
+	
 </project>

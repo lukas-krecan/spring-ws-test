@@ -47,12 +47,6 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		
 		verify(resourceLookup);
 	}
-	private Document loadDocument(WebServiceMessage message) {
-		return DefaultXmlUtil.getInstance().loadDocument(message);
-	}
-	private Document loadDocument(Resource resource) throws IOException {
-		return DefaultXmlUtil.getInstance().loadDocument(resource);
-	}
 	@Test
 	public void testNoResourceFound() throws IOException
 	{
@@ -71,5 +65,11 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		
 		
 		verify(resourceLookup);
+	}
+	private Document loadDocument(WebServiceMessage message) {
+		return DefaultXmlUtil.getInstance().loadDocument(message);
+	}
+	private Document loadDocument(Resource resource) throws IOException {
+		return DefaultXmlUtil.getInstance().loadDocument(resource);
 	}
 }

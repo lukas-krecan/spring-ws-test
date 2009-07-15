@@ -10,7 +10,7 @@ import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
 
 /**
- * Common XML manipulating code.
+ * Common XML manipulating code. 
  * @author Lukas Krecan
  *
  */

@@ -55,8 +55,8 @@ public abstract class AbstractResourceLookup implements ResourceLookup, Resource
 	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException {
 		if (resourceExpressions != null) {
 			Document document = loadDocument(message);
-			for (int i = 0; i < resourceExpressions.length; i++) {
-				Resource resultResource = findResourceForExpression(resourceExpressions[i], uri, document);
+			for (String resourceExpression: resourceExpressions) {
+				Resource resultResource = findResourceForExpression(resourceExpression, uri, document);
 				if (resultResource!=null)
 				{
 					logger.debug("Found resource "+resultResource);
