@@ -4,9 +4,9 @@
 	<groupId>net.krecan</groupId>
 	<artifactId>spring-ws-test</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<name>spring-ws-test</name>
-	<url>http://maven.apache.org</url>
+	<url>http://mvnindex.org/spring-ws-test/</url>
 
 	<scm>
 		<connection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</connection>
