@@ -85,6 +85,12 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 		return responseXPathExpressions;
 	}
 
+	/**
+	 * XPath expression used to determine which resource use as the response. 
+	 * For example <code>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</code>.
+	 * If no resource found with given name, next expression is resolved and resource looked-up.
+	 * @param responseXPathExpressions
+	 */
 	public void setResponseXPathExpressions(String[] responseXPathExpressions) {
 		this.responseXPathExpressions = responseXPathExpressions;
 	}
@@ -92,7 +98,10 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 	public Map<String, String> getNamespaceMap() {
 		return namespaceMap;
 	}
-
+	/**
+	 * Set's namespace map for the XPath expressions. Key is the namespace prefix and value is the namespace itself.
+	 * @param namespaceMap
+	 */
 	public void setNamespaceMap(Map<String, String> namespaceMap) {
 		this.namespaceMap = namespaceMap;
 	}
@@ -101,6 +110,10 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 		return requestValidationSchemas;
 	}
 
+	/**
+	 * Schemas used to validate requests.
+	 * @param requestValidationSchemas
+	 */
 	public void setRequestValidationSchemas(Resource[] requestValidationSchemas) {
 		this.requestValidationSchemas = requestValidationSchemas;
 	}
@@ -109,6 +122,10 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 		return controlRequestXPathExpressions;
 	}
 
+	/**
+	 *  XPath expression used to determine which resource use to compare validity of the request. 
+	 * @param controlRequestXPathExpressions
+	 */
 	public void setControlRequestXPathExpressions(String[] controlRequestXPathExpressions) {
 		this.controlRequestXPathExpressions = controlRequestXPathExpressions;
 	}
