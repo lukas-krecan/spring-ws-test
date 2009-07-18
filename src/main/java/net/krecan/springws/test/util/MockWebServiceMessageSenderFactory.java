@@ -6,9 +6,11 @@ import net.krecan.springws.test.MockWebServiceMessageSender;
 import net.krecan.springws.test.expression.XPathExpressionEvaluator;
 import net.krecan.springws.test.generator.DefaultResponseGenerator;
 import net.krecan.springws.test.lookup.DefaultResourceLookup;
+import net.krecan.springws.test.validator.SchemaRequestValidator;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
@@ -24,6 +26,8 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 	private String[] responseXPathExpressions;
 	
 	private Map<String,String> namespaceMap;
+	
+	private Resource[] requestValidationSchemas;
 	
 	public Object getObject() throws Exception {
 		return sender;
@@ -49,6 +53,14 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 		responseResourceLookup.setResourceExpressions(responseXPathExpressions);
 		responseGenerator.setResourceLookup(responseResourceLookup);
 		sender.setResponseGenerator(responseGenerator);
+		
+		if (requestValidationSchemas!=null)
+		{
+			SchemaRequestValidator requestValidator = new SchemaRequestValidator();
+			requestValidator.setSchemas(requestValidationSchemas);
+			requestValidator.afterPropertiesSet();
+			sender.setRequestValidator(requestValidator);
+		}
 	}
 
 	public String[] getResponseXPathExpressions() {
@@ -65,6 +77,14 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 
 	public void setNamespaceMap(Map<String, String> namespaceMap) {
 		this.namespaceMap = namespaceMap;
+	}
+
+	public Resource[] getRequestValidationSchemas() {
+		return requestValidationSchemas;
+	}
+
+	public void setRequestValidationSchemas(Resource[] requestValidationSchemas) {
+		this.requestValidationSchemas = requestValidationSchemas;
 	}
 
 
