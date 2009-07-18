@@ -6,6 +6,11 @@ import java.net.URI;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 
+/**
+ * Evaluates template.
+ * @author Lukas Krecan
+ *
+ */
 public interface TemplateProcessor {
 	/**
 	 * Processes the resource as template. Returns resource with processed data. If the processor is not applicable 

@@ -17,6 +17,11 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
+/**
+ * Evaluats XSLT template.
+ * @author Lukas Krecan
+ *
+ */
 public class XsltTemplateProcessor implements TemplateProcessor {
 	
 	private static final String XSL_NAMESPACE = "http://www.w3.org/1999/XSL/Transform";
