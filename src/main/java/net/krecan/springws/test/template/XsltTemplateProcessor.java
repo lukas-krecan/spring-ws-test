@@ -1,10 +1,13 @@
-package net.krecan.springws.test.lookup;
+package net.krecan.springws.test.template;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 
 import javax.xml.transform.stream.StreamResult;
+
+import net.krecan.springws.test.util.DefaultXmlUtil;
+import net.krecan.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,19 +17,15 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
-/**
- * Extends {@link XPathResourceLookup} by adding XSLT template processing. 
- * @author Lukas Krecan
- *
- */
-public class TemplateProcessingXPathResourceLookup extends XPathResourceLookup {
+public class XsltTemplateProcessor implements TemplateProcessor {
+	
 	private static final String XSL_NAMESPACE = "http://www.w3.org/1999/XSL/Transform";
 	
 	private final Log logger = LogFactory.getLog(getClass());
-
-	@Override
-	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException {
-		Resource resource = super.lookupResource(uri, message);
+	
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
+	public Resource processTemplate(Resource resource, URI uri, WebServiceMessage message) throws IOException {
 		if (resource!=null)
 		{
 			if (isTemplate(resource))
@@ -43,7 +42,7 @@ public class TemplateProcessingXPathResourceLookup extends XPathResourceLookup {
 			return null;
 		}
 	}
-
+	
 	protected boolean isTemplate(Resource resource) throws IOException {
 		Document document = loadDocument(resource);
 		return XSL_NAMESPACE.equals(document.getFirstChild().getNamespaceURI());
@@ -62,4 +61,13 @@ public class TemplateProcessingXPathResourceLookup extends XPathResourceLookup {
 		}
 		return new ByteArrayResource(baos.toByteArray());
 	}
+
+	public XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
+	}
+
 }

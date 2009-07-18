@@ -1,4 +1,4 @@
-package net.krecan.springws.test.lookup;
+package net.krecan.springws.test.expression;
 
 import static org.junit.Assert.assertEquals;
 

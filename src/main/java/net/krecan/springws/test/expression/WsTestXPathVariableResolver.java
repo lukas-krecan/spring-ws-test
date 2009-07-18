@@ -1,4 +1,4 @@
-package net.krecan.springws.test.lookup;
+package net.krecan.springws.test.expression;
 
 import java.net.URI;
 import java.util.Map;

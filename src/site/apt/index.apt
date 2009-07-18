@@ -1,5 +1,9 @@
+  {{{http://mvnindex.org/spring-ws-test-files/spring-ws-test-0.1.jar}Download}}
+
+  {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test-sample/trunk/}Test application}}
+
 Spring Web Service Test
- 
+  
   Goal of Spring Web Service Test project is to simplify functional testing of Spring WS client application. It's useful when you want to test
   an application that calls external services using Spring WS. Until now, you had basically two choices. You could either call test instance of the WS or 
   you could create a mock WS using SoapUI, WSUnit or similar tool. Both of those approaches have one big fault. You have to depend on the fact that an external service

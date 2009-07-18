@@ -2,9 +2,6 @@ package net.krecan.springws.test.context;
 
 import java.util.Map;
 
-import net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup;
-import net.krecan.springws.test.lookup.XPathResourceLookup;
-
 /**
  * Context that can be used for test specific data. Its attributes could be set in the test method and the 
  * values can be used in

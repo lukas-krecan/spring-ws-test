@@ -2,14 +2,20 @@ package net.krecan.springws.test;
 
 import java.io.IOException;
 
+import net.krecan.springws.test.util.DefaultXmlUtil;
+import net.krecan.springws.test.util.XmlUtil;
+
 import org.custommonkey.xmlunit.XMLUnit;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 
 public abstract class AbstractMessageTest {
+	
 	protected SaajSoapMessageFactory messageFactory;
 
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
 	public AbstractMessageTest() {
 		XMLUnit.setIgnoreWhitespace(true);
 		try {
@@ -23,5 +29,11 @@ public abstract class AbstractMessageTest {
 	protected WebServiceMessage createMessage(String path) throws IOException
 	{
 		return messageFactory.createWebServiceMessage(new ClassPathResource(path).getInputStream());
+	}
+	protected XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+	protected void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
 	}
 }

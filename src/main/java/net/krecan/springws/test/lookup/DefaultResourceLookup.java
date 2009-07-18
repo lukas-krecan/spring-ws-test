@@ -2,10 +2,10 @@ package net.krecan.springws.test.lookup;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 
-import javax.xml.namespace.NamespaceContext;
-
+import net.krecan.springws.test.expression.ExpressionEvaluator;
+import net.krecan.springws.test.template.TemplateProcessor;
+import net.krecan.springws.test.template.XsltTemplateProcessor;
 import net.krecan.springws.test.util.DefaultXmlUtil;
 import net.krecan.springws.test.util.XmlUtil;
 
@@ -16,7 +16,6 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.WebServiceMessage;
-import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.w3c.dom.Document;
 
 
@@ -38,16 +37,18 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public abstract class AbstractResourceLookup implements ResourceLookup, ResourceLoaderAware {
+public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAware {
 	private String[] resourceExpressions;
-	
-	private NamespaceContext namespaceContext;
 
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 	
 	protected final Log logger = LogFactory.getLog(getClass());
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
+	private ExpressionEvaluator expressionEvaluator;
+	
+	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 
 	/**
 	 * Iterates over expressions, evaluates them and looks for resource with corresponding name. 
@@ -60,7 +61,7 @@ public abstract class AbstractResourceLookup implements ResourceLookup, Resource
 				if (resultResource!=null)
 				{
 					logger.debug("Found resource "+resultResource);
-					return resultResource;
+					return templateProcessor.processTemplate(resultResource, uri, message);
 				}
 			}
 		}
@@ -90,7 +91,10 @@ public abstract class AbstractResourceLookup implements ResourceLookup, Resource
 	 * @param document
 	 * @return
 	 */
-	protected abstract String evaluateExpression(String expression, URI uri, Document document);
+	protected String evaluateExpression(String expression, URI uri, Document document)
+	{
+		return expressionEvaluator.evaluateExpression(expression, uri, document);
+	}
 
 	protected Document loadDocument(WebServiceMessage message) {
 		return getXmlUtil().loadDocument(message);
@@ -114,26 +118,29 @@ public abstract class AbstractResourceLookup implements ResourceLookup, Resource
 		this.resourceExpressions = resourceExpressions;
 	}
 
-	public void setNamespaceMap(Map<String, String> namespaceMap) {
-		SimpleNamespaceContext context = new SimpleNamespaceContext();
-		context.setBindings(namespaceMap);
-		setNamespaceContext(context);
-	}
-
-	public NamespaceContext getNamespaceContext() {
-		return namespaceContext;
-	}
-
-	public void setNamespaceContext(NamespaceContext namespaceContext) {
-		this.namespaceContext = namespaceContext;
-	}
-
+	
 	public XmlUtil getXmlUtil() {
 		return xmlUtil;
 	}
 
 	public void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
+	}
+
+	public ExpressionEvaluator getExpressionEvaluator() {
+		return expressionEvaluator;
+	}
+
+	public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
+		this.expressionEvaluator = expressionEvaluator;
+	}
+
+	public TemplateProcessor getTemplateProcessor() {
+		return templateProcessor;
+	}
+
+	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
+		this.templateProcessor = templateProcessor;
 	}
 
 }
