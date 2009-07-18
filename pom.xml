@@ -4,7 +4,7 @@
 	<groupId>net.krecan</groupId>
 	<artifactId>spring-ws-test</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>spring-ws-test</name>
 	<url>http://mvnindex.org/spring-ws-test/
 	</url>

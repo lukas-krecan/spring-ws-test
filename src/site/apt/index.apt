@@ -38,30 +38,22 @@ Tutorial
 	mock message sender that generates mock responses instead of actually sending the request over HTTP. We can for example set up a message sender like this.
 	
 ---
-<bean id="messageSender" class="net.krecan.springws.test.MockWebServiceMessageSender">
-	<property name="responseGenerator">
-		<bean class="net.krecan.springws.test.generator.DefaultResponseGenerator">
-			<property name="resourceLookup">
-				<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
-					<property name="resourceExpressions">
-						<list>
-							<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
-							<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
-						</list>
-					</property>
-					<property name="namespaceMap">
-						<map>
-							<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-							<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-						</map>
-					</property>
-				</bean>
-			</property>
-		</bean>
+<bean id="messageSender" class="net.krecan.springws.test.util.MockWebServiceMessageSenderFactory">
+	<property name="namespaceMap">
+		<map>
+			<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/" />
+			<entry key="ns"	value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages" />
+		</map>
+	</property>
+	<property name="responseXPathExpressions">
+		<list>
+			<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+			<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+		</list>
 	</property>
 </bean>
 ---  
-  This rather scary definition (it needs to be simplified) says that for every request the XPath <<<concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')>>> should be evaluated first.
+  This rather definition  says that for every request the XPath <<<concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')>>> should be evaluated first.
   Result of the evaluation can be for example <<<mock-responses/www.csa.cz/GetFlightsRequest/PRG-JFK-response.xml>>>. If this file exists, its content will be returned as 
   the response. If the file does not exists, next XPath is evaluated. If even <<<mock-responses/www.csa.cz/GetFlightsRequest/default-response.xml>>> does not exist, an exception is thrown.
   
@@ -120,37 +112,23 @@ Tutorial
   Configuration of this validator is at the end of the following XML fragment.
   
 ---
-<bean id="messageSender" class="net.krecan.springws.test.MockWebServiceMessageSender">
-		<property name="responseGenerator">
-			<bean class="net.krecan.springws.test.generator.DefaultResponseGenerator">
-				<property name="resourceLookup">
-					<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
-						<property name="resourceExpressions">
-							<list>
-								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
-								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
-							</list>
-						</property>
-						<property name="namespaceMap">
-							<map>
-								<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-								<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-							</map>
-						</property>
-					</bean>
-				</property>
-			</bean>
+	<bean id="messageSender" class="net.krecan.springws.test.util.MockWebServiceMessageSenderFactory">
+		<property name="namespaceMap">
+			<map>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/" />
+				<entry key="ns"	value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages" />
+			</map>
 		</property>
-		<property name="requestValidators">
+		<property name="responseXPathExpressions">
 			<list>
-				<bean class="net.krecan.springws.test.validator.SchemaRequestValidator">
-					<property name="schemas">
-						<list>
-							<value>xsd/messages.xsd</value>
-							<value>xsd/types.xsd</value>
-						</list>
-					</property>
-				</bean>			
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+			</list>
+		</property>
+		<property name="requestValidationSchemas">
+			<list>
+				<value>xsd/messages.xsd</value>
+				<value>xsd/types.xsd</value>
 			</list>
 		</property>
 	</bean>
@@ -160,26 +138,34 @@ Tutorial
    
 ** XmlCompareRequestValidator
 
-  For Test Driven Development, you can find this validator useful. It compares the request with specified file
+  For Test Driven Development, you can find this validator useful. It compares the request with specified file (see the end of the next example) 
   
 ---
-<bean class="net.krecan.springws.test.validator.XmlCompareRequestValidator">
-	<property name="controlResourceLookup">
-		<bean class="net.krecan.springws.test.lookup.TemplateProcessingXPathResourceLookup">
-			<property name="resourceExpressions">
-				<list>
-					<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
-				</list>
-			</property>
-			<property name="namespaceMap">
-				<map>
-					<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-					<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-				</map>
-			</property>
-		</bean>
-	</property>
-</bean>			 
+	<bean id="messageSender" class="net.krecan.springws.test.util.MockWebServiceMessageSenderFactory">
+		<property name="namespaceMap">
+			<map>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/" />
+				<entry key="ns"	value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages" />
+			</map>
+		</property>
+		<property name="responseXPathExpressions">
+			<list>
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+			</list>
+		</property>
+		<property name="requestValidationSchemas">
+			<list>
+				<value>xsd/messages.xsd</value>
+				<value>xsd/types.xsd</value>
+			</list>
+		</property>
+		<property name="controlRequestXPathExpressions">
+			<list>
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
+			</list>
+		</property>
+	</bean>	 
 ---
 
   It's similar to the request generator, only instead of generating responses it validates the request. You can use XSLT templates here as well. 
