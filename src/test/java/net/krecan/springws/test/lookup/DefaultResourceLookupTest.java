@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import net.krecan.springws.test.AbstractMessageTest;
-import net.krecan.springws.test.expression.ExpressionEvaluator;
+import net.krecan.springws.test.expression.ExpressionResolver;
 
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -41,15 +41,15 @@ public class DefaultResourceLookupTest extends AbstractMessageTest{
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions(new String[]{"expr1","expr2"});
 		
-		ExpressionEvaluator evaluator = createMock(ExpressionEvaluator.class);
-		expect(evaluator.evaluateExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn(responsePath);
-		resourceLookup.setExpressionEvaluator(evaluator);
+		ExpressionResolver resolver = createMock(ExpressionResolver.class);
+		expect(resolver.resolveExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn(responsePath);
+		resourceLookup.setExpressionResolver(resolver);
 
-		replay(evaluator);
+		replay(resolver);
 				
 		Resource resource = resourceLookup.lookupResource(null, request);
 		assertEquals(new ClassPathResource(responsePath), resource);
-		verify(evaluator);
+		verify(resolver);
 	}
 	@Test
 	public void testSecondExpression() throws IOException
@@ -60,16 +60,16 @@ public class DefaultResourceLookupTest extends AbstractMessageTest{
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions(new String[]{"expr1","expr2"});
 		
-		ExpressionEvaluator evaluator = createMock(ExpressionEvaluator.class);
-		expect(evaluator.evaluateExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath");
-		expect(evaluator.evaluateExpression(eq("expr2"), (URI)isNull(), (Document)anyObject())).andReturn(responsePath);
-		resourceLookup.setExpressionEvaluator(evaluator);
+		ExpressionResolver resolver = createMock(ExpressionResolver.class);
+		expect(resolver.resolveExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath");
+		expect(resolver.resolveExpression(eq("expr2"), (URI)isNull(), (Document)anyObject())).andReturn(responsePath);
+		resourceLookup.setExpressionResolver(resolver);
 		
-		replay(evaluator);
+		replay(resolver);
 		
 		Resource resource = resourceLookup.lookupResource(null, request);
 		assertEquals(new ClassPathResource(responsePath), resource);
-		verify(evaluator);
+		verify(resolver);
 	}
 	@Test
 	public void testNoExpression() throws IOException
@@ -79,14 +79,14 @@ public class DefaultResourceLookupTest extends AbstractMessageTest{
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions(new String[]{"expr1","expr2"});
 		
-		ExpressionEvaluator evaluator = createMock(ExpressionEvaluator.class);
-		expect(evaluator.evaluateExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath");
-		expect(evaluator.evaluateExpression(eq("expr2"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath2");
-		resourceLookup.setExpressionEvaluator(evaluator);
+		ExpressionResolver resolve = createMock(ExpressionResolver.class);
+		expect(resolve.resolveExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath");
+		expect(resolve.resolveExpression(eq("expr2"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath2");
+		resourceLookup.setExpressionResolver(resolve);
 		
-		replay(evaluator);
+		replay(resolve);
 		
 		assertNull(resourceLookup.lookupResource(null, request));
-		verify(evaluator);
+		verify(resolve);
 	}
 }

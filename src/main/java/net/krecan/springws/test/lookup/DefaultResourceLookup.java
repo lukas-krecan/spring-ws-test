@@ -3,7 +3,7 @@ package net.krecan.springws.test.lookup;
 import java.io.IOException;
 import java.net.URI;
 
-import net.krecan.springws.test.expression.ExpressionEvaluator;
+import net.krecan.springws.test.expression.ExpressionResolver;
 import net.krecan.springws.test.template.TemplateProcessor;
 import net.krecan.springws.test.template.XsltTemplateProcessor;
 import net.krecan.springws.test.util.DefaultXmlUtil;
@@ -46,7 +46,7 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
-	private ExpressionEvaluator expressionEvaluator;
+	private ExpressionResolver expressionResolver;
 	
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 
@@ -93,7 +93,7 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 	 */
 	protected String evaluateExpression(String expression, URI uri, Document document)
 	{
-		return expressionEvaluator.evaluateExpression(expression, uri, document);
+		return expressionResolver.resolveExpression(expression, uri, document);
 	}
 
 	protected Document loadDocument(WebServiceMessage message) {
@@ -127,12 +127,12 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 		this.xmlUtil = xmlUtil;
 	}
 
-	public ExpressionEvaluator getExpressionEvaluator() {
-		return expressionEvaluator;
+	public ExpressionResolver getExpressionResolver() {
+		return expressionResolver;
 	}
 
-	public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
-		this.expressionEvaluator = expressionEvaluator;
+	public void setExpressionResolver(ExpressionResolver expressionResolver) {
+		this.expressionResolver = expressionResolver;
 	}
 
 	public TemplateProcessor getTemplateProcessor() {

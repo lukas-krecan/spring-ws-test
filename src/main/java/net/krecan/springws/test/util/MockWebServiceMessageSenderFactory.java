@@ -1,12 +1,16 @@
 package net.krecan.springws.test.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import net.krecan.springws.test.MockWebServiceMessageSender;
-import net.krecan.springws.test.expression.XPathExpressionEvaluator;
+import net.krecan.springws.test.expression.XPathExpressionResolver;
 import net.krecan.springws.test.generator.DefaultResponseGenerator;
 import net.krecan.springws.test.lookup.DefaultResourceLookup;
+import net.krecan.springws.test.validator.RequestValidator;
 import net.krecan.springws.test.validator.SchemaRequestValidator;
+import net.krecan.springws.test.validator.XmlCompareRequestValidator;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -24,6 +28,8 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 	private MockWebServiceMessageSender sender;
 	
 	private String[] responseXPathExpressions;
+
+	private String[] controlRequestXPathExpressions;
 	
 	private Map<String,String> namespaceMap;
 	
@@ -44,23 +50,35 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 	public void afterPropertiesSet() throws Exception {
 		sender = new MockWebServiceMessageSender();
 		Assert.notNull(namespaceMap, "namespaceMap has to be specified.");
-		XPathExpressionEvaluator expressionEvaluator = new XPathExpressionEvaluator();
-		expressionEvaluator.setNamespaceMap(namespaceMap);
+		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
+		expressionResolver.setNamespaceMap(namespaceMap);
 
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
 		DefaultResourceLookup responseResourceLookup = new DefaultResourceLookup();
-		responseResourceLookup.setExpressionEvaluator(expressionEvaluator);
+		responseResourceLookup.setExpressionResolver(expressionResolver);
 		responseResourceLookup.setResourceExpressions(responseXPathExpressions);
 		responseGenerator.setResourceLookup(responseResourceLookup);
 		sender.setResponseGenerator(responseGenerator);
 		
+		List<RequestValidator> validators = new ArrayList<RequestValidator>(2);
 		if (requestValidationSchemas!=null)
 		{
 			SchemaRequestValidator requestValidator = new SchemaRequestValidator();
 			requestValidator.setSchemas(requestValidationSchemas);
 			requestValidator.afterPropertiesSet();
-			sender.setRequestValidator(requestValidator);
+			validators.add(requestValidator);
 		}
+		
+		if (controlRequestXPathExpressions!=null)
+		{
+			XmlCompareRequestValidator requestValidator = new XmlCompareRequestValidator();
+			DefaultResourceLookup controlResourceLookup = new DefaultResourceLookup();
+			controlResourceLookup.setResourceExpressions(controlRequestXPathExpressions);
+			controlResourceLookup.setExpressionResolver(expressionResolver);
+			requestValidator.setControlResourceLookup(controlResourceLookup );
+			validators.add(requestValidator);
+		}
+		sender.setRequestValidators(validators.toArray(new RequestValidator[validators.size()]));
 	}
 
 	public String[] getResponseXPathExpressions() {
@@ -85,6 +103,14 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 
 	public void setRequestValidationSchemas(Resource[] requestValidationSchemas) {
 		this.requestValidationSchemas = requestValidationSchemas;
+	}
+
+	public String[] getControlRequestXPathExpressions() {
+		return controlRequestXPathExpressions;
+	}
+
+	public void setControlRequestXPathExpressions(String[] controlRequestXPathExpressions) {
+		this.controlRequestXPathExpressions = controlRequestXPathExpressions;
 	}
 
 

@@ -16,7 +16,7 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  *
  */
-public class XPathExpressionEvaluator implements ExpressionEvaluator{
+public class XPathExpressionResolver implements ExpressionResolver{
 
 	private NamespaceContext namespaceContext;
 	/**
@@ -26,7 +26,7 @@ public class XPathExpressionEvaluator implements ExpressionEvaluator{
 	 * @param document
 	 * @return
 	 */
-	public String evaluateExpression(String expression, URI uri, Document document) {
+	public String resolveExpression(String expression, URI uri, Document document) {
 		XPathFactory factory = XPathFactory.newInstance();
 		factory.setXPathVariableResolver(new WsTestXPathVariableResolver(uri));
 		try {

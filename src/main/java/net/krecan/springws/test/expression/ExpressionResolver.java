@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  *
  */
-public interface ExpressionEvaluator {
+public interface ExpressionResolver {
 	/**
 	 * Evaluates an expression. 
 	 * @param expression
@@ -17,5 +17,5 @@ public interface ExpressionEvaluator {
 	 * @param document
 	 * @return
 	 */
-	public abstract String evaluateExpression(String expression, URI uri, Document document);
+	public abstract String resolveExpression(String expression, URI uri, Document document);
 }
