@@ -17,7 +17,7 @@ import org.springframework.ws.transport.WebServiceConnection;
 
 
 /**
- * Mock WS connection that instead of actually calling the WS calls all {@link RequestValidator}s specified andf then uses {@link ResponseGenerator}s
+ * Mock WS connection that instead of actually calling the WS calls all {@link RequestValidator}s specified and then uses {@link ResponseGenerator}s
  * to generate the response.
  * @author Lukas Krecan
  *

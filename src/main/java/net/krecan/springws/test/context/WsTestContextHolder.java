@@ -1,7 +1,7 @@
 package net.krecan.springws.test.context;
 
 /**
- * Holds {@link WsTestContext}.
+ * Holds {@link WsTestContext}. By default uses {@link ThreadLocal} to store the context.
  * @author Lukas Krecan
  *
  */

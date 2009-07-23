@@ -35,6 +35,10 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender {
 		return requestValidators;
 	}
 	
+	/**
+	 * Request validators to be called for every request.
+	 * @param requestValidator
+	 */
 	public void setRequestValidator(RequestValidator requestValidator) {
 		setRequestValidators(new RequestValidator[]{requestValidator});
 	}
@@ -43,6 +47,9 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender {
 		this.requestValidators = requestValidators;
 	}
 
+	/**
+	 * Response generators used to generate the response.
+	 */
 	public ResponseGenerator[] getResponseGenerators() {
 		return responseGenerators;
 	}
@@ -54,7 +61,4 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender {
 	public void setResponseGenerator(ResponseGenerator responseGenerator) {
 		setResponseGenerators(new ResponseGenerator[]{responseGenerator});
 	}
-	
-	
-
 }
