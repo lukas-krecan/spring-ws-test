@@ -20,6 +20,12 @@
 			https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
 		</url>
 	</scm>
+	
+	<issueManagement>
+    	<system>JIRA</system>
+    	<url>http://mvnindex.org/jira/browse/SWST</url>
+  	</issueManagement>
+	
 
 
 	<distributionManagement>
