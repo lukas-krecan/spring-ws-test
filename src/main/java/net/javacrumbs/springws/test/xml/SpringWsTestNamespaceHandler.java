@@ -5,7 +5,8 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class SpringWsTestNamespaceHandler extends NamespaceHandlerSupport {
 
 	public void init() {
-		registerBeanDefinitionParser("mock-message-sender", new MockMessageSenderBeanDefinitionParser());        
+		registerBeanDefinitionParser("mock-message-sender", new MockWebServiceMessageSenderBeanDefinitionParser());        
+		registerBeanDefinitionParser("namespaces", new MockWebServiceMessageSenderBeanDefinitionParser());        
 	}
 
 }

@@ -8,5 +8,20 @@
 		http://net.javacrumbs/schema/spring-ws-test http://net.javacrumbs/schema/spring-ws-test.xsd">
 
 
-	<swst:mock-message-sender id="mock-sender"/>
+	<swst:mock-message-sender id="mock-sender">
+		<swst:namespaces>
+			soapenv=http://schemas.xmlsoap.org/soap/envelope/
+			ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
+		</swst:namespaces>
+		<swst:response-xpaths>
+			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')
+			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')
+		</swst:response-xpaths>
+		<swst:control-request-xpaths>
+			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')
+		</swst:control-request-xpaths>
+		<swst:request-validation-schemas>
+			xml/schema.xsd
+		</swst:request-validation-schemas>
+	</swst:mock-message-sender>
 </beans>

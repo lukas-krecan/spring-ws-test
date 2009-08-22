@@ -4,7 +4,7 @@
     xmlns:beans="http://www.springframework.org/schema/beans"
     targetNamespace="http://net.javacrumbs/schema/spring-ws-test"
     elementFormDefault="qualified"
-    attributeFormDefault="unqualified">
+    attributeFormDefault="unqualified" xmlns:Q1="http://net.javacrumbs/schema/spring-ws-test">
 
    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
 
@@ -14,13 +14,15 @@
       		<xsd:extension base="beans:identifiedType">
       			<xsd:sequence>
       				<xsd:element name="namespaces" type="xsd:string" minOccurs="0"/>
-      				<xsd:element name="response-xpaths" type="xsd:string" minOccurs="0"/>
-      				<xsd:element name="request-validation-schemas" type="xsd:string" minOccurs="0"/>
+      				<xsd:element name="response-xpaths"	minOccurs="0" type="xsd:string"/>
       				<xsd:element name="control-request-xpaths" type="xsd:string" minOccurs="0"/>
+      				<xsd:element name="request-validation-schemas" type="xsd:string" minOccurs="0"/>
       			</xsd:sequence>
       		</xsd:extension>
       	</xsd:complexContent>
       </xsd:complexType>
    </xsd:element>
+
+
 
 </xsd:schema>
