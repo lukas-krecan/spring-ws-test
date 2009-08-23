@@ -8,6 +8,7 @@ public class SpringWsTestNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionParser("mock-message-sender", new MockWebServiceMessageSenderBeanDefinitionParser());        
 		registerBeanDefinitionParser("response-generator", new DefaultResponseGeneratorBeanDefinitionParser());        
 		registerBeanDefinitionParser("compare-request-validator", new XmlCompareRequestValidatorBeanDefinitionParser());        
+		registerBeanDefinitionParser("schema-validator", new SchemaRequestValidatorBeanDefinitionParser());        
 	}
 
 }
