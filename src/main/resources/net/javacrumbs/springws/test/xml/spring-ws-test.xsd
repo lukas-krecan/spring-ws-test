@@ -10,16 +10,27 @@
 
    <xsd:element name="mock-message-sender">
       <xsd:complexType>
-      	<xsd:complexContent>
-      		<xsd:extension base="beans:identifiedType">
-      			<xsd:sequence>
-      				<xsd:element name="namespaces" type="xsd:string" minOccurs="0"/>
-      				<xsd:element name="response-xpaths"	minOccurs="0" type="xsd:string"/>
-      				<xsd:element name="control-request-xpaths" type="xsd:string" minOccurs="0"/>
-      				<xsd:element name="request-validation-schemas" type="xsd:string" minOccurs="0"/>
-      			</xsd:sequence>
-      		</xsd:extension>
-      	</xsd:complexContent>
+   		<xsd:attribute name="id" type="xsd:ID"/>
+      </xsd:complexType>
+   </xsd:element>
+   
+   <xsd:element name="response-generator">
+      <xsd:complexType>
+  			<xsd:sequence>
+  				<xsd:element name="namespaces" type="xsd:string" minOccurs="0"/>
+  				<xsd:element name="xpaths"	minOccurs="0" type="xsd:string"/>
+  			</xsd:sequence>
+  			<xsd:attribute name="id" type="xsd:ID"/>
+      </xsd:complexType>
+   </xsd:element>
+   
+   <xsd:element name="compare-request-validator">
+      <xsd:complexType>
+  			<xsd:sequence>
+  				<xsd:element name="namespaces" type="xsd:string" minOccurs="0"/>
+  				<xsd:element name="xpaths"	minOccurs="0" type="xsd:string"/>
+  			</xsd:sequence>
+  			<xsd:attribute name="id" type="xsd:ID"/>
       </xsd:complexType>
    </xsd:element>
 

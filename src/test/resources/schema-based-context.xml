@@ -7,21 +7,43 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 		http://net.javacrumbs/schema/spring-ws-test http://net.javacrumbs/schema/spring-ws-test.xsd">
 
+	<context:annotation-config/>
 
-	<swst:mock-message-sender id="mock-sender">
+	<swst:mock-message-sender id="mock-sender"/>
+	
+	<swst:response-generator>
 		<swst:namespaces>
 			soapenv=http://schemas.xmlsoap.org/soap/envelope/
 			ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
 		</swst:namespaces>
-		<swst:response-xpaths>
+		<swst:xpaths>
 			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')
 			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')
-		</swst:response-xpaths>
-		<swst:control-request-xpaths>
+		</swst:xpaths>
+	</swst:response-generator>
+	
+	<swst:compare-request-validator>
+		<swst:namespaces>
+			soapenv=http://schemas.xmlsoap.org/soap/envelope/
+			ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
+		</swst:namespaces>
+		<swst:xpaths>
 			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')
-		</swst:control-request-xpaths>
-		<swst:request-validation-schemas>
-			xml/schema.xsd
-		</swst:request-validation-schemas>
-	</swst:mock-message-sender>
+		</swst:xpaths>
+	</swst:compare-request-validator>
+
+<!--	<swst:namespaces>-->
+<!--			soapenv=http://schemas.xmlsoap.org/soap/envelope/-->
+<!--			ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages-->
+<!--		</swst:namespaces>-->
+<!--		<swst:response-xpaths>-->
+<!--			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')-->
+<!--			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')-->
+<!--		</swst:response-xpaths>-->
+<!--		<swst:control-request-xpaths>-->
+<!--			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')-->
+<!--		</swst:control-request-xpaths>-->
+<!--		<swst:request-validation-schemas>-->
+<!--			xml/schema.xsd-->
+<!--		</swst:request-validation-schemas>-->
 </beans>

@@ -2,10 +2,13 @@ package net.krecan.springws.test;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 
 import net.krecan.springws.test.generator.ResponseGenerator;
 import net.krecan.springws.test.validator.RequestValidator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.transport.WebServiceConnection;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
@@ -16,9 +19,9 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  */
 public class MockWebServiceMessageSender implements WebServiceMessageSender {
 	
-	private RequestValidator[] requestValidators;
+	private Collection<RequestValidator> requestValidators;
 		
-	private ResponseGenerator[] responseGenerators;
+	private Collection<ResponseGenerator> responseGenerators;
 	
 	public WebServiceConnection createConnection(URI uri) throws IOException {
 		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
@@ -31,34 +34,37 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender {
 		return true;
 	}
 
-	public RequestValidator[] getRequestValidators() {
+	public Collection<RequestValidator> getRequestValidators() {
 		return requestValidators;
 	}
 	
+	
+	public void setRequestValidator(RequestValidator requestValidator) {
+		setRequestValidators(Collections.singleton(requestValidator));
+	}
+
 	/**
 	 * Request validators to be called for every request.
 	 * @param requestValidator
 	 */
-	public void setRequestValidator(RequestValidator requestValidator) {
-		setRequestValidators(new RequestValidator[]{requestValidator});
-	}
-
-	public void setRequestValidators(RequestValidator[] requestValidators) {
+	@Autowired(required=false)
+	public void setRequestValidators(Collection<RequestValidator> requestValidators) {
 		this.requestValidators = requestValidators;
 	}
 
 	/**
 	 * Response generators used to generate the response.
 	 */
-	public ResponseGenerator[] getResponseGenerators() {
+	public Collection<ResponseGenerator> getResponseGenerators() {
 		return responseGenerators;
 	}
 
-	public void setResponseGenerators(ResponseGenerator[] responseGenerators) {
+	@Autowired(required=false)
+	public void setResponseGenerators(Collection<ResponseGenerator> responseGenerators) {
 		this.responseGenerators = responseGenerators;
 	}
 	
 	public void setResponseGenerator(ResponseGenerator responseGenerator) {
-		setResponseGenerators(new ResponseGenerator[]{responseGenerator});
+		setResponseGenerators(Collections.singleton(responseGenerator));
 	}
 }

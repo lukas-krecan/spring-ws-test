@@ -3,6 +3,7 @@ package net.krecan.springws.test;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 import net.krecan.springws.test.generator.ResponseGenerator;
 import net.krecan.springws.test.util.DefaultXmlUtil;
@@ -28,9 +29,9 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	private WebServiceMessage request;
 	
-	private RequestValidator[] requestValidators;
+	private Collection<RequestValidator> requestValidators;
 		
-	private ResponseGenerator[] responseGenerators;
+	private Collection<ResponseGenerator> responseGenerators;
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
@@ -120,34 +121,12 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		return false;
 	}
 
-	public RequestValidator[] getRequestValidators() {
-		return requestValidators;
-	}
-
-	/**
-	 * List of request validators to be used.
-	 * @param requestValidators
-	 */
-	public void setRequestValidators(RequestValidator[] requestValidators) {
-		this.requestValidators = requestValidators;
-	}
 
 	
 	public WebServiceMessage getRequest() {
 		return request;
 	}
 
-	public ResponseGenerator[] getResponseGenerators() {
-		return responseGenerators;
-	}
-
-	/**
-	 * List of request generators to be used.
-	 * @param responseGenerators
-	 */
-	public void setResponseGenerators(ResponseGenerator[] responseGenerators) {
-		this.responseGenerators = responseGenerators;
-	}
 
 	public XmlUtil getXmlUtil() {
 		return xmlUtil;
@@ -155,5 +134,21 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	public void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
+	}
+
+	public Collection<RequestValidator> getRequestValidators() {
+		return requestValidators;
+	}
+
+	public void setRequestValidators(Collection<RequestValidator> requestValidators) {
+		this.requestValidators = requestValidators;
+	}
+
+	public Collection<ResponseGenerator> getResponseGenerators() {
+		return responseGenerators;
+	}
+
+	public void setResponseGenerators(Collection<ResponseGenerator> responseGenerators) {
+		this.responseGenerators = responseGenerators;
 	}
 }

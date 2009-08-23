@@ -23,6 +23,7 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  * @author Lukas Krecan
  *
  */
+//TODO deleteme
 public class MockWebServiceMessageSenderFactory implements FactoryBean, InitializingBean {
 
 	private MockWebServiceMessageSender sender;
@@ -78,7 +79,7 @@ public class MockWebServiceMessageSenderFactory implements FactoryBean, Initiali
 			requestValidator.setControlResourceLookup(controlResourceLookup );
 			validators.add(requestValidator);
 		}
-		sender.setRequestValidators(validators.toArray(new RequestValidator[validators.size()]));
+		sender.setRequestValidators(validators);
 	}
 
 	public String[] getResponseXPathExpressions() {

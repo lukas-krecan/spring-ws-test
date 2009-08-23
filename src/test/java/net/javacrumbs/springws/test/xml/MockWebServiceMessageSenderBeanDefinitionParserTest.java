@@ -2,6 +2,9 @@ package net.javacrumbs.springws.test.xml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.Collection;
+
 import net.krecan.springws.test.MockWebServiceMessageSender;
 import net.krecan.springws.test.generator.ResponseGenerator;
 import net.krecan.springws.test.validator.RequestValidator;
@@ -21,12 +24,12 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:schema-based-context.xml");
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) context.getBean("mock-sender");
 		assertNotNull(sender);
-		ResponseGenerator[] responseGenerators = sender.getResponseGenerators();
+		Collection<ResponseGenerator> responseGenerators = sender.getResponseGenerators();
 		assertNotNull(responseGenerators);
-		assertEquals(1, responseGenerators.length);
+		assertEquals(1, responseGenerators.size());
 
-		RequestValidator[] requestValidators = sender.getRequestValidators();
+		Collection<RequestValidator> requestValidators = sender.getRequestValidators();
 		assertNotNull(requestValidators);
-		assertEquals(2, requestValidators.length);
+		assertEquals(2, requestValidators.size());
 	}
 }

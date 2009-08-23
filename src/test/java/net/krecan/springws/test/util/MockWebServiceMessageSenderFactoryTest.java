@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,9 +44,9 @@ public class MockWebServiceMessageSenderFactoryTest extends AbstractMessageTest{
 		
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) factory.getObject();
 		assertNotNull(sender);
-		ResponseGenerator[] generators = sender.getResponseGenerators();
-		assertEquals(1, generators.length);
-		DefaultResourceLookup resourceLookup = (DefaultResourceLookup)((DefaultResponseGenerator)generators[0]).getResourceLookup();
+		Collection<ResponseGenerator> generators = sender.getResponseGenerators();
+		assertEquals(1, generators.size());
+		DefaultResourceLookup resourceLookup = (DefaultResourceLookup)((DefaultResponseGenerator)generators.iterator().next()).getResourceLookup();
 		assertNotNull(resourceLookup);
 		assertArrayEquals(responseXPathExpressions, resourceLookup.getResourceExpressions());
 		ExpressionResolver expressionResolver = resourceLookup.getExpressionResolver();
@@ -77,16 +78,16 @@ public class MockWebServiceMessageSenderFactoryTest extends AbstractMessageTest{
 		
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) factory.getObject();
 		assertNotNull(sender);
-		ResponseGenerator[] generators = sender.getResponseGenerators();
-		assertEquals(1, generators.length);
-		DefaultResourceLookup resourceLookup = (DefaultResourceLookup)((DefaultResponseGenerator)generators[0]).getResourceLookup();
+		Collection<ResponseGenerator> generators = sender.getResponseGenerators();
+		assertEquals(1, generators.size());
+		DefaultResourceLookup resourceLookup = (DefaultResourceLookup)((DefaultResponseGenerator)generators.iterator().next()).getResourceLookup();
 		assertNotNull(resourceLookup);
 		assertArrayEquals(responseXPathExpressions, resourceLookup.getResourceExpressions());
 		ExpressionResolver expressionResolver = resourceLookup.getExpressionResolver();
 		assertNotNull(expressionResolver);
 		assertNotNull(((XPathExpressionResolver)expressionResolver).getNamespaceContext());
 		
-		assertEquals(1,sender.getRequestValidators().length);
+		assertEquals(1,sender.getRequestValidators().size());
 		
 		WebServiceConnection connection = sender.createConnection(null);
 		connection.send(createMessage("xml/invalid-message.xml"));
@@ -118,16 +119,16 @@ public class MockWebServiceMessageSenderFactoryTest extends AbstractMessageTest{
 		
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) factory.getObject();
 		assertNotNull(sender);
-		ResponseGenerator[] generators = sender.getResponseGenerators();
-		assertEquals(1, generators.length);
-		DefaultResourceLookup resourceLookup = (DefaultResourceLookup)((DefaultResponseGenerator)generators[0]).getResourceLookup();
+		Collection<ResponseGenerator> generators = sender.getResponseGenerators();
+		assertEquals(1, generators.size());
+		DefaultResourceLookup resourceLookup = (DefaultResourceLookup)((DefaultResponseGenerator)generators.iterator().next()).getResourceLookup();
 		assertNotNull(resourceLookup);
 		assertArrayEquals(responseXPathExpressions, resourceLookup.getResourceExpressions());
 		ExpressionResolver expressionResolver = resourceLookup.getExpressionResolver();
 		assertNotNull(expressionResolver);
 		assertNotNull(((XPathExpressionResolver)expressionResolver).getNamespaceContext());
 		
-		assertEquals(2,sender.getRequestValidators().length);
+		assertEquals(2,sender.getRequestValidators().size());
 		
 		WebServiceConnection connection = sender.createConnection(null);
 		connection.send(createMessage("xml/valid-message.xml"));
