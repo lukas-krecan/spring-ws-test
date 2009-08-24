@@ -16,12 +16,25 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
 public class MockWebServiceMessageSenderBeanDefinitionParserTest {
-	@Autowired
 	
 	@Test
-	public void testParse()
+	public void testSchemaBased()
 	{
-		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:schema-based-context.xml");
+		configurationTest("classpath:context-schema-based.xml");
+	}
+	@Test
+	public void testSchemaBasedAutowired()
+	{
+		configurationTest("classpath:context-schema-based-autowired.xml");
+	}
+	@Test
+	public void testFactoryBased()
+	{
+		configurationTest("classpath:context-factory-based.xml");
+	}
+
+	private void configurationTest(String contextPath) {
+		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) context.getBean("mock-sender");
 		assertNotNull(sender);
 		Collection<ResponseGenerator> responseGenerators = sender.getResponseGenerators();

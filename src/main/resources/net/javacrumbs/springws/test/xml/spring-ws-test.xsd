@@ -8,11 +8,6 @@
 
    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
 
-   <xsd:element name="mock-message-sender">
-      <xsd:complexType>
-   		<xsd:attribute name="id" type="xsd:ID"/>
-      </xsd:complexType>
-   </xsd:element>
    
    <xsd:element name="response-generator">
       <xsd:complexType>

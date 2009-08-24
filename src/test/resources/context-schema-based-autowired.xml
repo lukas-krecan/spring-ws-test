@@ -9,7 +9,7 @@
 
 	<context:annotation-config/>
 
-	<swst:mock-message-sender id="mock-sender"/>
+	<bean id="mock-sender" class="net.krecan.springws.test.MockWebServiceMessageSender"/>
 	
 	<swst:response-generator>
 		<swst:namespaces>
