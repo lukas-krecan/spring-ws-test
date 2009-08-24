@@ -12,7 +12,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * @author Lukas Krecan
  *
  */
-public class XmlCompareRequestValidatorFactroyBean extends AbstractFactoryBean {
+public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
 
 	private Map<String, String> namespaceMap;
 	

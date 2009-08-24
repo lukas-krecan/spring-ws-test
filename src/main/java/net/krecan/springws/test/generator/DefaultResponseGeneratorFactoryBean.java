@@ -8,11 +8,29 @@ import net.krecan.springws.test.lookup.DefaultResourceLookup;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
- * Simplifies creation of {@link DefaultResponseGenerator}.
+ * Simplifies creation of {@link DefaultResponseGenerator}. Could be used like this
+ *  <code><pre>
+ * &lt;bean class="net.krecan.springws.test.generator.DefaultResponseGeneratorFactoryBean"&gt;
+ *	&lt;property name="namespaceMap"&gt;
+ *		&lt;map&gt;
+ *			&lt;entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/&gt;
+ *			&lt;entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/&gt;
+ *		&lt;/map&gt;
+ *	&lt;/property&gt;
+ *	&lt;property name="XPathExpressions"&gt;
+ *		&lt;list&gt;
+ *			&lt;value&gt;concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')&lt;/value&gt;
+ *			&lt;value&gt;concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')&lt;/value&gt;
+ *		&lt;/list&gt;
+ *	&lt;/property&gt;		
+ *&lt;/bean&gt;
+ *	</pre>	
+ * </code>
+ * 	
  * @author Lukas Krecan
  *
  */
-public class DefaultResponseGeneratorFactroyBean extends AbstractFactoryBean {
+public class DefaultResponseGeneratorFactoryBean extends AbstractFactoryBean {
 
 	private Map<String, String> namespaceMap;
 	

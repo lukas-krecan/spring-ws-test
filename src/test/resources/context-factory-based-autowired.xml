@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:swst="http://net.javacrumbs/schema/spring-ws-test"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://net.javacrumbs/schema/spring-ws-test http://net.javacrumbs/schema/spring-ws-test.xsd">
+
+
+	<bean id="mock-sender" class="net.krecan.springws.test.MockWebServiceMessageSender"/>
+
+	<bean class="net.krecan.springws.test.generator.DefaultResponseGeneratorFactoryBean">
+		<property name="namespaceMap">
+			<map>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+			</map>
+		</property>
+		<property name="XPathExpressions">
+			<list>
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+			</list>
+		</property>		
+	</bean>			
+
+	<bean class="net.krecan.springws.test.validator.XmlCompareRequestValidatorFactoryBean">
+		<property name="namespaceMap">
+			<map>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+			</map>
+		</property>
+		<property name="XPathExpressions">
+			<list>
+				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
+			</list>
+		</property>		
+	</bean>			
+	
+	<bean class="net.krecan.springws.test.validator.SchemaRequestValidator">
+		<property name="schema" value="xml/schema.xsd"/>
+	</bean>
+</beans>

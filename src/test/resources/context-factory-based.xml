@@ -10,7 +10,7 @@
 
 	<bean id="mock-sender" class="net.krecan.springws.test.MockWebServiceMessageSender">
 		<property name="responseGenerator">
-			<bean class="net.krecan.springws.test.generator.DefaultResponseGeneratorFactroyBean">
+			<bean class="net.krecan.springws.test.generator.DefaultResponseGeneratorFactoryBean">
 				<property name="namespaceMap">
 					<map>
 						<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
@@ -28,7 +28,7 @@
 		
 		<property name="requestValidators">
 			<list>
-				<bean class="net.krecan.springws.test.validator.XmlCompareRequestValidatorFactroyBean">
+				<bean class="net.krecan.springws.test.validator.XmlCompareRequestValidatorFactoryBean">
 					<property name="namespaceMap">
 						<map>
 							<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
