@@ -36,7 +36,7 @@ Tutorial
 
 * Simple mock response
 
-	In other configuration file we can define the actual <<<messageSender>>> like <<<HttpUrlMessageSender>>> that does the actual HTTP call.  For test we can define
+	In other configuration file we can define the <<<messageSender>>> like <<<HttpUrlMessageSender>>> that does the actual HTTP call.  For test we can define
 	mock message sender that generates mock responses instead of actually sending the request over HTTP. We can for example set up a message sender like this.
 	
 ---

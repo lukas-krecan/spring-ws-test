@@ -2,13 +2,17 @@ package net.krecan.springws.test;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 import net.krecan.springws.test.generator.ResponseGenerator;
 import net.krecan.springws.test.validator.RequestValidator;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.ws.transport.WebServiceConnection;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
@@ -17,11 +21,17 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  * @author Lukas Krecan
  *
  */
-public class MockWebServiceMessageSender implements WebServiceMessageSender {
+public class MockWebServiceMessageSender implements WebServiceMessageSender, InitializingBean, ApplicationContextAware {
 	
-	private Collection<RequestValidator> requestValidators;
+	private Collection<RequestValidator> requestValidators = new ArrayList<RequestValidator>();
 		
-	private Collection<ResponseGenerator> responseGenerators;
+	private Collection<ResponseGenerator> responseGenerators = new ArrayList<ResponseGenerator>();
+	
+	private boolean autowireRequestValidators = true;
+
+	private boolean autowireResponseGenerators = true;
+	
+	private ApplicationContext applicationContext;
 	
 	public WebServiceConnection createConnection(URI uri) throws IOException {
 		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
@@ -47,7 +57,6 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender {
 	 * Request validators to be called for every request.
 	 * @param requestValidator
 	 */
-	@Autowired(required=false)
 	public void setRequestValidators(Collection<RequestValidator> requestValidators) {
 		this.requestValidators = requestValidators;
 	}
@@ -59,12 +68,52 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender {
 		return responseGenerators;
 	}
 
-	@Autowired(required=false)
 	public void setResponseGenerators(Collection<ResponseGenerator> responseGenerators) {
 		this.responseGenerators = responseGenerators;
 	}
 	
 	public void setResponseGenerator(ResponseGenerator responseGenerator) {
 		setResponseGenerators(Collections.singleton(responseGenerator));
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		autowireResponseGenerators();
+		autowireRequestValidators();
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	private void autowireResponseGenerators() {
+		if (isAutowireResponseGenerators())
+		{
+			responseGenerators.addAll(applicationContext.getBeansOfType(ResponseGenerator.class).values());
+		}
+	}
+	@SuppressWarnings("unchecked")
+	private void autowireRequestValidators() {
+		if (isAutowireRequestValidators())
+		{
+			requestValidators.addAll(applicationContext.getBeansOfType(RequestValidator.class).values());
+		}
+	}
+
+	public boolean isAutowireResponseGenerators() {
+		return autowireResponseGenerators;
+	}
+
+	public void setAutowireResponseGenerators(boolean autowireResponseGenerators) {
+		this.autowireResponseGenerators = autowireResponseGenerators;
+	}
+
+	public boolean isAutowireRequestValidators() {
+		return autowireRequestValidators;
+	}
+
+	public void setAutowireRequestValidators(boolean autowireRequestValidators) {
+		this.autowireRequestValidators = autowireRequestValidators;
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;		
 	}
 }
