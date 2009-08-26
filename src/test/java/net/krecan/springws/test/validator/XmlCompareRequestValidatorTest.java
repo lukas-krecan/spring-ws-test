@@ -10,10 +10,10 @@ import org.w3c.dom.Document;
 
 
 
-public class XmlCompareValidatorTest extends AbstractValidatorTest {
+public class XmlCompareRequestValidatorTest extends AbstractValidatorTest {
 	private AbstractCompareRequestValidator validator;
 	
-	public XmlCompareValidatorTest() throws Exception
+	public XmlCompareRequestValidatorTest()
 	{
 		validator = new XmlCompareRequestValidator();
 	}

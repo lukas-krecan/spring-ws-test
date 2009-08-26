@@ -1,9 +1,11 @@
 package net.krecan.springws.test.generator;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import net.krecan.springws.test.lookup.ResourceLookup;
+import net.krecan.springws.test.util.TransportInputStreamWrapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,10 +30,21 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 			logger.debug("Resource not found, returning null.");
 			return null;
 		} else {
-			WebServiceMessage message = messageFactory.createWebServiceMessage(resultResource.getInputStream());
+			WebServiceMessage message = messageFactory.createWebServiceMessage(createInputStream(resultResource));
 			postprocessMessage(message, uri, messageFactory, request);
 			return message;
 		}
+	}
+
+	/**
+	 * Creates input stream from the resource.
+	 * @param resultResource
+	 * @return
+	 * @throws IOException
+	 */
+	protected InputStream createInputStream(final Resource resultResource) throws IOException {
+		return new TransportInputStreamWrapper(resultResource);
+		
 	}
 
 	protected void postprocessMessage(WebServiceMessage message, URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) {
