@@ -30,6 +30,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 			logger.debug("Resource not found, returning null.");
 			return null;
 		} else {
+			logger.debug("Createing response from "+resultResource);
 			WebServiceMessage message = messageFactory.createWebServiceMessage(createInputStream(resultResource));
 			postprocessMessage(message, uri, messageFactory, request);
 			return message;

@@ -37,6 +37,7 @@ public abstract class AbstractMessageTest {
 	protected void initializeAxiomMessageFactory() {
 		try {
 			AxiomSoapMessageFactory newMessageFactory = new AxiomSoapMessageFactory();
+			newMessageFactory.setPayloadCaching(false);
 			newMessageFactory.afterPropertiesSet();
 			messageFactory = newMessageFactory;
 		} catch (Exception e) {

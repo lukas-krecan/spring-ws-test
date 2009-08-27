@@ -8,7 +8,10 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.xml.namespace.SimpleNamespaceContext;
+import org.springframework.xml.xpath.XPathException;
 import org.w3c.dom.Document;
 
 /**
@@ -17,6 +20,8 @@ import org.w3c.dom.Document;
  *
  */
 public class XPathExpressionResolver implements ExpressionResolver{
+	
+	private final Log logger = LogFactory.getLog(getClass());
 
 	private NamespaceContext namespaceContext;
 	/**
@@ -32,9 +37,11 @@ public class XPathExpressionResolver implements ExpressionResolver{
 		try {
 			XPath xpath = factory.newXPath();
 			xpath.setNamespaceContext(getNamespaceContext());
-			return xpath.evaluate(expression, document);
+			String result = xpath.evaluate(expression, document);
+			logger.debug("Expression "+expression+" resolved to "+result);
+			return result;
 		} catch (XPathExpressionException e) {
-			throw new RuntimeException("Unexpected exception",e);
+			throw new XPathException("Could not evaluate XPath expression:" + e.getMessage(), e);
 		}
 	}
 	public void setNamespaceMap(Map<String, String> namespaceMap) {
