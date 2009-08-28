@@ -19,32 +19,32 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 	@Test
 	public void testSchemaBased()
 	{
-		configurationTest("classpath:context-schema-based.xml");
+		configurationTest("classpath:context/context-schema-based.xml");
 	}
 	@Test
 	public void testSchemaBasedAutowired()
 	{
-		configurationTest("classpath:context-schema-based-autowired.xml");
+		configurationTest("classpath:context/context-schema-based-autowired.xml");
 	}
 	@Test
 	public void testSchemaBasedAutowiredPlaceholder()
 	{
-		configurationTest("classpath:context-schema-based-autowired-placeholder.xml");
+		configurationTest("classpath:context/context-schema-based-autowired-placeholder.xml");
 	}
 	@Test
 	public void testFactoryBased()
 	{
-		configurationTest("classpath:context-factory-based.xml");
+		configurationTest("classpath:context/context-factory-based.xml");
 	}
 	@Test
 	public void testFactoryBasedAutowired()
 	{
-		configurationTest("classpath:context-factory-based-autowired.xml");
+		configurationTest("classpath:context/context-factory-based-autowired.xml");
 	}
 	@Test
 	public void testContextComplex()
 	{
-		configurationTest("classpath:context-complex.xml");
+		configurationTest("classpath:context/context-complex.xml");
 	}
 
 	private void configurationTest(String contextPath) {
