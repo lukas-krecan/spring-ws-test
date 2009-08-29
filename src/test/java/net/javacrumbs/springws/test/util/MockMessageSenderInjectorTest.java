@@ -3,6 +3,7 @@ package net.javacrumbs.springws.test.util;
 import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -20,5 +21,10 @@ public class MockMessageSenderInjectorTest {
 		assertSame(mockSender, wsTemplate.getMessageSenders()[0]);
 	
 		
+	}
+	@Test(expected=BeanCreationException.class)
+	public void testNoTemplate()
+	{
+		new ClassPathXmlApplicationContext("inject/inject-no-template.xml");
 	}
 }
