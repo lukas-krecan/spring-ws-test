@@ -26,7 +26,7 @@ public abstract class AbstractCompareRequestValidator {
 		super();
 	}
 
-	public void validate(URI uri, WebServiceMessage message) throws IOException {
+	public void validateRequest(URI uri, WebServiceMessage message) throws IOException {
 		Document messageDocument = loadDocument(message);
 	
 		Resource controlResource = controlResourceLookup.lookupResource(uri, message);

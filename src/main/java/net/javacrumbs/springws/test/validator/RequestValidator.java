@@ -20,5 +20,5 @@ public interface RequestValidator {
 	 * @param message
 	 * @throws Exception 
 	 */
-	public void validate(URI uri, WebServiceMessage message) throws IOException, WsTestException;
+	public void validateRequest(URI uri, WebServiceMessage message) throws IOException, WsTestException;
 }

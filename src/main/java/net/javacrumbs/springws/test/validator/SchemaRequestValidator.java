@@ -39,7 +39,7 @@ public class SchemaRequestValidator implements RequestValidator, InitializingBea
     protected final Log logger = LogFactory.getLog(getClass());
     
     
-	public void validate(URI uri, WebServiceMessage message) throws IOException{
+	public void validateRequest(URI uri, WebServiceMessage message) throws IOException{
 		 Source requestSource = message.getPayloadSource();
          if (requestSource != null) {
              SAXParseException[] errors = validator.validate(requestSource);

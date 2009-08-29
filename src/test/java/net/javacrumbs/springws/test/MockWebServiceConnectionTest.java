@@ -81,7 +81,7 @@ public class MockWebServiceConnectionTest {
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
 		RequestValidator requestValidator = createMock(RequestValidator.class);
-		requestValidator.validate(uri, request);
+		requestValidator.validateRequest(uri, request);
 		connection.setRequestValidators(Collections.singleton(requestValidator));
 		
 		ResponseGenerator responseGenerator = createMock(ResponseGenerator.class);
@@ -106,7 +106,7 @@ public class MockWebServiceConnectionTest {
 		WebServiceMessage response = createMock(WebServiceMessage.class);
 		
 		RequestValidator requestValidator = createMock(RequestValidator.class);
-		requestValidator.validate(uri, request);
+		requestValidator.validateRequest(uri, request);
 		connection.setRequestValidators(Collections.singleton(requestValidator));
 		
 		ResponseGenerator responseGenerator1 = createMock(ResponseGenerator.class);
@@ -132,10 +132,10 @@ public class MockWebServiceConnectionTest {
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
 		RequestValidator requestValidator1 = createMock(RequestValidator.class);
-		requestValidator1.validate(uri, request);
+		requestValidator1.validateRequest(uri, request);
 		
 		RequestValidator requestValidator2 = createMock(RequestValidator.class);
-		requestValidator2.validate(uri, request);
+		requestValidator2.validateRequest(uri, request);
 		expectLastCall().andThrow(new WsTestException("Do not panick, this is just a test"));
 		
 		connection.setRequestValidators(Arrays.asList(requestValidator1, requestValidator2));
@@ -161,7 +161,7 @@ public class MockWebServiceConnectionTest {
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
 		RequestValidator requestValidator1 = createMock(RequestValidator.class);
-		requestValidator1.validate(uri, request);
+		requestValidator1.validateRequest(uri, request);
 		expectLastCall().andThrow(new WsTestException("Do not panick, this is just a test"));
 		
 		RequestValidator requestValidator2 = createMock(RequestValidator.class);

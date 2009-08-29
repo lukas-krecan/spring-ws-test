@@ -62,7 +62,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		if (requestValidators!=null)
 		{
 			for(RequestValidator requestValidator: requestValidators)
-			requestValidator.validate(uri, message);
+			requestValidator.validateRequest(uri, message);
 		}
 	}
 	/**

@@ -22,7 +22,7 @@ public class SchemaValidatorTest extends AbstractValidatorTest {
 	public void testValid() throws Exception
 	{
 		WebServiceMessage message = getValidMessage();
-		validator.validate(null, message );
+		validator.validateRequest(null, message );
 	}
 
 	@Test
@@ -31,7 +31,7 @@ public class SchemaValidatorTest extends AbstractValidatorTest {
 		WebServiceMessage message = getInvalidMessage();
 		try
 		{
-			validator.validate(null, message);
+			validator.validateRequest(null, message);
 			fail("Exception expected");
 		}
 		catch(WsTestException e)
