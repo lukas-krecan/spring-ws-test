@@ -14,7 +14,7 @@
 	</bean>
 	
 	<!-- Can be defined in different file -->
-	<bean id="messageSender" class="net.krecan.springws.test.MockWebServiceMessageSender">
+	<bean id="messageSender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender">
 	</bean>
 
 	<bean id="marshaller" class="org.springframework.oxm.xstream.XStreamMarshaller"/>

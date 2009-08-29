@@ -1,6 +1,6 @@
 package net.javacrumbs.springws.test.xml;
 
-import net.krecan.springws.test.validator.SchemaRequestValidator;
+import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;

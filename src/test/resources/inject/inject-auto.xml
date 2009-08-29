@@ -14,7 +14,7 @@
 		</property>
 	</bean>
 
-	<bean class="net.krecan.springws.test.util.MockMessageSenderInjector"/>
+	<bean class="net.javacrumbs.springws.test.util.MockMessageSenderInjector"/>
 
-	<bean id="mock-sender" class="net.krecan.springws.test.MockWebServiceMessageSender"/>
+	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender"/>
 </beans>

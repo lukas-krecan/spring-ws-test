@@ -8,9 +8,9 @@
 		http://net.javacrumbs/schema/spring-ws-test http://net.javacrumbs/schema/spring-ws-test.xsd">
 
 
-	<bean id="mock-sender" class="net.krecan.springws.test.MockWebServiceMessageSender"/>
+	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender"/>
 
-	<bean class="net.krecan.springws.test.generator.DefaultResponseGeneratorFactoryBean">
+	<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGeneratorFactoryBean">
 		<property name="namespaceMap">
 			<map>
 				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
@@ -25,7 +25,7 @@
 		</property>		
 	</bean>			
 
-	<bean class="net.krecan.springws.test.validator.XmlCompareRequestValidatorFactoryBean">
+	<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidatorFactoryBean">
 		<property name="namespaceMap">
 			<map>
 				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
@@ -39,7 +39,7 @@
 		</property>		
 	</bean>			
 	
-	<bean class="net.krecan.springws.test.validator.SchemaRequestValidator">
+	<bean class="net.javacrumbs.springws.test.validator.SchemaRequestValidator">
 		<property name="schema" value="xml/schema.xsd"/>
 	</bean>
 </beans>

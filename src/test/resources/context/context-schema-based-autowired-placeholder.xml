@@ -7,7 +7,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 		http://net.javacrumbs/schema/spring-ws-test http://net.javacrumbs/schema/spring-ws-test.xsd">
 
-	<bean id="mock-sender" class="net.krecan.springws.test.MockWebServiceMessageSender"/>
+	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender"/>
 	
 	<swst:response-generator>
 		<swst:namespaces>

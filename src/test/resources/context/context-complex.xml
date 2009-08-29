@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-	<bean id="xpathResolver" class="net.krecan.springws.test.expression.XPathExpressionResolver">
+	<bean id="xpathResolver" class="net.javacrumbs.springws.test.expression.XPathExpressionResolver">
 		<property name="namespaceMap">
 			<map>
 				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/" />
@@ -12,11 +12,11 @@
 		</property>	
 	</bean>
 	
-	<bean id="mock-sender" class="net.krecan.springws.test.MockWebServiceMessageSender">
+	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender">
 		<property name="responseGenerator">
-			<bean class="net.krecan.springws.test.generator.DefaultResponseGenerator">
+			<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
 				<property name="resourceLookup">
-					<bean class="net.krecan.springws.test.lookup.DefaultResourceLookup">
+					<bean class="net.javacrumbs.springws.test.lookup.DefaultResourceLookup">
 						<property name="resourceExpressions">
 							<list>
 								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
@@ -30,16 +30,16 @@
 		</property>
 		<property name="requestValidators">
 			<list>
-				<bean class="net.krecan.springws.test.validator.SchemaRequestValidator">
+				<bean class="net.javacrumbs.springws.test.validator.SchemaRequestValidator">
 					<property name="schemas">
 						<list>
 							<value>xml/schema.xsd</value>
 						</list>
 					</property>
 				</bean>			
-				<bean class="net.krecan.springws.test.validator.XmlCompareRequestValidator">
+				<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidator">
 					<property name="controlResourceLookup">
-						<bean class="net.krecan.springws.test.lookup.DefaultResourceLookup">
+						<bean class="net.javacrumbs.springws.test.lookup.DefaultResourceLookup">
 							<property name="resourceExpressions">
 								<list>
 									<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>

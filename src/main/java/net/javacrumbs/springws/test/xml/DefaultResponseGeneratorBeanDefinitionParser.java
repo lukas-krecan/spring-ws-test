@@ -1,7 +1,7 @@
 package net.javacrumbs.springws.test.xml;
 
 
-import net.krecan.springws.test.generator.DefaultResponseGeneratorFactoryBean;
+import net.javacrumbs.springws.test.generator.DefaultResponseGeneratorFactoryBean;
 
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;

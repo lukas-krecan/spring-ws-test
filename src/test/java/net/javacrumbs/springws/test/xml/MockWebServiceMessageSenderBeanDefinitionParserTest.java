@@ -5,9 +5,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collection;
 
-import net.krecan.springws.test.MockWebServiceMessageSender;
-import net.krecan.springws.test.generator.ResponseGenerator;
-import net.krecan.springws.test.validator.RequestValidator;
+import net.javacrumbs.springws.test.MockWebServiceMessageSender;
+import net.javacrumbs.springws.test.generator.ResponseGenerator;
+import net.javacrumbs.springws.test.validator.RequestValidator;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
