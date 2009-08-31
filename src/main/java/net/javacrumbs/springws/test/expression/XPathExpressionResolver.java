@@ -24,8 +24,10 @@ public class XPathExpressionResolver implements ExpressionResolver{
 	private final Log logger = LogFactory.getLog(getClass());
 
 	private NamespaceContext namespaceContext;
+
 	/**
 	 * Evaluates an expression.
+	 * 
 	 * @param expression
 	 * @param uri
 	 * @param document
@@ -38,12 +40,13 @@ public class XPathExpressionResolver implements ExpressionResolver{
 			XPath xpath = factory.newXPath();
 			xpath.setNamespaceContext(getNamespaceContext());
 			String result = xpath.evaluate(expression, document);
-			logger.debug("Expression "+expression+" resolved to "+result);
+			logger.debug("Expression " + expression + " resolved to " + result);
 			return result;
 		} catch (XPathExpressionException e) {
-			throw new XPathException("Could not evaluate XPath expression:" + e.getMessage(), e);
+			throw new XPathException("Could not evaluate XPath expression " + expression + ":" + e.getMessage(), e);
 		}
 	}
+
 	public void setNamespaceMap(Map<String, String> namespaceMap) {
 		SimpleNamespaceContext context = new SimpleNamespaceContext();
 		context.setBindings(namespaceMap);

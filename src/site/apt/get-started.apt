@@ -1,0 +1,109 @@
+Quick start
+
+
+* Configuration file 
+
+   You have to start with new Spring configuration file. Lets call it "dummy-message-sender.xml"
+
+---
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Creates mock message sender -->
+	<bean id="messageSender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender"/>
+	
+	<!-- Injects mock message sender into WebServiceTemplate -->
+	<bean class="net.javacrumbs.springws.test.util.MockMessageSenderInjector"/>
+	
+	<!-- Looks for responses on the disc based on the provided XPath -->
+	<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGeneratorFactoryBean">
+		<property name="namespaceMap">
+			<map>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+			</map>
+		</property>
+		<property name="XPathExpressions">
+			<list>
+				<value>concat(local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+			</list>
+		</property>		
+	</bean>
+</beans>			
+---
+
+	When this configuration will be loaded by Spring, MockWebServiceMessageSender will be created and automatically injected into 
+	the WebServiceTemplate. Default WebServiceMessageSender will be replaced by the mock.  
+	Please note that WebServiceTemplate is not defined here, you probably have it already defined in another configuration file.  "dummy-message-sender.xml" is used for test only.
+    
+    When you call WebServiceTemplate, the call is delegated to MockWebServiceMessageSender and DefaultResponseGenerator is used to generate
+    mock response. 
+
+    Let's say that following request is used
+    
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP-ENV:Header />
+	<SOAP-ENV:Body>
+		<ns3:GetFlightsRequest
+			xmlns:ns2="http://www.springframework.org/spring-ws/samples/airline/schemas/types"
+			xmlns:ns3="http://www.springframework.org/spring-ws/samples/airline/schemas/messages">
+			<ns3:from>PRG</ns3:from>
+			<ns3:to>CAIX</ns3:to>
+			<ns3:departureDate>${IGNORE}</ns3:departureDate>
+			<ns3:serviceClass>economy</ns3:serviceClass>
+		</ns3:GetFlightsRequest>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+---
+
+    XPath expression "concat(local-name(//soapenv:Body/*[1]),'/default-response.xml')" will be evaluated and the result of the 
+    expression evaluation will be used as resource name of the response. In our example it means that file "GetFlightsRequest/default-response.xml" will be returned
+    as response.
+    
+    Of course one mock response is usually not enough. Do not worry you can use more complicated XPath expressions. 
+    More sophisticated expressions are mentioned here. TODO add link
+    
+* Mock response
+
+    Then you have to create mock response(s). In our case, you have to create "GetFlightsRequest/default-response.xml" on your test classpath.
+    If you are using Maven, the best place is the "src/test/resources" directory.
+    
+* Test
+
+    When you have the configuration and mock response, you can start writing the test. Just load you WS client Spring configuration together with "dummy-message-sender.xml"
+    and write your test. For example:
+    
+---
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"classpath:spring/beans.xml","classpath:spring/dummy-message-sender.xml"})
+public class End2EndTest {
+
+	@Autowired
+	private MessageDispatcher messageDispatcher;
+	private SaajSoapMessageFactory messageFactory;
+	
+	public End2EndTest() throws Exception
+	{
+		messageFactory = new SaajSoapMessageFactory();
+		messageFactory.afterPropertiesSet();
+	}
+	
+	@Test
+	public void testCall() throws Exception
+	{
+		InputStream inputStream = new ClassPathResource("e2e/PRG-DUB-request.xml").getInputStream();
+		WebServiceMessage request = messageFactory.createWebServiceMessage(inputStream);
+		DefaultMessageContext context = new DefaultMessageContext(request, messageFactory );
+		messageDispatcher.receive(context);
+		assertNotNull(context.getResponse());
+	}
+} 
+---    
+    
+     
+
+       
+

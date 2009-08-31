@@ -1,0 +1,48 @@
+Reference
+
+* XPath evaluation
+
+  In this part we will describe possibilities of the XPath evaluation.
+
+  Let's imagine that service URL is "http://www.csa.cz" and that following request was used
+  
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP-ENV:Header />
+	<SOAP-ENV:Body>
+		<ns3:GetFlightsRequest
+			xmlns:ns2="http://www.springframework.org/spring-ws/samples/airline/schemas/types"
+			xmlns:ns3="http://www.springframework.org/spring-ws/samples/airline/schemas/messages">
+			<ns3:from>PRG</ns3:from>
+			<ns3:to>DUB</ns3:to>
+			<ns3:departureDate>2059-07-27</ns3:departureDate>
+			<ns3:serviceClass>economy</ns3:serviceClass>
+		</ns3:GetFlightsRequest>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+---
+
+   Also assume that WsTestContext was set like this
+
+---
+WsTestContextHolder.getTestContext().setAttribute("testName", "test136");
+--- 
+
+   Then following results will correspond to XPath expressions:
+   
+*--------------------------------------------------------------------------------------------------+--------------------------------------------------+
+| XPath expression                                                                                 | Result                                           |
+*--------------------------------------------------------------------------------------------------+--------------------------------------------------+
+| concat(local-name(//soapenv:Body/*[1]),'-response.xml')                                          | GetFlightsRequest-response.xml                   |
+*--------------------------------------------------------------------------------------------------+--------------------------------------------------+
+|concat(local-name(//soapenv:Body/*[1]),'/default-response.xml')                                   | GetFlightsRequest/default-response.xml           |
+*--------------------------------------------------------------------------------------------------+--------------------------------------------------+
+|concat(local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')                 | GetFlightsRequest/PRG-DUB-response.xml           |
+*--------------------------------------------------------------------------------------------------+--------------------------------------------------+
+|concat($uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml') | www.csa.cz/GetFlightsRequest/PRG-DUB-response.xml|
+*--------------------------------------------------------------------------------------------------+--------------------------------------------------+
+|concat($context.testName,'-response.xml')                                                         | test136-response.xml                             |
+*--------------------------------------------------------------------------------------------------+--------------------------------------------------+
+      
+       

@@ -21,6 +21,6 @@ public class WsTestXPathVariableResolverTest {
 		WsTestXPathVariableResolver resolver = new WsTestXPathVariableResolver(uri);
 		assertEquals(uri, resolver.resolveVariable(new QName("uri")));
 		assertEquals(uri.getHost(), resolver.resolveVariable(new QName("uri.host")));
-		assertEquals("aaa", resolver.resolveVariable(new QName("context[name]")));
+		assertEquals("aaa", resolver.resolveVariable(new QName("context.name")));
 	}
 }

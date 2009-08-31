@@ -24,7 +24,21 @@ public class WsTestXPathVariableResolver implements XPathVariableResolver {
 	}
 
 	public Object resolveVariable(QName variableName) {
-		return new BeanWrapperImpl(this).getPropertyValue(variableName.getLocalPart());
+		String property = variableName.getLocalPart();
+		property = normalizeContextVariable(property);
+		return new BeanWrapperImpl(this).getPropertyValue(property);
+	
+	}
+	/**
+	 * Converts context.property to context[property]
+	 * @param property
+	 * @return
+	 */
+	private String normalizeContextVariable(String property) {
+		if (property.startsWith("context.")) {
+			property = "context["+property.substring(8)+"]";
+		}
+		return property;
 	}
 
 	public URI getUri() {

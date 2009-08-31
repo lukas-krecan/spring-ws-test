@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP-ENV:Header />
+	<SOAP-ENV:Body>
+		<ns3:GetFlightsRequest
+			xmlns:ns2="http://www.springframework.org/spring-ws/samples/airline/schemas/types"
+			xmlns:ns3="http://www.springframework.org/spring-ws/samples/airline/schemas/messages">
+			<ns3:from>PRG</ns3:from>
+			<ns3:to>DUB</ns3:to>
+			<ns3:departureDate>2059-07-27</ns3:departureDate>
+			<ns3:serviceClass>economy</ns3:serviceClass>
+		</ns3:GetFlightsRequest>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
