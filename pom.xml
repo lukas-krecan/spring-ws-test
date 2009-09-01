@@ -31,7 +31,7 @@
 			<id>repository</id>
 			<name>Mvnindex file system</name>
 			<url>
-				scp://mvnindex.org:/var/www/vhosts/mvnindex.org/httpdocs/spring-ws-test/repository/
+				scp://mvnindex.org:/var/www/vhosts/mvnindex.org/httpdocs/spring-ws-test-files/
 			</url>
 		</repository>
 
