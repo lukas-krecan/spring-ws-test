@@ -46,9 +46,11 @@ public class SchemaRequestValidator implements RequestValidator, InitializingBea
              if (!ObjectUtils.isEmpty(errors)) {
                  handleRequestValidationErrors(message, errors);
              }
-             else if (logger.isDebugEnabled()) {
-                 logger.debug("Request message validated");
-             }
+             logger.debug("Request message validated");
+         }
+         else
+         {
+        	 logger.warn("Request source is null");
          }
 	}
 	
@@ -135,5 +137,9 @@ public class SchemaRequestValidator implements RequestValidator, InitializingBea
     public void setXsdSchemaCollection(XsdSchemaCollection schemaCollection) throws IOException {
         this.validator = schemaCollection.createValidator();
     }
+
+	XmlValidator getValidator() {
+		return validator;
+	}
 
 }

@@ -26,7 +26,7 @@ public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
 		XmlCompareRequestValidator responseGenerator = new XmlCompareRequestValidator();
 		DefaultResourceLookup reourceLookup = new DefaultResourceLookup();
 		reourceLookup.setExpressionResolver(expressionResolver);
-		reourceLookup.setResourceExpressions(xPathExpressions);
+		reourceLookup.setResourceExpressions(getXPathExpressions());
 		responseGenerator.setControlResourceLookup(reourceLookup);
 		return responseGenerator;
 	}

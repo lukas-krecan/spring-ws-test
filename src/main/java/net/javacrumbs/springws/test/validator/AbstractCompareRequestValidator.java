@@ -3,8 +3,6 @@ package net.javacrumbs.springws.test.validator;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.xml.transform.Source;
-
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
@@ -54,11 +52,7 @@ public abstract class AbstractCompareRequestValidator {
 	}
 
 	protected Document loadDocument(Resource resource) throws IOException {
-		return getXmlUtil().loadDocument(new ResourceSource(resource));
-	}
-
-	protected Document loadDocument(Source source) throws IOException {
-		return getXmlUtil().loadDocument(source);
+		return getXmlUtil().loadDocument(resource);
 	}
 
 	public ResourceLookup getControlResourceLookup() {
