@@ -18,7 +18,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 	
 		
 	@Test
-	public void testValidateRequest() throws IOException
+	public void testValidateRequest() throws Exception
 	{
 		WebServiceMessage message = getValidMessage();
 		final Document messageDoc = createMock(Document.class);
@@ -42,6 +42,8 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		};
 		validator.setXmlUtil(xmlUtil);
 		validator.setControlResourceLookup(resourceLookup);
+		assertSame(resourceLookup, validator.getControlResourceLookup());
+		validator.afterPropertiesSet();
 		
 		replay(xmlUtil, resourceLookup);
 		
@@ -50,7 +52,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		verify(xmlUtil, resourceLookup);
 	}
 	@Test
-	public void testEmptyControlDocument() throws IOException
+	public void testEmptyControlDocument() throws Exception
 	{
 		WebServiceMessage message = getValidMessage();
 		final Document messageDoc = createMock(Document.class);
@@ -70,6 +72,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		};
 		validator.setXmlUtil(xmlUtil);
 		validator.setControlResourceLookup(resourceLookup);
+		validator.afterPropertiesSet();
 		
 		replay(xmlUtil, resourceLookup);
 		

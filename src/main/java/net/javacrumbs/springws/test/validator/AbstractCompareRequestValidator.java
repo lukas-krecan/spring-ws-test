@@ -9,12 +9,13 @@ import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 import org.springframework.ws.WebServiceMessage;
-import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
-public abstract class AbstractCompareRequestValidator {
+public abstract class AbstractCompareRequestValidator implements InitializingBean{
 
 	private ResourceLookup controlResourceLookup;
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -46,6 +47,10 @@ public abstract class AbstractCompareRequestValidator {
 	 * @param messageDocument
 	 */
 	protected abstract void compareDocuments(Document controlDocument, Document messageDocument);
+	
+	public void afterPropertiesSet() throws Exception {
+		Assert.notNull(controlResourceLookup, "ControlResourceLookup has to be set");		
+	}
 
 	protected Document loadDocument(WebServiceMessage message) throws IOException {
 		return getXmlUtil().loadDocument(message);
