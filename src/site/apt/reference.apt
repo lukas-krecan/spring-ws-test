@@ -30,6 +30,7 @@ WsTestContextHolder.getTestContext().setAttribute("testName", "test136");
 --- 
 
    Then following results will correspond to XPath expressions:
+   {XPathEval}
    
 *--------------------------------------------------------------------------------------------------+--------------------------------------------------+
 | XPath expression                                                                                 | Result                                           |
@@ -45,4 +46,46 @@ WsTestContextHolder.getTestContext().setAttribute("testName", "test136");
 |concat($context.testName,'-response.xml')                                                         | test136-response.xml                             |
 *--------------------------------------------------------------------------------------------------+--------------------------------------------------+
       
-       
+* Test context
+  
+  Test context can be used for more fine grained test configuration.
+  
+  In you test code you can specify a context attribute like this.
+  
+---
+WsTestContextHolder.getTestContext().setAttribute("testName", "test136");
+---
+  
+  Later on you can either retrieve it programmatically like this
+
+---
+WsTestContextHolder.getTestContext().getAttribute("testName")  
+---   
+  
+  You can also access it in XPath like this 
+  
+---
+concat($context.testName,'-response.xml')  
+---
+  
+  or it is automatically injected as XSLT variable, so it can be accessed like this
+  
+---
+<?xml version="1.0" encoding="windows-1250"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+	<xsl:param name="number"/>
+
+	<xsl:template match="/">
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			<soapenv:Header />
+			<soapenv:Body>
+				<ns:test xmlns:ns="http://www.example.org/schema">
+					<ns:number>2</ns:number>
+					<ns:text><xsl:value-of select="$testName"/></ns:text>
+				</ns:test>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	</xsl:template>
+</xsl:stylesheet>
+--- 
+

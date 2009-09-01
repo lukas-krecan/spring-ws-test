@@ -23,4 +23,14 @@ public class WsTestXPathVariableResolverTest {
 		assertEquals(uri.getHost(), resolver.resolveVariable(new QName("uri.host")));
 		assertEquals("aaa", resolver.resolveVariable(new QName("context.name")));
 	}
+	@Test
+	public void testNormalize() throws Exception
+	{
+		URI uri = new URI("http://example.org/context/path");
+		WsTestXPathVariableResolver resolver = new WsTestXPathVariableResolver(uri);
+		
+		assertEquals("test",resolver.normalizeContextVariable("test"));
+		assertEquals("context[name]",resolver.normalizeContextVariable("context.name"));
+		assertEquals("context[name].test",resolver.normalizeContextVariable("context.name.test"));
+	}
 }

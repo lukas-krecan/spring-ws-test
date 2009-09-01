@@ -34,9 +34,11 @@ public class WsTestXPathVariableResolver implements XPathVariableResolver {
 	 * @param property
 	 * @return
 	 */
-	private String normalizeContextVariable(String property) {
+	String normalizeContextVariable(String property) {
 		if (property.startsWith("context.")) {
-			property = "context["+property.substring(8)+"]";
+			int endIndex = property.indexOf('.', 8);
+			endIndex = endIndex!=-1?endIndex:property.length();
+			property = "context["+property.substring(8,endIndex)+"]"+property.substring(endIndex);
 		}
 		return property;
 	}

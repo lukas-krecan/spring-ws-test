@@ -1,7 +1,3 @@
-  {{{http://mvnindex.org/spring-ws-test-files/spring-ws-test-0.2.jar}Download}}
-
-  {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test-sample/trunk/}Sample application}}
-
 Spring Web Service Test
   
   Spring WS Test project simplifies functional testing of Spring WS client application. Until now, you had basically two choices when testing a WS client.

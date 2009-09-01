@@ -6,8 +6,7 @@
 	<packaging>jar</packaging>
 	<version>0.2-SNAPSHOT</version>
 	<name>spring-ws-test</name>
-	<url>http://mvnindex.org/spring-ws-test/
-	</url>
+	<url>http://javacrumbs.net/spring-ws-test/</url>
 
 	<scm>
 		<connection>

@@ -64,7 +64,7 @@ Quick start
     as response.
     
     Of course one mock response is usually not enough. Do not worry you can use more complicated XPath expressions. 
-    More sophisticated expressions are mentioned here. TODO add link
+    More sophisticated expressions are shown {{{reference.html#XPathEval}here}}. 
     
 * Mock response
 
