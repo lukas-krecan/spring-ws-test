@@ -1,23 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.javacrumbs</groupId>
 	<artifactId>spring-ws-test</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.3</version>
 	<name>spring-ws-test</name>
 	<url>http://javacrumbs.net/spring-ws-test/</url>
 
 	<scm>
-		<connection>
-			scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
-		</connection>
-		<developerConnection>
-			scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
-		</developerConnection>
-		<url>
-			https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
-		</url>
+		<connection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/tags/spring-ws-test-0.3</connection>
+		<developerConnection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/tags/spring-ws-test-0.3</developerConnection>
+		<url>https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/tags/spring-ws-test-0.3</url>
 	</scm>
 	
 	<issueManagement>
