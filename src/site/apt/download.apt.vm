@@ -26,7 +26,7 @@ Maven dependency
 </repositories>
 ---
 
-And then add dependency
+  And then add dependency
 
 ---
 <dependency>
@@ -37,6 +37,6 @@ And then add dependency
 
 ---
   
-  {{{http://mvnindex.org/spring-ws-test-files/spring-ws-test-${project.version}.jar}Download}}
+  {{{http://mvnindex.org/spring-ws-test-files//net/javacrumbs/spring-ws-test/${project.version}/spring-ws-test-${project.version}.jar}Download}}
 
   {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test-sample/trunk/}Sample application}}
