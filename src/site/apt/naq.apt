@@ -20,7 +20,7 @@ Never Asked Questions
 
 * This project is really cool. Why it is not part of Spring WS?
      
-   Really good question. In fact there is a plan to contribute it to Spring WS in version 2.0. Right now it is better to develop it
+   Really good question. In fact there is a plan to contribute it to {{{http://static.springsource.org/spring-ws/sites/1.5/}Spring WS}}  in version 2.0. Right now it is better to develop it
    separately. We can have faster release cycle, we can change the API here and there. After few releases, when the project is more mature
    it will hopefully be integrated into Spring WS. 
    

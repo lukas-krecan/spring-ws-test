@@ -52,7 +52,7 @@ Quick start
 ---
 
 	When this configuration will be loaded by Spring, MockWebServiceMessageSender will be created and automatically injected into 
-	the WebServiceTemplate. Default WebServiceMessageSender will be replaced by the mock.  
+	the {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/client/core/WebServiceTemplate.html}WebServiceTemplate}}. Default {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}WebServiceMessageSender}} will be replaced by the mock.  
 	Please note that WebServiceTemplate is not defined here, you probably have it already defined in another configuration file.  "dummy-message-sender.xml" is used for test only.
     
     When you call WebServiceTemplate, the call is delegated to MockWebServiceMessageSender and DefaultResponseGenerator is used to generate

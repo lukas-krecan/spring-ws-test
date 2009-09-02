@@ -18,7 +18,7 @@
 ~~
 Simplifies your WS client tests
   
-  Spring WS Test project simplifies functional testing of Spring WS client applications. It allows you to write functional test that can run in one JVM, that 
+  Spring WS Test project simplifies functional testing of {{{http://static.springsource.org/spring-ws/sites/1.5/}Spring WS}} client applications. It allows you to write functional test that can run in one JVM, that 
   can use JUnit or TestNG, that are simple to set-up and configure. On the other hand this type of tests is quite powerful so it can test
   most of your configuration and component integration.    
   
@@ -32,7 +32,7 @@ Simplifies your WS client tests
   
   <<Note: I really want to hear your feedback. The project is in very early stage so you have unique opportunity to drive its development. 
    If you find a bug, please report it in project {{{http://mvnindex.org/jira/browse/SWST}JIRA}}. If you encounter any issue, do not hesitate and contact me on lukas at krecan dot net.
-   If you like it, please let me now on my {{{http://blog.krecan.net/2009/09/03/spring-ws-test/}blog}}.>>
+   If you like it, please let me now on my {{{http://blog.krecan.net/2009/09/02/spring-ws-test/}blog}}.>>
   
 * Motivation  
   
