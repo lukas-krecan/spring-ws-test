@@ -55,7 +55,7 @@ public class XPathExpressionResolver implements ExpressionResolver{
 			XPath xpath = factory.newXPath();
 			xpath.setNamespaceContext(getNamespaceContext());
 			String result = xpath.evaluate(expression, document);
-			logger.debug("Expression " + expression + " resolved to " + result);
+			logger.debug("Expression \"" + expression + "\" resolved to \"" + result+"\"");
 			return result;
 		} catch (XPathExpressionException e) {
 			throw new XPathException("Could not evaluate XPath expression " + expression + ":" + e.getMessage(), e);

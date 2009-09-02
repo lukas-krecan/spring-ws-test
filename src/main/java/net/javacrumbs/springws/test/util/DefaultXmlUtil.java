@@ -38,8 +38,10 @@ import org.w3c.dom.Document;
 public class DefaultXmlUtil implements XmlUtil {
 
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
+	
 
 	private static final XmlUtil INSTANCE = new DefaultXmlUtil();
+	
 
 	public static final XmlUtil getInstance()
 	{

@@ -74,6 +74,10 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 	protected Document loadDocument(Resource resource) throws IOException {
 		return getXmlUtil().loadDocument(resource);
 	}
+	
+	protected String serializeDocument(Document document) {
+		return getXmlUtil().serializeDocument(document);
+	}
 
 	public ResourceLookup getControlResourceLookup() {
 		return controlResourceLookup;

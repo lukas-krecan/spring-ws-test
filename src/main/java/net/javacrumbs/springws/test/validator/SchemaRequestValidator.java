@@ -80,7 +80,7 @@ public class SchemaRequestValidator implements RequestValidator, InitializingBea
                 Assert.isTrue(schemas[i].exists(), "schema [" + schemas[i] + "] does not exist");
             }
             if (logger.isInfoEnabled()) {
-                logger.info("Validating using " + StringUtils.arrayToCommaDelimitedString(schemas));
+                logger.info("Validating using \"" + StringUtils.arrayToCommaDelimitedString(schemas)+"\"");
             }
             validator = XmlValidatorFactory.createValidator(schemas, schemaLanguage);
         }

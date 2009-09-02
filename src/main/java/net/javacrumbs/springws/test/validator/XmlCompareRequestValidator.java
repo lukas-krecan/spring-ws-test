@@ -57,11 +57,17 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 	 */
 	@Override
 	protected void compareDocuments(Document controlDocument, Document messageDocument) {
+		if (logger.isTraceEnabled())
+		{
+			logger.trace("Comparing \""+serializeDocument(controlDocument)+" \"\n with \n\""+serializeDocument(messageDocument)+"\"");
+		}
 		Diff diff = createDiff(controlDocument, messageDocument);
 		if (!diff.similar()) {
+			logger.debug("Messages different, throwing exception");
 			throw new WsTestException("Message is different " + diff.toString());
 		}
 	}
+
 
 	protected Diff createDiff(Document controlDocument, Document messageDocument) {
 		return new IgnoringDiff(controlDocument, messageDocument);
