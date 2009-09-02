@@ -1,3 +1,6 @@
+   ------
+   Quick start
+   ------
 ~~
 ~~ Copyright 2006 the original author or authors.
 ~~
@@ -83,7 +86,7 @@ Quick start
     
 * Mock response
 
-    Then you have to create mock response(s). In our case, you have to create "GetFlightsRequest/default-response.xml" on your test classpath.
+    When you have the configuration, you have to create mock response(s). In our case, you have to create "GetFlightsRequest/default-response.xml" on your test classpath.
     If you are using Maven, the best place is the "src/test/resources" directory.
     
 * Test

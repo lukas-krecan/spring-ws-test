@@ -1,3 +1,6 @@
+   ------
+   Reference
+   ------
 ~~
 ~~ Copyright 2006 the original author or authors.
 ~~
@@ -102,5 +105,14 @@ concat($context.testName,'-response.xml')
 		</soapenv:Envelope>
 	</xsl:template>
 </xsl:stylesheet>
+--- 
+
+* Logging
+  
+   Spring WS Test log some information using commons-logging. For example, if you need to troubleshoot your test and you are using log4j, you
+   can add following line into your <<<log4j.properties>>>
+   
+---
+log4j.logger.net.javacrumbs=TRACE
 --- 
 

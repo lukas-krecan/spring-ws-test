@@ -1,3 +1,6 @@
+   ------
+   Introduction
+   ------
 ~~
 ~~ Copyright 2006 the original author or authors.
 ~~
@@ -13,29 +16,39 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
 ~~
-Spring Web Service Test
+Simplifies your WS client tests
   
-  Spring WS Test project simplifies functional testing of Spring WS client application. Until now, you had basically two choices when testing a WS client.
-  You could either test using test instance of the service or you could use mock web service. Both of those approaches have one big shortcoming. 
-  You have to depend on an external service running when executing your test. It makes test configuration and setup much more complex and error prone.
+  Spring WS Test project simplifies functional testing of Spring WS client applications. It allows you to write functional test that can run in one JVM, that 
+  can use JUnit or TestNG, that are simple to set-up and configure. On the other hand this type of tests is quite powerful so it can test
+  most of your configuration and component integration.    
+  
+  This project can be used mainly in the following scenarios:
+  
+  * Tests of Spring configuration. Unit tests are nice and useful but we also need to test the configuration. Spring WS Test gives you the possibility to test most of the configuration without having to depend on external systems running.
+ 
+  * Test Driven Development. You can define an application in terms of requests sent and reactions on responses received. Spring WS Test makes it much easier.
+ 
+  * ...
+  
+  <<Note: I really want to hear your feedback. The project is in very early stage so you have unique opportunity to drive its development. 
+   If you find a bug, please report it in project {{{http://mvnindex.org/jira/browse/SWST}JIRA}}. If you encounter any issue, do not hesitate and contact me on lukas at krecan dot net.
+   If you like it, please let me now on my {{{http://blog.krecan.net/2009/09/03/spring-ws-test/}blog}}.>>
+  
+* Motivation  
+  
+  Until now, you had basically two choices how to test a WS client.
+  You could either use test instance of the service or you could use mock web service. Both of those approaches have one big shortcoming. 
+  You have to depend on an external service running when you are executing the test. It makes test configuration and setup much more complex and error prone.
 
 [images/seq1.png] Normal Spring-WS configuration 
 
-  If you want to execute a test, you have to start the test in one in parallel you need to have a WS server running.
   
   Spring WS Test gives you the opportunity to test everything in one JVM. The setup is hence easy and you can use standard JUnit framework for the test execution.  
   
 [images/seq2.png] Test Spring-WS configuration
   
-  This project can be used mainly in the following scenarios:
+
   
-  * Tests of Spring configuration. Unit test are nice and useful but we also need to test the configuration. Spring WS Test gives you the possibility to test most of the configuration without having to depend on external systems running.
- 
-  * Test Driven Development. You can define application in terms of requests sent and reactions on responses received. Using Spring WS Test makes it much easier.
- 
-  * ...
-  
-   <<Please, keep in mind that the project is in a very early stage. If you find a bug, please report it in project {{{http://mvnindex.org/jira/browse/SWST}JIRA}}. 
-   If you encounter any issue, do not hesitate and contact me please on lukas at krecan dot net.>> 
+    
   
      

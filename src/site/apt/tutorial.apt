@@ -1,3 +1,6 @@
+   ------
+   Tutorial
+   ------
 ~~
 ~~ Copyright 2006 the original author or authors.
 ~~
@@ -102,7 +105,7 @@ Tutorial
   
 * XSLT mock response
   
-  Sometimes creating an extra response file for every possible request is just too much work. Sometime you just need to tweak the response a bit before using it. 
+  Sometimes creating an extra response file for every possible request is just too much work. Sometimes you just need to tweak the response a bit before using it. 
   Luckily you can use a XSLT template to generate the response based on the request. For example you can specify response like this
   
 ---
