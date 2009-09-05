@@ -40,10 +40,12 @@ public class MockMessageSenderInjector implements BeanFactoryPostProcessor {
 		{
 			throw new BeanCreationException("No WebServiceTemplate found in the servlet context.");
 		}
-		WebServiceTemplate template = templates.iterator().next();
 		
 		Collection<MockWebServiceMessageSender> mockSenders = beanFactory.getBeansOfType(MockWebServiceMessageSender.class).values();
-				
-		template.setMessageSenders(mockSenders.toArray(new WebServiceMessageSender[mockSenders.size()]));		
+		WebServiceMessageSender[] mockSenderArray = mockSenders.toArray(new WebServiceMessageSender[mockSenders.size()]);
+		for (WebServiceTemplate template: templates)
+		{
+			template.setMessageSenders(mockSenderArray);
+		}
 	}
 }
