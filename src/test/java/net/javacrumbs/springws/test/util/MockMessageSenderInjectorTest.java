@@ -34,8 +34,21 @@ public class MockMessageSenderInjectorTest {
 		WebServiceTemplate wsTemplate = (WebServiceTemplate) context.getBean("ws-template");
 		WebServiceMessageSender mockSender = (WebServiceMessageSender) context.getBean("mock-sender");
 		assertSame(mockSender, wsTemplate.getMessageSenders()[0]);
-	
+	}
+	@Test
+	public void testMultiple()
+	{
+		ApplicationContext context = new ClassPathXmlApplicationContext("inject/inject-multiple-templates.xml");
+		WebServiceTemplate wsTemplate1 = (WebServiceTemplate) context.getBean("ws-template-1");
+		WebServiceTemplate wsTemplate2 = (WebServiceTemplate) context.getBean("ws-template-2");
+		WebServiceMessageSender mockSender1 = (WebServiceMessageSender) context.getBean("mock-sender-1");
+		WebServiceMessageSender mockSender2 = (WebServiceMessageSender) context.getBean("mock-sender-2");
 		
+		assertSame(mockSender1, wsTemplate1.getMessageSenders()[0]);
+		assertSame(mockSender2, wsTemplate1.getMessageSenders()[1]);
+		
+		assertSame(mockSender1, wsTemplate2.getMessageSenders()[0]);
+		assertSame(mockSender2, wsTemplate2.getMessageSenders()[1]);
 	}
 	@Test(expected=BeanCreationException.class)
 	public void testNoTemplate()
