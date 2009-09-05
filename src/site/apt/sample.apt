@@ -24,10 +24,10 @@ Sample Application
 
   [[2]] Go to "spring-ws-test-sample" directory.
 
-  [[3]] Execute "mvn test". Maven will do its magic and at the end the test should be run.
+  [[3]] Execute "mvn test". Maven will do its magic and at the end the tests will be executed.
   
-  [[4]] Execute "mvn eclipse:eclipse" to generate Eclipse project to investigate the source code.     
+  [[4]] Execute "mvn eclipse:eclipse" to generate Eclipse project.
   
   [[5]] Execute "mvn jetty:run" to start the project in Jetty server. You can use "AirlineAggregator-soapui-project.xml" SoapUI project. Please keep
-  in mind that only GetFlight service is implemented and since it is trying to connect to non-existing services, it will return empty result.
+  in mind that only GetFlight service is implemented and since it is trying to connect to non-existing services, empty result will be returned.
      
