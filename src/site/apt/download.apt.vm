@@ -37,13 +37,13 @@ Maven dependency
 <dependency>
 	<groupId>net.javacrumbs</groupId>
 	<artifactId>spring-ws-test</artifactId>
-	<version>${project.version}</version>
+	<version>0.6</version>
 </dependency>
 
 ---
 
 Download  
   
-  {{{http://mvnindex.org/spring-ws-test-files//net/javacrumbs/spring-ws-test/${project.version}/spring-ws-test-${project.version}.jar}Download}}
+  {{{http://mvnindex.org/spring-ws-test-files//net/javacrumbs/spring-ws-test/0.6/spring-ws-test-0.6.jar}Download}}
 
   {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test-sample/trunk/}Sample application}} (SVN repository)
