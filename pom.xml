@@ -6,6 +6,9 @@
 	<version>0.6-SNAPSHOT</version>
 	<name>spring-ws-test</name>
 	<url>http://javacrumbs.net/spring-ws-test/</url>
+	<description>
+		Spring WS Test is a tool to simplify Spring WS client functional testing.	
+	</description>
 
 	<scm>
 		<connection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</connection>
