@@ -13,23 +13,8 @@
 	</bean>
 	
 	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender">
-		<property name="responseGenerator">
-			<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
-				<property name="resourceLookup">
-					<bean class="net.javacrumbs.springws.test.lookup.DefaultResourceLookup">
-						<property name="resourceExpressions">
-							<list>
-								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
-								<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
-							</list>
-						</property>
-						<property name="expressionResolver" ref="xpathResolver"/>
-					</bean>
-				</property>
-			</bean>
-		</property>
-		<property name="requestValidators">
-			<list>
+		<property name="responseGenerators">
+		<list>
 				<bean class="net.javacrumbs.springws.test.validator.SchemaRequestValidator">
 					<property name="schemas">
 						<list>
@@ -49,6 +34,19 @@
 						</bean>
 					</property>
 				</bean>			
+				<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
+					<property name="resourceLookup">
+						<bean class="net.javacrumbs.springws.test.lookup.DefaultResourceLookup">
+							<property name="resourceExpressions">
+								<list>
+									<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+									<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+								</list>
+							</property>
+							<property name="expressionResolver" ref="xpathResolver"/>
+						</bean>
+					</property>
+				</bean>
 			</list>
 		</property>
 	</bean>

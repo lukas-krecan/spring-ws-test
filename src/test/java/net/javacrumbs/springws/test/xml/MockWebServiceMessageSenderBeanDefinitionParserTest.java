@@ -22,7 +22,6 @@ import java.util.Collection;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
-import net.javacrumbs.springws.test.validator.RequestValidator;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -68,10 +67,6 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 		assertNotNull(sender);
 		Collection<ResponseGenerator> responseGenerators = sender.getResponseGenerators();
 		assertNotNull(responseGenerators);
-		assertEquals(1, responseGenerators.size());
-
-		Collection<RequestValidator> requestValidators = sender.getRequestValidators();
-		assertNotNull(requestValidators);
-		assertEquals(2, requestValidators.size());
+		assertEquals(3, responseGenerators.size());
 	}
 }

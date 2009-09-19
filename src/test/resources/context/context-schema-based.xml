@@ -9,19 +9,7 @@
 
 
 	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender">
-		<property name="responseGenerator">
-			<swst:response-generator>
-				<swst:namespaces>
-					soapenv=http://schemas.xmlsoap.org/soap/envelope/
-					ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
-				</swst:namespaces>
-				<swst:xpaths>
-					concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')
-					concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')
-				</swst:xpaths>
-			</swst:response-generator>
-		</property>
-		<property name="requestValidators">
+		<property name="responseGenerators">
 			<list>
 				<swst:compare-request-validator>
 					<swst:namespaces>
@@ -38,6 +26,16 @@
 						xml/schema.xsd
 				    </swst:schemas>
 				</swst:schema-validator>
+				<swst:response-generator>
+					<swst:namespaces>
+						soapenv=http://schemas.xmlsoap.org/soap/envelope/
+						ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
+					</swst:namespaces>
+					<swst:xpaths>
+						concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')
+						concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')
+					</swst:xpaths>
+				</swst:response-generator>
 			</list>
 		</property>
 	</bean>

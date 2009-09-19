@@ -27,14 +27,14 @@
 		<site>
 			<id>website</id>
 			<url>
-				scp://mvnindex.org:/var/www/vhosts/mvnindex.org/httpdocs/spring-ws-test
+				scp://mvnindex.org:/var/www/vhosts/javacrumbs.net/httpdocs/spring-ws-test
 			</url>
 		</site>
 		<repository>
 			<id>repository</id>
 			<name>Mvnindex file system</name>
 			<url>
-				scp://mvnindex.org:/var/www/vhosts/mvnindex.org/httpdocs/spring-ws-test-files/
+				scp://mvnindex.org:/var/www/vhosts/javacrumbs.net/httpdocs/spring-ws-test-files/
 			</url>
 		</repository>
 

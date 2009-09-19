@@ -18,6 +18,7 @@ package net.javacrumbs.springws.test.validator;
 import java.io.IOException;
 import java.net.URI;
 
+import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
@@ -28,9 +29,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 import org.w3c.dom.Document;
 
-public abstract class AbstractCompareRequestValidator implements InitializingBean{
+public abstract class AbstractCompareRequestValidator implements InitializingBean, ResponseGenerator{
 
 	private ResourceLookup controlResourceLookup;
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -40,6 +42,12 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 		super();
 	}
 
+	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,
+			WebServiceMessage request) throws IOException {
+		validateRequest(uri, request);
+		return null;
+	}
+	
 	public void validateRequest(URI uri, WebServiceMessage message) throws IOException {
 		Document messageDocument = loadDocument(message);
 	

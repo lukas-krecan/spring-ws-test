@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public class XmlCompareRequestValidator extends AbstractCompareRequestValidator implements RequestValidator {
+public class XmlCompareRequestValidator extends AbstractCompareRequestValidator{
 
 	/**
 	 * Diff that ignores "${IGNORE}" placeholder

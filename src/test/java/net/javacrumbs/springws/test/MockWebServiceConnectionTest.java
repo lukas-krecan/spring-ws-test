@@ -17,7 +17,6 @@ package net.javacrumbs.springws.test;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertSame;
@@ -30,7 +29,6 @@ import java.util.Collections;
 
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
-import net.javacrumbs.springws.test.validator.RequestValidator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -95,34 +93,26 @@ public class MockWebServiceConnectionTest {
 	{
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
-		RequestValidator requestValidator = createMock(RequestValidator.class);
-		requestValidator.validateRequest(uri, request);
-		connection.setRequestValidators(Collections.singleton(requestValidator));
-		
 		ResponseGenerator responseGenerator = createMock(ResponseGenerator.class);
 		WebServiceMessage response = createMock(WebServiceMessage.class);
 		connection.setResponseGenerators(Collections.singleton(responseGenerator));
 		expect(responseGenerator.generateResponse(uri, messageFactory, request)).andReturn(response);
 		
 		
-		replay(request, requestValidator, responseGenerator);
+		replay(request, responseGenerator);
 
 		connection.send(request);
 		assertSame(request, connection.getRequest());
 		
 		assertSame(response, connection.receive(messageFactory));
 		
-		verify(request, requestValidator, responseGenerator);
+		verify(request, responseGenerator);
 	}
 	@Test
 	public void testSendReceiveWithTwoGenerators() throws Exception
 	{
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		WebServiceMessage response = createMock(WebServiceMessage.class);
-		
-		RequestValidator requestValidator = createMock(RequestValidator.class);
-		requestValidator.validateRequest(uri, request);
-		connection.setRequestValidators(Collections.singleton(requestValidator));
 		
 		ResponseGenerator responseGenerator1 = createMock(ResponseGenerator.class);
 		expect(responseGenerator1.generateResponse(uri, messageFactory, request)).andReturn(null);
@@ -131,14 +121,14 @@ public class MockWebServiceConnectionTest {
 		expect(responseGenerator2.generateResponse(uri, messageFactory, request)).andReturn(response);
 		connection.setResponseGenerators(Arrays.asList(responseGenerator1, responseGenerator2));
 		
-		replay(request, requestValidator, responseGenerator1, responseGenerator2);
+		replay(request, responseGenerator1, responseGenerator2);
 		
 		connection.send(request);
 		assertSame(request, connection.getRequest());
 		
 		assertSame(response, connection.receive(messageFactory));
 		
-		verify(request, requestValidator, responseGenerator1, responseGenerator2);
+		verify(request, responseGenerator1, responseGenerator2);
 	}
 	
 	@Test
@@ -146,14 +136,13 @@ public class MockWebServiceConnectionTest {
 	{
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
-		RequestValidator requestValidator1 = createMock(RequestValidator.class);
-		requestValidator1.validateRequest(uri, request);
+		ResponseGenerator requestValidator1 = createMock(ResponseGenerator.class);
+		expect(requestValidator1.generateResponse(uri, messageFactory, request)).andReturn(null);
 		
-		RequestValidator requestValidator2 = createMock(RequestValidator.class);
-		requestValidator2.validateRequest(uri, request);
-		expectLastCall().andThrow(new WsTestException("Do not panick, this is just a test"));
-		
-		connection.setRequestValidators(Arrays.asList(requestValidator1, requestValidator2));
+		ResponseGenerator requestValidator2 = createMock(ResponseGenerator.class);
+		expect(requestValidator2.generateResponse(uri, messageFactory, request)).andThrow(new WsTestException("Do not panick, this is just a test"));
+	
+		connection.setResponseGenerators(Arrays.asList(requestValidator1, requestValidator2));
 		
 		
 		replay(request, requestValidator1, requestValidator2);
@@ -161,6 +150,7 @@ public class MockWebServiceConnectionTest {
 		try
 		{
 			connection.send(request);
+			connection.receive(messageFactory);
 			fail("Exception expected");
 		}
 		catch(WsTestException e)
@@ -175,13 +165,12 @@ public class MockWebServiceConnectionTest {
 	{
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
-		RequestValidator requestValidator1 = createMock(RequestValidator.class);
-		requestValidator1.validateRequest(uri, request);
-		expectLastCall().andThrow(new WsTestException("Do not panick, this is just a test"));
+		ResponseGenerator requestValidator1 = createMock(ResponseGenerator.class);
+		expect(requestValidator1.generateResponse(uri, messageFactory, request)).andThrow(new WsTestException("Do not panick, this is just a test"));
 		
-		RequestValidator requestValidator2 = createMock(RequestValidator.class);
+		ResponseGenerator requestValidator2 = createMock(ResponseGenerator.class);
 		
-		connection.setRequestValidators(Arrays.asList(requestValidator1, requestValidator2));
+		connection.setResponseGenerators(Arrays.asList(requestValidator1, requestValidator2));
 		
 		
 		replay(request, requestValidator1, requestValidator2);
@@ -189,6 +178,7 @@ public class MockWebServiceConnectionTest {
 		try
 		{
 			connection.send(request);
+			connection.receive(messageFactory);
 			fail("Exception expected");
 		}
 		catch(WsTestException e)

@@ -19,13 +19,14 @@ import java.io.IOException;
 import java.net.URI;
 
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.generator.ResponseGenerator;
 
 import org.springframework.ws.WebServiceMessage;
 
 /**
  * Validates request.
  * @author Lukas Krecan
- *
+ * @deprecated RequestValidators are special case of {@link ResponseGenerator}s so please use ResponseGenerator instead.
  */
 public interface RequestValidator {
 

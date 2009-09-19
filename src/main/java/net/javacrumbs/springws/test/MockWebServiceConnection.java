@@ -23,7 +23,6 @@ import java.util.Collection;
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
-import net.javacrumbs.springws.test.validator.RequestValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +32,7 @@ import org.springframework.ws.transport.WebServiceConnection;
 
 
 /**
- * Mock WS connection that instead of actually calling the WS calls all {@link RequestValidator}s specified and then uses {@link ResponseGenerator}s
+ * Mock WS connection that instead of actually calling the WS uses {@link ResponseGenerator}s
  * to generate the response.
  * @author Lukas Krecan
  *
@@ -44,8 +43,6 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	private WebServiceMessage request;
 	
-	private Collection<RequestValidator> requestValidators;
-		
 	private Collection<ResponseGenerator> responseGenerators;
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
@@ -57,29 +54,12 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	}
 
 	/**
-	 * Validates and stores the message.
+	 * Stores the message.
 	 */
 	public void send(WebServiceMessage message) throws IOException {
-		if (logger.isDebugEnabled())
-		{
-			logger.debug("Processing message \""+xmlUtil.serializeDocument(message)+"\" for URI \""+uri+"\"");
-		}
-		validate(message);
 		request = message;
 	}
 
-	/**
-	 * Calls all validators.
-	 * @param message
-	 * @throws IOException
-	 */
-	protected void validate(WebServiceMessage message) throws IOException {
-		if (requestValidators!=null)
-		{
-			for(RequestValidator requestValidator: requestValidators)
-			requestValidator.validateRequest(uri, message);
-		}
-	}
 	/**
 	 * Generates mock response
 	 */
@@ -149,14 +129,6 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	public void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
-	}
-
-	public Collection<RequestValidator> getRequestValidators() {
-		return requestValidators;
-	}
-
-	public void setRequestValidators(Collection<RequestValidator> requestValidators) {
-		this.requestValidators = requestValidators;
 	}
 
 	public Collection<ResponseGenerator> getResponseGenerators() {

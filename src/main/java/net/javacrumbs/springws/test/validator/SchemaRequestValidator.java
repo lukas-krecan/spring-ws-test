@@ -22,6 +22,7 @@ import java.util.Arrays;
 import javax.xml.transform.Source;
 
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.generator.ResponseGenerator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +32,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.support.interceptor.AbstractValidatingInterceptor;
 import org.springframework.xml.validation.XmlValidator;
 import org.springframework.xml.validation.XmlValidatorFactory;
@@ -43,7 +45,7 @@ import org.xml.sax.SAXParseException;
  * @author Lukas Krecan
  *
  */
-public class SchemaRequestValidator implements RequestValidator, InitializingBean{
+public class SchemaRequestValidator implements InitializingBean, ResponseGenerator{
 
     private XmlValidator validator;
     
@@ -53,8 +55,13 @@ public class SchemaRequestValidator implements RequestValidator, InitializingBea
     
     protected final Log logger = LogFactory.getLog(getClass());
     
+    public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,
+    		WebServiceMessage request) throws IOException {
+    	validateRequest(uri, request);
+    	return null;
+    }
     
-	public void validateRequest(URI uri, WebServiceMessage message) throws IOException{
+	protected void validateRequest(URI uri, WebServiceMessage message) throws IOException{
 		 Source requestSource = message.getPayloadSource();
          if (requestSource != null) {
              SAXParseException[] errors = validator.validate(requestSource);
