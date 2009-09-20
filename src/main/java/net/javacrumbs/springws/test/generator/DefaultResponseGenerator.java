@@ -24,6 +24,7 @@ import net.javacrumbs.springws.test.util.TransportInputStreamWrapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
@@ -33,11 +34,15 @@ import org.springframework.ws.WebServiceMessageFactory;
  * @author Lukas Krecan
  *
  */
-public class DefaultResponseGenerator implements ResponseGenerator {
+public class DefaultResponseGenerator implements ResponseGenerator, Ordered {
+
+	static final int DEFAULT_ORDER = 30;
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private ResourceLookup resourceLookup;
+	
+	private int order = DEFAULT_ORDER;
 
 	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
@@ -85,5 +90,13 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
 	public void setResourceLookup(ResourceLookup resourceLookup) {
 		this.resourceLookup = resourceLookup;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 }

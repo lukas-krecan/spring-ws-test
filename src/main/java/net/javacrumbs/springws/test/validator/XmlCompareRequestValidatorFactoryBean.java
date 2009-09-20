@@ -32,6 +32,8 @@ public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
 	private Map<String, String> namespaceMap;
 	
 	private String[] xPathExpressions;
+	
+	private int order = XmlCompareRequestValidator.DEFAULT_ORDER;
 
 	@Override
 	protected Object createInstance() throws Exception {
@@ -65,6 +67,14 @@ public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
 
 	public void setNamespaceMap(Map<String, String> namespaceMap) {
 		this.namespaceMap = namespaceMap;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 

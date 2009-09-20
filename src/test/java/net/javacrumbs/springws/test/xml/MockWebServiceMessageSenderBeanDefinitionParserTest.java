@@ -19,9 +19,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
+import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
+import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
+import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -68,5 +72,9 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 		Collection<ResponseGenerator> responseGenerators = sender.getResponseGenerators();
 		assertNotNull(responseGenerators);
 		assertEquals(3, responseGenerators.size());
+		Iterator<ResponseGenerator> iterator = responseGenerators.iterator();
+		assertEquals(XmlCompareRequestValidator.class, iterator.next().getClass());
+		assertEquals(SchemaRequestValidator.class, iterator.next().getClass());
+		assertEquals(DefaultResponseGenerator.class, iterator.next().getClass());
 	}
 }

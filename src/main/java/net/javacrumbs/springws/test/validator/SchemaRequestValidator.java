@@ -27,6 +27,7 @@ import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -45,7 +46,7 @@ import org.xml.sax.SAXParseException;
  * @author Lukas Krecan
  *
  */
-public class SchemaRequestValidator implements InitializingBean, ResponseGenerator{
+public class SchemaRequestValidator implements InitializingBean, ResponseGenerator, Ordered{
 
     private XmlValidator validator;
     
@@ -54,6 +55,10 @@ public class SchemaRequestValidator implements InitializingBean, ResponseGenerat
     private Resource[] schemas;
     
     protected final Log logger = LogFactory.getLog(getClass());
+    
+	static final int DEFAULT_ORDER = 20;
+	
+	private int order = DEFAULT_ORDER;
     
     public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,
     		WebServiceMessage request) throws IOException {
@@ -162,6 +167,14 @@ public class SchemaRequestValidator implements InitializingBean, ResponseGenerat
 
 	XmlValidator getValidator() {
 		return validator;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 }

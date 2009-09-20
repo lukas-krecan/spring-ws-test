@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
 
@@ -27,6 +28,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.OrderComparator;
 import org.springframework.ws.transport.WebServiceConnection;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
@@ -76,7 +78,9 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 	private void autowireResponseGenerators() {
 		if (isAutowireResponseGenerators())
 		{
-			responseGenerators.addAll(applicationContext.getBeansOfType(ResponseGenerator.class).values());
+			List<ResponseGenerator> generators = new ArrayList<ResponseGenerator>(applicationContext.getBeansOfType(ResponseGenerator.class).values());
+			Collections.sort(generators, new OrderComparator());
+			responseGenerators.addAll(generators);
 		}
 	}
 

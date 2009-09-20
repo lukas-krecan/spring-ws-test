@@ -50,6 +50,8 @@ public class DefaultResponseGeneratorFactoryBean extends AbstractFactoryBean {
 	private Map<String, String> namespaceMap;
 	
 	private String[] xPathExpressions;
+	
+	private int order = DefaultResponseGenerator.DEFAULT_ORDER;
 
 	@Override
 	protected Object createInstance() throws Exception {
@@ -61,6 +63,7 @@ public class DefaultResponseGeneratorFactoryBean extends AbstractFactoryBean {
 		responseResourceLookup.setExpressionResolver(expressionResolver);
 		responseResourceLookup.setResourceExpressions(xPathExpressions);
 		responseGenerator.setResourceLookup(responseResourceLookup);
+		responseGenerator.setOrder(order);
 		return responseGenerator;
 	}
 
@@ -83,6 +86,14 @@ public class DefaultResponseGeneratorFactoryBean extends AbstractFactoryBean {
 
 	public void setNamespaceMap(Map<String, String> namespaceMap) {
 		this.namespaceMap = namespaceMap;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 

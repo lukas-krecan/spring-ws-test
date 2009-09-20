@@ -21,6 +21,7 @@ import net.javacrumbs.springws.test.WsTestException;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
+import org.springframework.core.Ordered;
 import org.w3c.dom.Document;
 
 /**
@@ -29,8 +30,13 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public class XmlCompareRequestValidator extends AbstractCompareRequestValidator{
-
+public class XmlCompareRequestValidator extends AbstractCompareRequestValidator implements Ordered
+{
+	
+	static final int DEFAULT_ORDER = 10;
+	
+	private int order = DEFAULT_ORDER;
+	
 	/**
 	 * Diff that ignores "${IGNORE}" placeholder
 	 * @author Lukas Krecan
@@ -71,6 +77,16 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator{
 
 	protected Diff createDiff(Document controlDocument, Document messageDocument) {
 		return new IgnoringDiff(controlDocument, messageDocument);
+	}
+
+
+	public int getOrder() {
+		return order;
+	}
+
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 }
