@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.springws.test.validator;
+package net.javacrumbs.springws.test.expression;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-import net.javacrumbs.springws.test.expression.ExpressionResolver;
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
@@ -33,7 +32,7 @@ import org.springframework.ws.WebServiceMessageFactory;
  * @author Lukas Krecan
  *
  */
-public abstract class AbstractXPathRequestValidator implements ResponseGenerator {
+public abstract class AbstractExpressionEvaluator implements ResponseGenerator {
 
 	private static final String TRUE = Boolean.TRUE.toString();
 	
@@ -42,7 +41,7 @@ public abstract class AbstractXPathRequestValidator implements ResponseGenerator
 	private Map<String, String> exceptionMapping;
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 
-	public AbstractXPathRequestValidator() {
+	public AbstractExpressionEvaluator() {
 		super();
 	}
 

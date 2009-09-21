@@ -25,6 +25,7 @@ import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
+import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.junit.Test;
@@ -71,10 +72,15 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 		assertNotNull(sender);
 		Collection<ResponseGenerator> responseGenerators = sender.getResponseGenerators();
 		assertNotNull(responseGenerators);
-		assertEquals(3, responseGenerators.size());
+		assertEquals(4, responseGenerators.size());
 		Iterator<ResponseGenerator> iterator = responseGenerators.iterator();
 		assertEquals(XmlCompareRequestValidator.class, iterator.next().getClass());
 		assertEquals(SchemaRequestValidator.class, iterator.next().getClass());
+		
+		XPathRequestValidator xpathRequestValidator = (XPathRequestValidator)iterator.next();
+		assertEquals("Unsupported service class", xpathRequestValidator.getExceptionMapping().get("//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'"));
+		
+		
 		assertEquals(DefaultResponseGenerator.class, iterator.next().getClass());
 	}
 }

@@ -18,48 +18,36 @@ package net.javacrumbs.springws.test.validator;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
-import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
- * Simplifies creation of {@link DefaultResponseGenerator}.
+ * Simplifies creation of {@link XPathRequestValidator} configured to use {@link XPathExpressionResolver}.
  * @author Lukas Krecan
  *
  */
-public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
+public class XPathRequestValidatorFactoryBean extends AbstractFactoryBean {
 
 	private Map<String, String> namespaceMap;
 	
-	private String[] xPathExpressions;
+	private Map<String, String> exceptionMapping;
 	
-	private int order = XmlCompareRequestValidator.DEFAULT_ORDER;
+	private int order = XPathRequestValidator.DEFAULT_ORDER;
 
 	@Override
 	protected Object createInstance() throws Exception {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		
-		XmlCompareRequestValidator responseGenerator = new XmlCompareRequestValidator();
-		DefaultResourceLookup reourceLookup = new DefaultResourceLookup();
-		reourceLookup.setExpressionResolver(expressionResolver);
-		reourceLookup.setResourceExpressions(getXPathExpressions());
-		responseGenerator.setControlResourceLookup(reourceLookup);
-		return responseGenerator;
+		XPathRequestValidator validator = new XPathRequestValidator();
+		validator.setExpressionResolver(expressionResolver);
+		validator.setExceptionMapping(exceptionMapping);
+		return validator;
 	}
 
 	@Override
 	public Class<?> getObjectType() {
-		return XmlCompareRequestValidator.class;
-	}
-
-	public String[] getXPathExpressions() {
-		return xPathExpressions;
-	}
-
-	public void setXPathExpressions(String[] responseXPathExpressions) {
-		this.xPathExpressions = responseXPathExpressions;
+		return XPathRequestValidator.class;
 	}
 
 	public Map<String, String> getNamespaceMap() {
@@ -76,6 +64,14 @@ public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public Map<String, String> getExceptionMapping() {
+		return exceptionMapping;
+	}
+
+	public void setExceptionMapping(Map<String, String> exceptionMapping) {
+		this.exceptionMapping = exceptionMapping;
 	}
 
 

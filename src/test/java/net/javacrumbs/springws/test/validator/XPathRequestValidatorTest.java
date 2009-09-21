@@ -15,6 +15,15 @@
  */
 package net.javacrumbs.springws.test.validator;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
@@ -22,10 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
 import net.javacrumbs.springws.test.expression.ExpressionResolver;
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
@@ -43,7 +50,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		String expression1 = "//ns:number = 0";
 		Map<String, String> expressionMap = Collections.singletonMap(expression1, ERROR_MESSAGE+"1");
 		
-		AbstractXPathRequestValidator validator = new XPathRequestValidator();
+		AbstractExpressionEvaluator validator = new XPathRequestValidator();
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
 		validator.setExpressionResolver(resolver);
 		
@@ -73,7 +80,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		expressionMap.put(expression1, ERROR_MESSAGE+"1");
 		expressionMap.put(expression2, ERROR_MESSAGE+"2");
 		
-		AbstractXPathRequestValidator validator = new XPathRequestValidator();
+		AbstractExpressionEvaluator validator = new XPathRequestValidator();
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
 		validator.setExpressionResolver(resolver);
 		
@@ -104,7 +111,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		expressionMap.put(expression1, ERROR_MESSAGE+"1");
 		expressionMap.put(expression2, ERROR_MESSAGE+"2");
 		
-		AbstractXPathRequestValidator validator = new XPathRequestValidator();
+		AbstractExpressionEvaluator validator = new XPathRequestValidator();
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
 		validator.setExpressionResolver(resolver);
 		

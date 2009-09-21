@@ -40,4 +40,18 @@
 	<bean class="net.javacrumbs.springws.test.validator.SchemaRequestValidator">
 		<property name="schema" value="xml/schema.xsd"/>
 	</bean>
+	
+	<bean class="net.javacrumbs.springws.test.validator.XPathRequestValidatorFactoryBean">
+		<property name="namespaceMap">
+			<map>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+			</map>
+		</property>
+		<property name="exceptionMapping">
+			<map>
+				<entry key="//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'" value="Unsupported service class"/>
+			</map>
+		</property>
+	</bean>
 </beans>

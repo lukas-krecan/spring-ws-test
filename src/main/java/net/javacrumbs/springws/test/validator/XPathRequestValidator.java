@@ -16,17 +16,18 @@
 package net.javacrumbs.springws.test.validator;
 
 
-import org.springframework.core.Ordered;
-
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
+
+import org.springframework.core.Ordered;
 
 /**
  * Validates request using given XPath expressions. If the expression is evaluated as true an exception is thrown.
  * @author Lukas Krecan
  *
  */
-public class XPathRequestValidator extends AbstractXPathRequestValidator implements ResponseGenerator, Ordered {
+public class XPathRequestValidator extends AbstractExpressionEvaluator implements ResponseGenerator, Ordered {
 	
 
 

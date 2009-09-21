@@ -20,7 +20,7 @@
 		</swst:xpaths>
 	</swst:response-generator>
 	
-	<swst:compare-request-validator>
+	<swst:compare-validator>
 		<swst:namespaces>
 			soapenv=http://schemas.xmlsoap.org/soap/envelope/
 			ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
@@ -28,11 +28,21 @@
 		<swst:xpaths>
 			concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')
 		</swst:xpaths>
-	</swst:compare-request-validator>
+	</swst:compare-validator>
 	
 	<swst:schema-validator>
 		<swst:schemas>
 			classpath:xml/schema.xsd
 	    </swst:schemas>
 	</swst:schema-validator>
+	
+	<swst:xpath-validator>
+		<swst:namespaces>
+			soapenv=http://schemas.xmlsoap.org/soap/envelope/
+			ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
+		</swst:namespaces>
+		<swst:exceptionMapping>
+			<entry key="//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'" value="Unsupported service class"/>
+		</swst:exceptionMapping>
+	</swst:xpath-validator>
 </beans>

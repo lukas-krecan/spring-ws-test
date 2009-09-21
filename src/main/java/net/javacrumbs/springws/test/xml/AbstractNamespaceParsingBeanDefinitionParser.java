@@ -27,8 +27,8 @@ public abstract class AbstractNamespaceParsingBeanDefinitionParser extends Abstr
 
 	private static final String DELIMITERS = "\n";
 
-	protected String[] tokenize(Element controlRequestXPaths) {
-		return StringUtils.tokenizeToStringArray(controlRequestXPaths.getTextContent(), DELIMITERS);
+	protected String[] tokenize(Element array) {
+		return StringUtils.tokenizeToStringArray(array.getTextContent(), DELIMITERS);
 	}
 
 	protected void parseNamespaces(Element element, BeanDefinitionBuilder bean) {
