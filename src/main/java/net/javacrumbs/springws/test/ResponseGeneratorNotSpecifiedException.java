@@ -16,7 +16,7 @@
 package net.javacrumbs.springws.test;
 
 /**
- * Exception throw if no response generator is specified or if all of them return <code>null</code>.
+ * Exception thrown if no response generator is specified or if all of them return <code>null</code>.
  * @author Lukas Krecan
  *
  */

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Default WS test context implementation.
+ * Default {@link WsTestContext} implementation.
  * @author Lukas Krecan
  *
  */

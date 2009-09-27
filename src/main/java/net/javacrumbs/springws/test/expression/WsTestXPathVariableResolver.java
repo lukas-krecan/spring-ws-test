@@ -26,7 +26,7 @@ import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import org.springframework.beans.BeanWrapperImpl;
 
 /**
- * Resolves XPath variables.
+ * Resolves XPath variables. Supports uri and context XPath variables.
  * @author Lukas Krecan
  *
  */

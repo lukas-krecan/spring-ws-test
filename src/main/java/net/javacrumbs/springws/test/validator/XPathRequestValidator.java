@@ -16,9 +16,9 @@
 package net.javacrumbs.springws.test.validator;
 
 
+import net.javacrumbs.springws.test.ResponseGenerator;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
 
 import org.springframework.core.Ordered;
 

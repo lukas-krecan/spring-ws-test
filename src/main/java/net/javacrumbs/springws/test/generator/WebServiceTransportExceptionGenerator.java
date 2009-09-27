@@ -16,13 +16,14 @@
 package net.javacrumbs.springws.test.generator;
 
 
+import net.javacrumbs.springws.test.ResponseGenerator;
 import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
 
 import org.springframework.core.Ordered;
 import org.springframework.ws.client.WebServiceTransportException;
 
 /**
- * Validates request using given XPath expressions. If the expression is evaluated as true {@link WebServiceTransportException} is thrown.
+ * Validates request using given XPath expressions. If the expression is evaluated to true {@link WebServiceTransportException} is thrown.
  * @author Lukas Krecan
  *
  */

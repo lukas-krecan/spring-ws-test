@@ -21,8 +21,8 @@ import java.util.Arrays;
 
 import javax.xml.transform.Source;
 
+import net.javacrumbs.springws.test.ResponseGenerator;
 import net.javacrumbs.springws.test.WsTestException;
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

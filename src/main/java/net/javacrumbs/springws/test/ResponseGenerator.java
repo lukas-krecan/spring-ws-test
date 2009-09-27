@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.springws.test.generator;
+package net.javacrumbs.springws.test;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,7 +28,8 @@ import org.springframework.ws.WebServiceMessageFactory;
  */
 public interface ResponseGenerator {
 	/**
-	 * Generatest response corresponding to given uri and request. Can return <code>null</code> if it does not apply to given request.
+	 * Generates response corresponding to given uri and request. Can return <code>null</code> if it does not apply to given request or throw an 
+	 * exception if appropriate. 
 	 * @param uri
 	 * @param messageFactory
 	 * @param request

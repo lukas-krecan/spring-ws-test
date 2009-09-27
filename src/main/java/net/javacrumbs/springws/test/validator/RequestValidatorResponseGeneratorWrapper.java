@@ -18,7 +18,7 @@ package net.javacrumbs.springws.test.validator;
 import java.io.IOException;
 import java.net.URI;
 
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
+import net.javacrumbs.springws.test.ResponseGenerator;
 
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;

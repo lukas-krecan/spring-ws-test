@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
+import net.javacrumbs.springws.test.ResponseGenerator;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGenerator;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XPathRequestValidator;

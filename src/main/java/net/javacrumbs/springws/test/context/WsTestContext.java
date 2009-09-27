@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * Context that can be used for test specific data. Its attributes could be set in the test method and the 
- * values can be used in
+ * values can be used in the
  * <ul>
  * <li> XSLT transformation using {@link TemplateProcessingXPathResourceLookup}.</li>
  * <li> XPath resolution using {@link XPathResourceLookup} </li>
@@ -30,11 +30,28 @@ import java.util.Map;
  */
 public interface WsTestContext {
 	
+	/**
+	 * Sets the attribute
+	 * @param name
+	 * @param value
+	 */
 	public void setAttribute(String name, Object value);
 	
+	/**
+	 * Gets attribute value
+	 * @param attributeName
+	 * @return
+	 */
 	public Object getAttribute(String attributeName);
 	
+	/**
+	 * Returns map of the attributes
+	 * @return
+	 */
 	public Map<String, Object> getAttributeMap();
 
+	/**
+	 * Clear all attributes.
+	 */
 	public void clear();
 }

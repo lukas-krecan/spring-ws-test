@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;

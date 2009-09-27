@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
+import net.javacrumbs.springws.test.ResponseGenerator;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
 
@@ -27,8 +27,8 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 
 /**
- * Iterates through expressions mapped by exceptionMapping, if the expression is evaluated as true on given request, method {@link #expressionValid(String, String)} 
- * is called.
+ * Iterates through expressions mapped by exceptionMapping, if the expression is evaluated as true on given request, 
+ * method {@link #expressionValid(String, String)} is called.
  * @author Lukas Krecan
  *
  */
@@ -45,6 +45,10 @@ public abstract class AbstractExpressionEvaluator implements ResponseGenerator {
 		super();
 	}
 
+	/**
+	 * Iterates through expressions mapped by exceptionMapping, if the expression is evaluated as true on given request, 
+     * method {@link #expressionValid(String, String)} is called.
+	 */
 	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request) throws IOException {
 		for (Map.Entry<String, String> entry: exceptionMapping.entrySet())
 		{

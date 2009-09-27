@@ -27,7 +27,6 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 
 import org.junit.Before;

@@ -16,7 +16,7 @@
 package net.javacrumbs.springws.test;
 
 /**
- * Exception thrown test validation fails.
+ * Exception thrown when test validation fails.
  * @author Lukas Krecan
  *
  */

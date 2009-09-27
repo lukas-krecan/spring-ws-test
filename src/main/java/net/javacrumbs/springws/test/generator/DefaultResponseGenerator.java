@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import net.javacrumbs.springws.test.ResponseGenerator;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
 import net.javacrumbs.springws.test.util.TransportInputStreamWrapper;
 
