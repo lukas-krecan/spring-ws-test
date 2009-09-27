@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.springws.test.validator;
+package net.javacrumbs.springws.test.generator;
 
 
 import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
 import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluatorFactoryBean;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
+import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 
 
 /**
@@ -26,15 +27,15 @@ import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
  * @author Lukas Krecan
  *
  */
-public class XPathRequestValidatorFactoryBean extends AbstractExpressionEvaluatorFactoryBean {
+public class WebServiceTransportExceptionGeneratorFactoryBean extends AbstractExpressionEvaluatorFactoryBean {
 	
-	public XPathRequestValidatorFactoryBean()
+	public WebServiceTransportExceptionGeneratorFactoryBean()
 	{
-		setOrder(XPathRequestValidator.DEFAULT_ORDER);
+		setOrder(WebServiceTransportExceptionGenerator.DEFAULT_ORDER);
 	}
 
 	@Override
 	protected AbstractExpressionEvaluator createEvaluator() {
-		return new XPathRequestValidator();
+		return new WebServiceTransportExceptionGenerator();
 	}
 }

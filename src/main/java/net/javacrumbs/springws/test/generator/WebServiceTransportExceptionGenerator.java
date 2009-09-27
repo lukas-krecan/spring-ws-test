@@ -13,33 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.springws.test.validator;
+package net.javacrumbs.springws.test.generator;
 
 
-import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
-import net.javacrumbs.springws.test.generator.ResponseGenerator;
 
 import org.springframework.core.Ordered;
+import org.springframework.ws.client.WebServiceTransportException;
 
 /**
- * Validates request using given XPath expressions. If the expression is evaluated as true {@link WsTestException} is thrown.
+ * Validates request using given XPath expressions. If the expression is evaluated as true {@link WebServiceTransportException} is thrown.
  * @author Lukas Krecan
  *
  */
-public class XPathRequestValidator extends AbstractExpressionEvaluator implements ResponseGenerator, Ordered {
+public class WebServiceTransportExceptionGenerator extends AbstractExpressionEvaluator implements ResponseGenerator, Ordered {
 	
 
-
-	static final int DEFAULT_ORDER = 25;
+	static final int DEFAULT_ORDER = 30;
 	
-	public XPathRequestValidator()
+	public WebServiceTransportExceptionGenerator()
 	{
 		setOrder(DEFAULT_ORDER);
 	}
 	
 	protected void expressionValid(String expression, String errorMessage) {
-		throw new WsTestException(errorMessage);
+		throw new WebServiceTransportException(errorMessage);
 	}
 
 

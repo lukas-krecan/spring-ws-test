@@ -64,4 +64,14 @@
   			<xsd:attribute name="id" type="xsd:ID"/>
       </xsd:complexType>
    </xsd:element>
+   
+   <xsd:element name="transport-exception-generator">
+      <xsd:complexType>
+  			<xsd:sequence>
+  				<xsd:element name="namespaces" type="xsd:string" minOccurs="0"/>
+  				<xsd:element name="exceptionMapping" minOccurs="0" type="beans:mapType"/>
+  			</xsd:sequence>
+  			<xsd:attribute name="id" type="xsd:ID"/>
+      </xsd:complexType>
+   </xsd:element>
 </xsd:schema>

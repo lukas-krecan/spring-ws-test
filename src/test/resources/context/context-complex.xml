@@ -42,6 +42,14 @@
 					</property>
 					<property name="expressionResolver" ref="xpathResolver"/>		
 				</bean>
+				<bean class="net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGenerator">
+					<property name="exceptionMapping">
+						<map>
+							<entry key="//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'" value="Unsupported service class"/>
+						</map>
+					</property>
+					<property name="expressionResolver" ref="xpathResolver"/>		
+				</bean>
 				<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
 					<property name="resourceLookup">
 						<bean class="net.javacrumbs.springws.test.lookup.DefaultResourceLookup">

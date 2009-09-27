@@ -15,16 +15,13 @@
  */
 package net.javacrumbs.springws.test.xml;
 
-
-import net.javacrumbs.springws.test.validator.XPathRequestValidatorFactoryBean;
+import net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGeneratorFactoryBean;
 
 import org.w3c.dom.Element;
 
-public class XPathRequestValidatorBeanDefinitionParser extends AbstractExpressionEvaluatorBeanDefinitionParser {
-	
+public class WebServiceTransportGeneratorBeanDefinitionParser extends AbstractExpressionEvaluatorBeanDefinitionParser {
 
 	protected Class<?> getBeanClass(Element element) {
-		return XPathRequestValidatorFactoryBean.class;
+		return WebServiceTransportExceptionGeneratorFactoryBean.class;
 	}
-
 }

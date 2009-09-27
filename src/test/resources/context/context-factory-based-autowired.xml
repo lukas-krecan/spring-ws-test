@@ -54,4 +54,18 @@
 			</map>
 		</property>
 	</bean>
+	
+	<bean class="net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGeneratorFactoryBean">
+		<property name="namespaceMap">
+			<map>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+			</map>
+		</property>
+		<property name="exceptionMapping">
+			<map>
+				<entry key="//ns:from = 'DUB' and //ns:to = 'LHR'" value="Authorization failed"/>
+			</map>
+		</property>
+	</bean>
 </beans>

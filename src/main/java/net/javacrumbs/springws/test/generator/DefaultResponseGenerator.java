@@ -36,7 +36,7 @@ import org.springframework.ws.WebServiceMessageFactory;
  */
 public class DefaultResponseGenerator implements ResponseGenerator, Ordered {
 
-	static final int DEFAULT_ORDER = 30;
+	static final int DEFAULT_ORDER = 40;
 
 	protected final Log logger = LogFactory.getLog(getClass());
 

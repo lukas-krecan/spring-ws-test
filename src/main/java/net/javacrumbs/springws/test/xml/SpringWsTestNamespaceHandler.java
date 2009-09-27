@@ -24,6 +24,7 @@ public class SpringWsTestNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionParser("compare-validator", new XmlCompareRequestValidatorBeanDefinitionParser());        
 		registerBeanDefinitionParser("schema-validator", new SchemaRequestValidatorBeanDefinitionParser());        
 		registerBeanDefinitionParser("xpath-validator", new XPathRequestValidatorBeanDefinitionParser());        
+		registerBeanDefinitionParser("transport-exception-generator", new WebServiceTransportGeneratorBeanDefinitionParser());        
 	}
 
 }

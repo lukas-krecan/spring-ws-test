@@ -24,6 +24,7 @@ import java.util.Iterator;
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.generator.ResponseGenerator;
+import net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGenerator;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
@@ -72,7 +73,7 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 		assertNotNull(sender);
 		Collection<ResponseGenerator> responseGenerators = sender.getResponseGenerators();
 		assertNotNull(responseGenerators);
-		assertEquals(4, responseGenerators.size());
+		assertEquals(5, responseGenerators.size());
 		Iterator<ResponseGenerator> iterator = responseGenerators.iterator();
 		assertEquals(XmlCompareRequestValidator.class, iterator.next().getClass());
 		assertEquals(SchemaRequestValidator.class, iterator.next().getClass());
@@ -81,6 +82,7 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 		assertEquals("Unsupported service class", xpathRequestValidator.getExceptionMapping().get("//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'"));
 		
 		
+		assertEquals(WebServiceTransportExceptionGenerator.class, iterator.next().getClass());
 		assertEquals(DefaultResponseGenerator.class, iterator.next().getClass());
 	}
 }

@@ -35,6 +35,15 @@
 						<entry key="//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'" value="Unsupported service class"/>
 					</swst:exceptionMapping>
 				</swst:xpath-validator>
+				<swst:transport-exception-generator>
+					<swst:namespaces>
+						soapenv=http://schemas.xmlsoap.org/soap/envelope/
+						ns=http://www.springframework.org/spring-ws/samples/airline/schemas/messages
+					</swst:namespaces>
+					<swst:exceptionMapping>
+						<entry key="//ns:from = 'DUB' and //ns:to = 'LHR'" value="Authorization failed"/>
+					</swst:exceptionMapping>
+				</swst:transport-exception-generator>
 				<swst:response-generator>
 					<swst:namespaces>
 						soapenv=http://schemas.xmlsoap.org/soap/envelope/
