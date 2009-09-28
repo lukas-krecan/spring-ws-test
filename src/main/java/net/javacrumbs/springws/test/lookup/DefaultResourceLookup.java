@@ -91,10 +91,9 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 	 * @return
 	 */
 	protected Resource findResourceForExpression(String xpath, URI uri, Document document) {
-		Resource resultResource; 
 		String resourcePath = evaluateExpression(xpath, uri, document);
 		logger.debug("Looking for resource \"" + resourcePath + "\"");
-		resultResource = resourceLoader.getResource(resourcePath);
+		Resource resultResource = resourceLoader.getResource(resourcePath);
 		resultResource = resultResource.exists() ? resultResource : null;
 		return resultResource;
 	}
