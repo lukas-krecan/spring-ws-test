@@ -48,7 +48,7 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 		return null;
 	}
 	
-	public void validateRequest(URI uri, WebServiceMessage message) throws IOException {
+	protected void validateRequest(URI uri, WebServiceMessage message) throws IOException {
 		Document messageDocument = loadDocument(message);
 	
 		Resource controlResource = controlResourceLookup.lookupResource(uri, message);
