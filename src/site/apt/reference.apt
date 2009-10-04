@@ -107,6 +107,24 @@ concat($context.testName,'-response.xml')
 </xsl:stylesheet>
 --- 
 
+* Default order when autowiring is used
+
+  When <<<ResponseGenerator>>> autowiring is used, they are by default invoked in the following order.
+  
+*-------------------------------------------+-------+
+||Class                                     ||Order |
+*-------------------------------------------+-------:
+|XmlCompareRequestValidator                 |10     |
+*-------------------------------------------+-------:
+|SchemaRequestValidator                     |20     |
+*-------------------------------------------+-------:
+|XPathRequestValidator                      |30     | 
+*-------------------------------------------+-------:
+|WebServiceTransportExceptionGenerator      |40     |
+*-------------------------------------------+-------:
+|DefaultResponseGenerator                   |50     |
+*-------------------------------------------+-------:
+
 * Logging
   
    Spring WS Test log some information using commons-logging. For example, if you need to troubleshoot your test and you are using log4j, you
@@ -115,4 +133,5 @@ concat($context.testName,'-response.xml')
 ---
 log4j.logger.net.javacrumbs=TRACE
 --- 
+
 

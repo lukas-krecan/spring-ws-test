@@ -211,7 +211,7 @@ Tutorial
 </bean>
 ---
   
-   Validator configured in this way will throw an exception if service class is not "economy" or business".
+   Validator configured in this way will throw an exception if service class is not "economy" or "business".
    
 ** WebServiceTransportExceptionGenerator
 

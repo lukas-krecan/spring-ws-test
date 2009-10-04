@@ -30,7 +30,7 @@ import org.springframework.ws.client.WebServiceTransportException;
 public class WebServiceTransportExceptionGenerator extends AbstractExpressionEvaluator implements ResponseGenerator, Ordered {
 	
 
-	static final int DEFAULT_ORDER = 30;
+	static final int DEFAULT_ORDER = 40;
 	
 	public WebServiceTransportExceptionGenerator()
 	{

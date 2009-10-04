@@ -31,7 +31,7 @@ public class XPathRequestValidator extends AbstractExpressionEvaluator implement
 	
 
 
-	static final int DEFAULT_ORDER = 25;
+	static final int DEFAULT_ORDER = 30;
 	
 	public XPathRequestValidator()
 	{
