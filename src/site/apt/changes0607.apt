@@ -1,0 +1,42 @@
+   ------
+   Changes between version 0.6 and 0.7
+   ------
+~~
+~~ Copyright 2006 the original author or authors.
+~~
+~~ Licensed under the Apache License, Version 2.0 (the "License");
+~~ you may not use this file except in compliance with the License.
+~~ You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+~~
+Changes between version 0.6 and 0.7
+
+   There were some changes between versions 0.6 and 0.7. The most important is that some parts of API have changed. Good news are that if you
+   are just using the framework and not extending it you should not notice. Anyway if your test do not work after upgrading to 0.7, here you will find how to fix it.
+
+* Request validators removal 
+
+   Since version 0.7 there is no <<<RequestValidator>>> interface. Both RequestValidators and ResponseGenerator now implement <<<ResponseGenerator>>>
+   interface. So form now on validators and generators are treated in the same way. The only difference is that validators either generate an exception or 
+   return null. If you have your own validators, please change their interface to <<<ResponseGenerator>>>.
+   
+   Please also note, that validator collection has been removed from  <<<MockWebServiceConnection>>> and <<<MockWebServiceMessageSender>>>. If you were using it, inject
+   your validators into generators collection instead.
+   
+* Validator semantic change
+
+  By treating validators in the same way as generators, the semantic changed a bit. Before, the validation exception was thrown from 
+  send method, now it is thrown from receive method. Again, in normal tests it should not affect you.
+    
+
+* Ordering of request generators
+  
+  Until version 0.6 the order of response generators was not deterministic if you used autowiring. From version 0.7 the generators can implement
+  <<<org.springframework.core.Ordered>>> and then they will be ordered accordingly.

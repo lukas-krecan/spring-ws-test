@@ -188,8 +188,36 @@ Tutorial
 	</bean>		
 ---
 
-  It's similar to the request generator, the difference is that instead of generating responses it validates the request. You can use XSLT templates here as well. 
+  It's similar to the default request generator, the difference is that instead of generating responses it validates the request. You can use XSLT templates here as well. 
   You can also specify special placeholder <<<${IGNORE}>>> for values that should be ignored.
+
+** XPathRequestValidator
+  
+  It is also possible to validate request using XPath. For example you can use following configuration.
+  
+---
+<bean class="net.javacrumbs.springws.test.validator.XPathRequestValidatorFactoryBean">
+	<property name="namespaceMap">
+		<map>
+			<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
+			<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+		</map>
+	</property>
+	<property name="exceptionMapping">
+		<map>
+			<entry key="//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'" value="Unsupported service class"/>
+		</map>
+	</property>
+</bean>
+---
+  
+   Validator configured in this way will throw an exception if service class is not "economy" or business".
+   
+** WebServiceTransportExceptionGenerator
+
+   Similar to XPathRequestValidator is WebServiceTransportExceptionGenerator. The only difference is the exception thrown. 
+   <<<WebServiceTransportException>>> is throw so this class can be used to simulate connection problems.    
+
 
 * Test context
 

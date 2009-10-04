@@ -31,7 +31,7 @@ Simplify your WS client tests
   * ...
   
   <<Note: I really want to hear your feedback. The project is in very early stage so you have unique opportunity to drive its development. 
-   If you find a bug, please report it in project {{{http://javacrumbs.net/jira/browse/SWST}JIRA}}. If you encounter any issue, do not hesitate and contact me on lukas at krecan dot net.
+   If you find a bug, please report it in project {{{http://mvnindex.org/jira/browse/SWST}JIRA}}. If you encounter any issue, do not hesitate and contact me on lukas at krecan dot net.
    If you like it, please let me now on my {{{http://blog.krecan.net/2009/09/02/spring-ws-test/}blog}}.>>
   
 * Motivation  
