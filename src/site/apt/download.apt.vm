@@ -20,18 +20,7 @@
  *#
 Maven dependency  
   
-  If you are using Maven you can add following repository definition to your pom.xml
-  
----
-<repositories>
-	<repository>
-		<id>Spring WS test</id>
-		<url>http://javacrumbs.net/spring-ws-test-files/</url>
-	</repository>
-</repositories>
----
-
-  And then add dependency
+  Simply add the dependency
 
 ---
 <dependency>
