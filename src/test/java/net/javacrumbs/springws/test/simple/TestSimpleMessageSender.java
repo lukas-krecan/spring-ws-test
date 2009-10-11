@@ -5,11 +5,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import javax.xml.transform.Result;
-
 import net.javacrumbs.springws.test.AbstractMessageTest;
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
-import net.javacrumbs.springws.test.expression.ExpressionResolver;
+import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
@@ -36,7 +34,23 @@ public class TestSimpleMessageSender extends AbstractMessageTest{
 		
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
-		Result responseResult = new StringResult();
+		StringResult responseResult = new StringResult();
+		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+	}
+	
+	@Test(expected=WsTestException.class)
+	public void testExpectAndThrow() throws IOException
+	{
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageFactory().expectRequest("xml/control-message-test.xml").andThrow(new WsTestException("Test error"));
+		assertNotNull(sender);
+		assertEquals(2, sender.getResponseGenerators().size());
+		
+		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)sender.getResponseGenerators().get(0)).getControlResourceLookup();
+		assertEquals("'xml/control-message-test.xml'", lookup1.getResourceExpressions()[0]);
+			
+		WebServiceTemplate template = new WebServiceTemplate();
+		template.setMessageSender(sender);
+		StringResult responseResult = new StringResult();
 		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	

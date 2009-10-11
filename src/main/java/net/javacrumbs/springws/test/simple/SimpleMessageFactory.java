@@ -1,14 +1,19 @@
 package net.javacrumbs.springws.test.simple;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.ResponseGenerator;
+import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
 public class SimpleMessageFactory {
@@ -42,6 +47,17 @@ public class SimpleMessageFactory {
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		responseGenerator.setResourceLookup(resourceLookup);
 		addResponseGenerator(responseGenerator);
+		return create();
+	}
+
+	public WebServiceMessageSender andThrow(final RuntimeException exception) {
+		ResponseGenerator thrower = new ResponseGenerator()
+		{
+			public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
+				throw exception;
+			}
+		};
+		addResponseGenerator(thrower);
 		return create();
 	}
 	
