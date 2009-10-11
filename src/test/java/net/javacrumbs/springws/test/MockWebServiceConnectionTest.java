@@ -94,7 +94,7 @@ public class MockWebServiceConnectionTest {
 		
 		ResponseGenerator responseGenerator = createMock(ResponseGenerator.class);
 		WebServiceMessage response = createMock(WebServiceMessage.class);
-		connection.setResponseGenerators(Collections.singleton(responseGenerator));
+		connection.setResponseGenerators(Collections.singletonList(responseGenerator));
 		expect(responseGenerator.generateResponse(uri, messageFactory, request)).andReturn(response);
 		
 		

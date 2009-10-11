@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
@@ -42,7 +43,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	private WebServiceMessage request;
 	
-	private Collection<ResponseGenerator> responseGenerators;
+	private List<ResponseGenerator> responseGenerators;
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
@@ -134,7 +135,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		return responseGenerators;
 	}
 
-	public void setResponseGenerators(Collection<ResponseGenerator> responseGenerators) {
+	public void setResponseGenerators(List<ResponseGenerator> responseGenerators) {
 		this.responseGenerators = responseGenerators;
 	}
 }

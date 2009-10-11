@@ -18,10 +18,8 @@ package net.javacrumbs.springws.test;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,7 +36,7 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  */
 public class MockWebServiceMessageSender implements WebServiceMessageSender, InitializingBean, ApplicationContextAware {
 	
-	private Collection<ResponseGenerator> responseGenerators = new ArrayList<ResponseGenerator>();
+	private List<ResponseGenerator> responseGenerators = new ArrayList<ResponseGenerator>();
 	
 	private boolean autowireResponseGenerators = true;
 	
@@ -46,7 +44,7 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 	
 	public WebServiceConnection createConnection(URI uri) throws IOException {
 		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
-		connection.setResponseGenerators(responseGenerators);
+		connection.setResponseGenerators(getResponseGenerators());
 		return connection;
 	}
 
@@ -57,19 +55,19 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 	/**
 	 * Response generators used to generate the response.
 	 */
-	public Collection<ResponseGenerator> getResponseGenerators() {
-		return responseGenerators;
+	public List<ResponseGenerator> getResponseGenerators() {
+		return Collections.unmodifiableList(responseGenerators);
 	}
 
-	public void setResponseGenerators(Collection<ResponseGenerator> responseGenerators) {
-		this.responseGenerators = responseGenerators;
+	public void setResponseGenerators(List<ResponseGenerator> responseGenerators) {
+		this.responseGenerators = new ArrayList<ResponseGenerator>(responseGenerators);
 	}
 	
 	public void setResponseGenerator(ResponseGenerator responseGenerator) {
-		setResponseGenerators(Collections.singleton(responseGenerator));
+		setResponseGenerators(Collections.singletonList(responseGenerator));
 	}
 
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		autowireResponseGenerators();
 	}
 
