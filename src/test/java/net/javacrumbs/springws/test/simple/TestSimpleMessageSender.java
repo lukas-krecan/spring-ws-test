@@ -24,12 +24,12 @@ public class TestSimpleMessageSender extends AbstractMessageTest{
 	{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageFactory().expectRequest("xml/control-message-test.xml").andReturnResponse("mock-responses/test/default-response.xml");
 		assertNotNull(sender);
-		assertEquals(2, sender.getResponseGenerators().size());
+		assertEquals(2, sender.getRequestProcessors().size());
 		
-		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)sender.getResponseGenerators().get(0)).getControlResourceLookup();
+		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)sender.getRequestProcessors().get(0)).getControlResourceLookup();
 		assertEquals("'xml/control-message-test.xml'", lookup1.getResourceExpressions()[0]);
 		
-		DefaultResourceLookup lookup2 = (DefaultResourceLookup)((DefaultResponseGenerator)sender.getResponseGenerators().get(1)).getResourceLookup();
+		DefaultResourceLookup lookup2 = (DefaultResourceLookup)((DefaultResponseGenerator)sender.getRequestProcessors().get(1)).getResourceLookup();
 		assertEquals("'mock-responses/test/default-response.xml'", lookup2.getResourceExpressions()[0]);
 		
 		WebServiceTemplate template = new WebServiceTemplate();
@@ -43,9 +43,9 @@ public class TestSimpleMessageSender extends AbstractMessageTest{
 	{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageFactory().expectRequest("xml/control-message-test.xml").andThrow(new WsTestException("Test error"));
 		assertNotNull(sender);
-		assertEquals(2, sender.getResponseGenerators().size());
+		assertEquals(2, sender.getRequestProcessors().size());
 		
-		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)sender.getResponseGenerators().get(0)).getControlResourceLookup();
+		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)sender.getRequestProcessors().get(0)).getControlResourceLookup();
 		assertEquals("'xml/control-message-test.xml'", lookup1.getResourceExpressions()[0]);
 			
 		WebServiceTemplate template = new WebServiceTemplate();

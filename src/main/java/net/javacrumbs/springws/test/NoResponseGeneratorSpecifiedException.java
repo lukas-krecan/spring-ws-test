@@ -20,11 +20,11 @@ package net.javacrumbs.springws.test;
  * @author Lukas Krecan
  *
  */
-public class ResponseGeneratorNotSpecifiedException extends IllegalStateException {
+public class NoResponseGeneratorSpecifiedException extends IllegalStateException {
 
 	private static final long serialVersionUID = -1760861006446428034L;
 
-	public ResponseGeneratorNotSpecifiedException(String message) {
+	public NoResponseGeneratorSpecifiedException(String message) {
 		super(message);
 	}
 

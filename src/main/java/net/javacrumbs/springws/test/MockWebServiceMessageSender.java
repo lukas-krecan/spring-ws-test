@@ -36,15 +36,15 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  */
 public class MockWebServiceMessageSender implements WebServiceMessageSender, InitializingBean, ApplicationContextAware {
 	
-	private List<ResponseGenerator> responseGenerators = new ArrayList<ResponseGenerator>();
+	private List<RequestProcessor> requestProcessors = new ArrayList<RequestProcessor>();
 	
-	private boolean autowireResponseGenerators = true;
+	private boolean autowireRequestProcessors = true;
 	
 	private ApplicationContext applicationContext;
 	
 	public WebServiceConnection createConnection(URI uri) throws IOException {
 		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
-		connection.setResponseGenerators(getResponseGenerators());
+		connection.setRequestProcessors(getRequestProcessors());
 		return connection;
 	}
 
@@ -55,38 +55,34 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 	/**
 	 * Response generators used to generate the response.
 	 */
-	public List<ResponseGenerator> getResponseGenerators() {
-		return Collections.unmodifiableList(responseGenerators);
+	public List<RequestProcessor> getRequestProcessors() {
+		return Collections.unmodifiableList(requestProcessors);
 	}
 
-	public void setResponseGenerators(List<ResponseGenerator> responseGenerators) {
-		this.responseGenerators = new ArrayList<ResponseGenerator>(responseGenerators);
+	public void setRequestProcessors(List<RequestProcessor> responseGenerators) {
+		this.requestProcessors = new ArrayList<RequestProcessor>(responseGenerators);
 	}
 	
-	public void setResponseGenerator(ResponseGenerator responseGenerator) {
-		setResponseGenerators(Collections.singletonList(responseGenerator));
-	}
-
 	public void afterPropertiesSet() {
-		autowireResponseGenerators();
+		autowireRequestProcessors();
 	}
 
 	@SuppressWarnings("unchecked")
-	private void autowireResponseGenerators() {
-		if (isAutowireResponseGenerators())
+	private void autowireRequestProcessors() {
+		if (isAutowireRequestProcessors())
 		{
-			List<ResponseGenerator> generators = new ArrayList<ResponseGenerator>(applicationContext.getBeansOfType(ResponseGenerator.class).values());
+			List<RequestProcessor> generators = new ArrayList<RequestProcessor>(applicationContext.getBeansOfType(RequestProcessor.class).values());
 			Collections.sort(generators, new OrderComparator());
-			responseGenerators.addAll(generators);
+			requestProcessors.addAll(generators);
 		}
 	}
 
-	public boolean isAutowireResponseGenerators() {
-		return autowireResponseGenerators;
+	public boolean isAutowireRequestProcessors() {
+		return autowireRequestProcessors;
 	}
 
-	public void setAutowireResponseGenerators(boolean autowireResponseGenerators) {
-		this.autowireResponseGenerators = autowireResponseGenerators;
+	public void setAutowireRequestProcessors(boolean autowireResponseGenerators) {
+		this.autowireRequestProcessors = autowireResponseGenerators;
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

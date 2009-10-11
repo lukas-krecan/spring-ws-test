@@ -9,7 +9,7 @@
 
 
 	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender">
-		<property name="responseGenerators">
+		<property name="requestProcessors">
 			<list>
 				<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidatorFactoryBean">
 					<property name="namespaceMap">

@@ -32,8 +32,8 @@ import org.springframework.ws.transport.WebServiceConnection;
 
 
 /**
- * Mock WS connection that instead of actually calling the WS uses {@link ResponseGenerator}s
- * to generate the response.
+ * Mock WS connection that instead of actually calling the WS uses {@link RequestProcessor}s
+ * to validate all the requests and generate responses.
  * @author Lukas Krecan
  *
  */
@@ -43,7 +43,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	private WebServiceMessage request;
 	
-	private List<ResponseGenerator> responseGenerators;
+	private List<RequestProcessor> requestProcessors;
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
@@ -68,19 +68,19 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	}
 
 	/**
-	 * Calls all generators. If a generator returns <code>null</code>, the next generator is called. If all generators return  <code>null</code>
-	 * {@link MockWebServiceConnection#handleResponseNotFound} method is called. In default implementation it throws {@link ResponseGeneratorNotSpecifiedException}.
+	 * Calls all request processors. If a processor returns <code>null</code>, the next processor is called. If all processor return  <code>null</code>
+	 * {@link MockWebServiceConnection#handleResponseNotFound} method is called. In default implementation it throws {@link NoResponseGeneratorSpecifiedException}.
 	 * @param messageFactory
 	 * @return
 	 * @throws IOException
 	 */
 	protected WebServiceMessage generateResponse(WebServiceMessageFactory messageFactory) throws IOException {
 		WebServiceMessage response = null;
-		if (responseGenerators!=null)
+		if (requestProcessors!=null)
 		{
-			for (ResponseGenerator responseGenerator: responseGenerators)
+			for (RequestProcessor responseGenerator: requestProcessors)
 			{
-				response = responseGenerator.generateResponse(uri, messageFactory, request);
+				response = responseGenerator.processRequest(uri, messageFactory, request);
 				if (response!=null)
 				{
 					return response;
@@ -91,12 +91,12 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	}
 
 	/**
-	 * Throws {@link ResponseGeneratorNotSpecifiedException}. Can be overrriden.
+	 * Throws {@link NoResponseGeneratorSpecifiedException}. Can be overrriden.
 	 * @param messageFactory
 	 * @return
 	 */
 	protected WebServiceMessage handleResponseNotFound(WebServiceMessageFactory messageFactory) {
-		throw new ResponseGeneratorNotSpecifiedException("No response generator configured for uri "+uri+".");
+		throw new NoResponseGeneratorSpecifiedException("No response generator configured for uri "+uri+".");
 	}
 	
 
@@ -131,11 +131,11 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		this.xmlUtil = xmlUtil;
 	}
 
-	public Collection<ResponseGenerator> getResponseGenerators() {
-		return responseGenerators;
+	public Collection<RequestProcessor> getRequestProcessors() {
+		return requestProcessors;
 	}
 
-	public void setResponseGenerators(List<ResponseGenerator> responseGenerators) {
-		this.responseGenerators = responseGenerators;
+	public void setRequestProcessors(List<RequestProcessor> responseGenerators) {
+		this.requestProcessors = responseGenerators;
 	}
 }

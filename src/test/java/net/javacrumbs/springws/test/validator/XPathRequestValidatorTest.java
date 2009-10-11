@@ -61,7 +61,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		
 		try
 		{
-			validator.generateResponse(null, messageFactory, message);
+			validator.processRequest(null, messageFactory, message);
 			fail("Exception expected");
 		}
 		catch(WsTestException e)
@@ -92,7 +92,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		
 		try
 		{
-			validator.generateResponse(null, messageFactory, message);
+			validator.processRequest(null, messageFactory, message);
 			fail("Exception expected");
 		}
 		catch(WsTestException e)
@@ -121,7 +121,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		
 		replay(resolver);
 	
-		validator.generateResponse(null, messageFactory, message);
+		validator.processRequest(null, messageFactory, message);
 		
 		verify(resolver);
 	}

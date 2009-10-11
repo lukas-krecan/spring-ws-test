@@ -53,7 +53,7 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 
 		replay(resourceLookup);
 		
-		WebServiceMessage response = generator.generateResponse(null, messageFactory, request);
+		WebServiceMessage response = generator.processRequest(null, messageFactory, request);
 		assertNotNull(response);
 		
 		Document controlDocument = loadDocument(responseResource);
@@ -75,7 +75,7 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		
 		replay(resourceLookup);
 		
-		WebServiceMessage response = generator.generateResponse(null, messageFactory, request);
+		WebServiceMessage response = generator.processRequest(null, messageFactory, request);
 		assertNull(response);
 		
 		

@@ -18,7 +18,7 @@ package net.javacrumbs.springws.test.validator;
 import java.io.IOException;
 import java.net.URI;
 
-import net.javacrumbs.springws.test.ResponseGenerator;
+import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 
 import org.springframework.ws.WebServiceMessage;
@@ -26,7 +26,7 @@ import org.springframework.ws.WebServiceMessage;
 /**
  * Validates request.
  * @author Lukas Krecan
- * @deprecated RequestValidators are special case of {@link ResponseGenerator}s so please use ResponseGenerator instead.
+ * @deprecated RequestValidators are special case of {@link RequestProcessor}s so please use ResponseGenerator instead.
  */
 public interface RequestValidator {
 

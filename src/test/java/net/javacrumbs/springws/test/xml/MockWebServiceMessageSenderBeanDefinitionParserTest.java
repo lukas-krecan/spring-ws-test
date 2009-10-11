@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
-import net.javacrumbs.springws.test.ResponseGenerator;
+import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGenerator;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
@@ -71,10 +71,10 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) context.getBean("mock-sender");
 		assertNotNull(sender);
-		Collection<ResponseGenerator> responseGenerators = sender.getResponseGenerators();
+		Collection<RequestProcessor> responseGenerators = sender.getRequestProcessors();
 		assertNotNull(responseGenerators);
 		assertEquals(5, responseGenerators.size());
-		Iterator<ResponseGenerator> iterator = responseGenerators.iterator();
+		Iterator<RequestProcessor> iterator = responseGenerators.iterator();
 		assertEquals(XmlCompareRequestValidator.class, iterator.next().getClass());
 		assertEquals(SchemaRequestValidator.class, iterator.next().getClass());
 		

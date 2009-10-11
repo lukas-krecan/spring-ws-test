@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import net.javacrumbs.springws.test.ResponseGenerator;
+import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
 import net.javacrumbs.springws.test.util.TransportInputStreamWrapper;
 
@@ -35,7 +35,7 @@ import org.springframework.ws.WebServiceMessageFactory;
  * @author Lukas Krecan
  *
  */
-public class DefaultResponseGenerator implements ResponseGenerator, Ordered {
+public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 
 	static final int DEFAULT_ORDER = 50;
 
@@ -45,7 +45,7 @@ public class DefaultResponseGenerator implements ResponseGenerator, Ordered {
 	
 	private int order = DEFAULT_ORDER;
 
-	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
+	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
 		if (resultResource == null) {
 			logger.debug("Resource not found, returning null.");

@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 import javax.xml.transform.Source;
 
-import net.javacrumbs.springws.test.ResponseGenerator;
+import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 
 import org.apache.commons.logging.Log;
@@ -46,7 +46,7 @@ import org.xml.sax.SAXParseException;
  * @author Lukas Krecan
  *
  */
-public class SchemaRequestValidator implements InitializingBean, ResponseGenerator, Ordered{
+public class SchemaRequestValidator implements InitializingBean, RequestProcessor, Ordered{
 
     private XmlValidator validator;
     
@@ -60,7 +60,7 @@ public class SchemaRequestValidator implements InitializingBean, ResponseGenerat
 	
 	private int order = DEFAULT_ORDER;
     
-    public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,
+    public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,
     		WebServiceMessage request) throws IOException {
     	validateRequest(uri, request);
     	return null;

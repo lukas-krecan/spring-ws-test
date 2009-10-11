@@ -22,13 +22,13 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 
 /**
- * Generates mock response.
+ * Processes the request. It can either validate the request or generate a response based on the request.
  * @author Lukas Krecan
  *
  */
-public interface ResponseGenerator {
+public interface RequestProcessor {
 	/**
-	 * Generates response corresponding to given uri and request. Can return <code>null</code> if it does not apply to given request or throw an 
+	 * Processes the request. It can either validate the request or generate a response based on the request. Can return <code>null</code> if it does not apply to given request or throw an 
 	 * exception if appropriate. 
 	 * @param uri
 	 * @param messageFactory
@@ -36,5 +36,5 @@ public interface ResponseGenerator {
 	 * @return
 	 * @throws IOException
 	 */
-	public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request) throws IOException;
+	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request) throws IOException;
 }

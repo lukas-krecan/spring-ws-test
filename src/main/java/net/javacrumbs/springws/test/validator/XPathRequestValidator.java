@@ -16,7 +16,7 @@
 package net.javacrumbs.springws.test.validator;
 
 
-import net.javacrumbs.springws.test.ResponseGenerator;
+import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
 
@@ -27,7 +27,7 @@ import org.springframework.core.Ordered;
  * @author Lukas Krecan
  *
  */
-public class XPathRequestValidator extends AbstractExpressionEvaluator implements ResponseGenerator, Ordered {
+public class XPathRequestValidator extends AbstractExpressionEvaluator implements RequestProcessor, Ordered {
 	
 
 

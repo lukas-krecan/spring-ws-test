@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
-import net.javacrumbs.springws.test.ResponseGenerator;
+import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
@@ -17,17 +17,17 @@ import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
 public class SimpleMessageFactory {
-	private final List<ResponseGenerator> responseGenerators = new ArrayList<ResponseGenerator>();
+	private final List<RequestProcessor> requestProcessors = new ArrayList<RequestProcessor>();
 	
 	private WebServiceMessageSender create() {
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
-		messageSender.setResponseGenerators(responseGenerators);
+		messageSender.setRequestProcessors(requestProcessors);
 		return messageSender;
 	}
 
-	public SimpleMessageFactory addResponseGenerator(ResponseGenerator responseGenerator)
+	public SimpleMessageFactory addRequestProcessor(RequestProcessor responseGenerator)
 	{
-		responseGenerators.add(responseGenerator);
+		requestProcessors.add(responseGenerator);
 		return this;
 	}
 	
@@ -37,7 +37,7 @@ public class SimpleMessageFactory {
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		validator.setControlResourceLookup(resourceLookup);
-		addResponseGenerator(validator);
+		addRequestProcessor(validator);
 		return this;
 	}
 
@@ -46,18 +46,18 @@ public class SimpleMessageFactory {
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		responseGenerator.setResourceLookup(resourceLookup);
-		addResponseGenerator(responseGenerator);
+		addRequestProcessor(responseGenerator);
 		return create();
 	}
 
 	public WebServiceMessageSender andThrow(final RuntimeException exception) {
-		ResponseGenerator thrower = new ResponseGenerator()
+		RequestProcessor thrower = new RequestProcessor()
 		{
-			public WebServiceMessage generateResponse(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
+			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 				throw exception;
 			}
 		};
-		addResponseGenerator(thrower);
+		addRequestProcessor(thrower);
 		return create();
 	}
 	

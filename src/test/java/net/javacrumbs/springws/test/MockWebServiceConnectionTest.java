@@ -81,7 +81,7 @@ public class MockWebServiceConnectionTest {
 			connection.receive(messageFactory);
 			fail("Exception expected here");
 		}
-		catch (ResponseGeneratorNotSpecifiedException e)
+		catch (NoResponseGeneratorSpecifiedException e)
 		{
 			//ok
 		}
@@ -92,10 +92,10 @@ public class MockWebServiceConnectionTest {
 	{
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
-		ResponseGenerator responseGenerator = createMock(ResponseGenerator.class);
+		RequestProcessor responseGenerator = createMock(RequestProcessor.class);
 		WebServiceMessage response = createMock(WebServiceMessage.class);
-		connection.setResponseGenerators(Collections.singletonList(responseGenerator));
-		expect(responseGenerator.generateResponse(uri, messageFactory, request)).andReturn(response);
+		connection.setRequestProcessors(Collections.singletonList(responseGenerator));
+		expect(responseGenerator.processRequest(uri, messageFactory, request)).andReturn(response);
 		
 		
 		replay(request, responseGenerator);
@@ -113,12 +113,12 @@ public class MockWebServiceConnectionTest {
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		WebServiceMessage response = createMock(WebServiceMessage.class);
 		
-		ResponseGenerator responseGenerator1 = createMock(ResponseGenerator.class);
-		expect(responseGenerator1.generateResponse(uri, messageFactory, request)).andReturn(null);
+		RequestProcessor responseGenerator1 = createMock(RequestProcessor.class);
+		expect(responseGenerator1.processRequest(uri, messageFactory, request)).andReturn(null);
 		
-		ResponseGenerator responseGenerator2 = createMock(ResponseGenerator.class);
-		expect(responseGenerator2.generateResponse(uri, messageFactory, request)).andReturn(response);
-		connection.setResponseGenerators(Arrays.asList(responseGenerator1, responseGenerator2));
+		RequestProcessor responseGenerator2 = createMock(RequestProcessor.class);
+		expect(responseGenerator2.processRequest(uri, messageFactory, request)).andReturn(response);
+		connection.setRequestProcessors(Arrays.asList(responseGenerator1, responseGenerator2));
 		
 		replay(request, responseGenerator1, responseGenerator2);
 		
@@ -135,13 +135,13 @@ public class MockWebServiceConnectionTest {
 	{
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
-		ResponseGenerator requestValidator1 = createMock(ResponseGenerator.class);
-		expect(requestValidator1.generateResponse(uri, messageFactory, request)).andReturn(null);
+		RequestProcessor requestValidator1 = createMock(RequestProcessor.class);
+		expect(requestValidator1.processRequest(uri, messageFactory, request)).andReturn(null);
 		
-		ResponseGenerator requestValidator2 = createMock(ResponseGenerator.class);
-		expect(requestValidator2.generateResponse(uri, messageFactory, request)).andThrow(new WsTestException("Do not panick, this is just a test"));
+		RequestProcessor requestValidator2 = createMock(RequestProcessor.class);
+		expect(requestValidator2.processRequest(uri, messageFactory, request)).andThrow(new WsTestException("Do not panick, this is just a test"));
 	
-		connection.setResponseGenerators(Arrays.asList(requestValidator1, requestValidator2));
+		connection.setRequestProcessors(Arrays.asList(requestValidator1, requestValidator2));
 		
 		
 		replay(request, requestValidator1, requestValidator2);
@@ -164,12 +164,12 @@ public class MockWebServiceConnectionTest {
 	{
 		WebServiceMessage request = createMock(WebServiceMessage.class);
 		
-		ResponseGenerator requestValidator1 = createMock(ResponseGenerator.class);
-		expect(requestValidator1.generateResponse(uri, messageFactory, request)).andThrow(new WsTestException("Do not panick, this is just a test"));
+		RequestProcessor requestValidator1 = createMock(RequestProcessor.class);
+		expect(requestValidator1.processRequest(uri, messageFactory, request)).andThrow(new WsTestException("Do not panick, this is just a test"));
 		
-		ResponseGenerator requestValidator2 = createMock(ResponseGenerator.class);
+		RequestProcessor requestValidator2 = createMock(RequestProcessor.class);
 		
-		connection.setResponseGenerators(Arrays.asList(requestValidator1, requestValidator2));
+		connection.setRequestProcessors(Arrays.asList(requestValidator1, requestValidator2));
 		
 		
 		replay(request, requestValidator1, requestValidator2);
