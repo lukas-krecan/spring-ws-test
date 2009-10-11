@@ -58,7 +58,7 @@ public class SimpleMessageFactory {
 		return new SimpleCompareRequestValidatorFactory(resourceName, this);
 	}
 
-	public WebServiceMessageSender returnResponse(String resourceName) {
+	public WebServiceMessageSender andReturnResponse(String resourceName) {
 		SimpleMessageFactory lastFactory = new SimpleResponseGeneratorFactory(resourceName, this);
 		return lastFactory.create();
 	}
