@@ -45,6 +45,13 @@ public class XPathExpressionResolverTest extends AbstractMessageTest{
 		assertEquals("test-response.xml",result);
 	}
 	@Test
+	public void testEvaluateString() throws Exception
+	{
+		String xpath = "'test-response.xml'";
+		String result = resolveXPath(xpath);
+		assertEquals("test-response.xml",result);
+	}
+	@Test
 	public void testBodyAsDirectory() throws Exception
 	{
 		String xpath = "concat(local-name(//soapenv:Body/*[1]),'/default-response.xml')";

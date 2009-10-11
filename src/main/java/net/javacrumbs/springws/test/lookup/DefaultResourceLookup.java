@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import net.javacrumbs.springws.test.expression.ExpressionResolver;
+import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
@@ -61,7 +62,7 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
-	private ExpressionResolver expressionResolver;
+	private ExpressionResolver expressionResolver = new XPathExpressionResolver();
 	
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 
@@ -128,7 +129,7 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 		return resourceExpressions;
 	}
 
-	public void setResourceExpressions(String[] resourceExpressions) {
+	public void setResourceExpressions(String... resourceExpressions) {
 		this.resourceExpressions = resourceExpressions;
 	}
 

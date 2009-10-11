@@ -53,7 +53,10 @@ public class XPathExpressionResolver implements ExpressionResolver{
 		factory.setXPathVariableResolver(new WsTestXPathVariableResolver(uri));
 		try {
 			XPath xpath = factory.newXPath();
-			xpath.setNamespaceContext(getNamespaceContext());
+			if (getNamespaceContext()!=null)
+			{
+				xpath.setNamespaceContext(getNamespaceContext());
+			}
 			String result = xpath.evaluate(expression, document);
 			logger.debug("Expression \"" + expression + "\" resolved to \"" + result+"\"");
 			return result;
