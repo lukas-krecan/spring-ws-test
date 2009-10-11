@@ -16,9 +16,9 @@ public class TestSimpleMessageSender extends AbstractMessageTest{
 	@Test
 	public void testExpectAndReturn()
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)SimpleMessageFactory.expectRequest("xml/control-message-test.xml").create();
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageFactory().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/default-response.xml");
 		assertNotNull(sender);
-		assertEquals(1, sender.getResponseGenerators().size());
+		assertEquals(2, sender.getResponseGenerators().size());
 		
 		ExpressionResolver resolver = ((DefaultResourceLookup)((XmlCompareRequestValidator)sender.getResponseGenerators().get(0)).getControlResourceLookup()).getExpressionResolver();
 		assertEquals("xml/control-message-test.xml", resolver.resolveExpression(null, null, null));
