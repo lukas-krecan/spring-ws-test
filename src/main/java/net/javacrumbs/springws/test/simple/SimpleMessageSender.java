@@ -12,6 +12,7 @@ import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
+import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
 import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
@@ -52,6 +53,15 @@ public class SimpleMessageSender {
 		addRequestProcessor(validator);
 		return this;
 	}
+	public SimpleMessageSender assertThat(String expression, Map<String, String> namespaceMap) {
+		ExpressionAssertRequestValidator validator = new ExpressionAssertRequestValidator();
+		validator.setAssertExpression(expression);
+		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
+		expressionResolver.setNamespaceMap(namespaceMap);
+		validator.setExpressionResolver(expressionResolver);
+		addRequestProcessor(validator);
+		return this;
+	}
 
 	public WebServiceMessageSender andReturnResponse(String resourceName) {
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
@@ -72,6 +82,7 @@ public class SimpleMessageSender {
 		addRequestProcessor(thrower);
 		return create();
 	}
+
 
 	
 	

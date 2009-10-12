@@ -54,6 +54,21 @@ public class SimpleMessageSenderTest extends AbstractMessageTest{
 		StringResult responseResult = new StringResult();
 		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
+	@Test(expected=WsTestException.class)
+	public void testXPathAssertion() throws IOException
+	{
+		Map<String, String> nsMap = Collections.singletonMap("ns", "http://www.example.org/schema");
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/control-message-test.xml")
+		.assertThat("//ns:number=1",nsMap).andReturnResponse("mock-responses/test/default-response.xml");
+		assertNotNull(sender);
+		assertEquals(3, sender.getRequestProcessors().size());
+		
+		
+		WebServiceTemplate template = new WebServiceTemplate();
+		template.setMessageSender(sender);
+		StringResult responseResult = new StringResult();
+		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+	}
 	
 	@Test(expected=WsTestException.class)
 	public void testExpectAndThrow() throws IOException
