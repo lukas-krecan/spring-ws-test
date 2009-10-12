@@ -61,6 +61,7 @@ public abstract class AbstractExpressionEvaluator implements RequestProcessor {
 		return null;
 	}
 	
+
 	/**
 	 * Method called if any XPath expression is evaluated as "true".
 	 * @param expression

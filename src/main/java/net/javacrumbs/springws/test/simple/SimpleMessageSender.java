@@ -3,20 +3,23 @@ package net.javacrumbs.springws.test.simple;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
-import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
+import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
-public class SimpleMessageFactory {
+public class SimpleMessageSender {
 	private final List<RequestProcessor> requestProcessors = new ArrayList<RequestProcessor>();
 	
 	private WebServiceMessageSender create() {
@@ -25,18 +28,27 @@ public class SimpleMessageFactory {
 		return messageSender;
 	}
 
-	public SimpleMessageFactory addRequestProcessor(RequestProcessor responseGenerator)
+	public SimpleMessageSender addRequestProcessor(RequestProcessor requestProcessor)
 	{
-		requestProcessors.add(responseGenerator);
+		requestProcessors.add(requestProcessor);
 		return this;
 	}
 	
 
-	public SimpleMessageFactory expectRequest(String resourceName) {
+	public SimpleMessageSender expectRequest(String resourceName) {
 		XmlCompareRequestValidator validator = new XmlCompareRequestValidator();
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		validator.setControlResourceLookup(resourceLookup);
+		addRequestProcessor(validator);
+		return this;
+	}
+	public SimpleMessageSender failIf(String expression, Map<String, String> namespaceMap) {
+		XPathRequestValidator validator = new XPathRequestValidator();
+		validator.setExceptionMapping(Collections.singletonMap(expression, "XPath assertion \""+expression+"\" failed."));
+		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
+		expressionResolver.setNamespaceMap(namespaceMap);
+		validator.setExpressionResolver(expressionResolver);
 		addRequestProcessor(validator);
 		return this;
 	}
@@ -60,6 +72,7 @@ public class SimpleMessageFactory {
 		addRequestProcessor(thrower);
 		return create();
 	}
+
 	
 	
 
