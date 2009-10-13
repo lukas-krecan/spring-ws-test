@@ -33,6 +33,7 @@ public class XmlCompareRequestValidatorTest extends AbstractValidatorTest {
 		validator = new XmlCompareRequestValidator();
 	}
 	
+
 	@Test
 	public void testValid() throws IOException
 	{

@@ -41,6 +41,7 @@ public class SimpleMessageSender {
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		validator.setControlResourceLookup(resourceLookup);
+		validator.setFailIfControlResourceNotFound(true);
 		addRequestProcessor(validator);
 		return this;
 	}
@@ -63,7 +64,7 @@ public class SimpleMessageSender {
 		return this;
 	}
 
-	public WebServiceMessageSender andReturnResponse(String resourceName) {
+	public WebServiceMessageSender returnResponse(String resourceName) {
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
@@ -72,7 +73,7 @@ public class SimpleMessageSender {
 		return create();
 	}
 
-	public WebServiceMessageSender andThrow(final RuntimeException exception) {
+	public WebServiceMessageSender throwException(final RuntimeException exception) {
 		RequestProcessor thrower = new RequestProcessor()
 		{
 			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {

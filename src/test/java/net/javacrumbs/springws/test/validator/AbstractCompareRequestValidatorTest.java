@@ -21,6 +21,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
 import net.javacrumbs.springws.test.util.XmlUtil;
 
@@ -68,7 +69,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		verify(xmlUtil, resourceLookup);
 	}
 	@Test
-	public void testEmptyControlDocument() throws Exception
+	public void testNonExistingControlDocument() throws Exception
 	{
 		WebServiceMessage message = getValidMessage();
 		final Document messageDoc = createMock(Document.class);
@@ -95,5 +96,29 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		validator.validateRequest(null, message);
 		
 		verify(xmlUtil, resourceLookup);
+	}
+	@Test(expected=WsTestException.class)
+	public void testFailIfNotFOund() throws Exception
+	{
+		WebServiceMessage message = getValidMessage();
+		
+		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
+		expect(resourceLookup.lookupResource(null, message)).andReturn(null);
+		
+		AbstractCompareRequestValidator validator = new AbstractCompareRequestValidator(){
+			@Override
+			protected void compareDocuments(Document controlDocument, Document messageDocument) {
+				fail("Should not get here");
+			}
+			
+		};
+		validator.setControlResourceLookup(resourceLookup);
+		validator.setFailIfControlResourceNotFound(true);
+		validator.afterPropertiesSet();
+		
+		replay(resourceLookup);
+		
+		validator.validateRequest(null, message);
+
 	}
 }

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import net.javacrumbs.springws.test.RequestProcessor;
+import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
@@ -37,6 +38,8 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 	private ResourceLookup controlResourceLookup;
 	protected final Log logger = LogFactory.getLog(getClass());
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
+	private boolean failIfControlResourceNotFound;
 
 	public AbstractCompareRequestValidator() {
 		super();
@@ -57,6 +60,22 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 			Document controlDocument = loadDocument(controlResource);
 	
 			compareDocuments(controlDocument, messageDocument);
+		}
+		else
+		{
+			onControlResourceNotFound(uri, message);
+		}
+	}
+
+	/**
+	 * Called if control resource was not found.
+	 * @param uri
+	 * @param message
+	 */
+	protected void onControlResourceNotFound(URI uri, WebServiceMessage message) {
+		if (failIfControlResourceNotFound)
+		{
+			throw new WsTestException("Control resource not found for "+uri+" and "+xmlUtil.serializeDocument(message));
 		}
 		else
 		{
@@ -101,6 +120,14 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 
 	public void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
+	}
+
+	public boolean isFailIfControlResourceNotFound() {
+		return failIfControlResourceNotFound;
+	}
+
+	public void setFailIfControlResourceNotFound(boolean failIfControlResourceNotFound) {
+		this.failIfControlResourceNotFound = failIfControlResourceNotFound;
 	}
 
 }

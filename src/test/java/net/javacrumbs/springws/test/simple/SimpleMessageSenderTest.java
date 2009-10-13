@@ -24,7 +24,7 @@ public class SimpleMessageSenderTest extends AbstractMessageTest{
 	@Test
 	public void testExpectAndReturn() throws IOException
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/control-message-test.xml").andReturnResponse("mock-responses/test/default-response.xml");
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/default-response.xml");
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
@@ -40,11 +40,24 @@ public class SimpleMessageSenderTest extends AbstractMessageTest{
 		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	@Test(expected=WsTestException.class)
+	public void testExpectResourceNotFound() throws IOException
+	{
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/does-not-exist.xml").returnResponse("mock-responses/test/default-response.xml");
+		assertNotNull(sender);
+		assertEquals(2, sender.getRequestProcessors().size());
+		
+		
+		WebServiceTemplate template = new WebServiceTemplate();
+		template.setMessageSender(sender);
+		StringResult responseResult = new StringResult();
+		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+	}
+	@Test(expected=WsTestException.class)
 	public void testXPathValidation() throws IOException
 	{
 		Map<String, String> nsMap = Collections.singletonMap("ns", "http://www.example.org/schema");
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/control-message-test.xml")
-																					.failIf("//ns:number!=1",nsMap).andReturnResponse("mock-responses/test/default-response.xml");
+																					.failIf("//ns:number!=1",nsMap).returnResponse("mock-responses/test/default-response.xml");
 		assertNotNull(sender);
 		assertEquals(3, sender.getRequestProcessors().size());
 		
@@ -59,7 +72,7 @@ public class SimpleMessageSenderTest extends AbstractMessageTest{
 	{
 		Map<String, String> nsMap = Collections.singletonMap("ns", "http://www.example.org/schema");
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/control-message-test.xml")
-		.assertThat("//ns:number=1",nsMap).andReturnResponse("mock-responses/test/default-response.xml");
+														.assertThat("//ns:number=1",nsMap).returnResponse("mock-responses/test/default-response.xml");
 		assertNotNull(sender);
 		assertEquals(3, sender.getRequestProcessors().size());
 		
@@ -73,7 +86,7 @@ public class SimpleMessageSenderTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testExpectAndThrow() throws IOException
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/control-message-test.xml").andThrow(new WsTestException("Test error"));
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new SimpleMessageSender().expectRequest("xml/control-message-test.xml").throwException(new WsTestException("Test error"));
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
