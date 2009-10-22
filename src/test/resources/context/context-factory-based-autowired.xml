@@ -21,7 +21,9 @@
 				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
 			</list>
 		</property>		
-	</bean>			
+	</bean>		
+	
+	<!-- 'mock-responses/' + $uri.host + '/' + #payloadRootName + '/' + #xpath(//ns:from) + '-' + #xpath(//ns:to) + '-response.xml' -->	
 
 	<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidatorFactoryBean">
 		<property name="namespaceMap">

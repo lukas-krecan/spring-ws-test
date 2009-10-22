@@ -59,7 +59,7 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 		return Collections.unmodifiableList(requestProcessors);
 	}
 
-	public void setRequestProcessors(List<RequestProcessor> responseGenerators) {
+	public void setRequestProcessors(List<? extends RequestProcessor> responseGenerators) {
 		this.requestProcessors = new ArrayList<RequestProcessor>(responseGenerators);
 	}
 	

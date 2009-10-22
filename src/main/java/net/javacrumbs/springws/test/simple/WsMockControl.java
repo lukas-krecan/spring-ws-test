@@ -20,8 +20,8 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
-public class SimpleMessageSender {
-	private final List<RequestProcessor> requestProcessors = new ArrayList<RequestProcessor>();
+public class WsMockControl {
+	private final List<VerifiableRequestProcessor> requestProcessors = new ArrayList<VerifiableRequestProcessor>();
 	
 	private WebServiceMessageSender create() {
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
@@ -29,23 +29,35 @@ public class SimpleMessageSender {
 		return messageSender;
 	}
 
-	public SimpleMessageSender addRequestProcessor(RequestProcessor requestProcessor)
+	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor)
 	{
-		requestProcessors.add(requestProcessor);
+		return addRequestProcessor(requestProcessor, requestProcessor.toString());
+	}
+	
+	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor, String requestProcessorDescription)
+	{
+		if (requestProcessor instanceof VerifiableRequestProcessor)
+		{
+			requestProcessors.add((VerifiableRequestProcessor)requestProcessor);
+		}
+		else
+		{
+			requestProcessors.add(new VerifiableRequestProcessorWrapper(requestProcessor, requestProcessorDescription));
+		}
 		return this;
 	}
 	
 
-	public SimpleMessageSender expectRequest(String resourceName) {
+	public WsMockControl expectRequest(String resourceName) {
 		XmlCompareRequestValidator validator = new XmlCompareRequestValidator();
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
-		addRequestProcessor(validator);
+		addRequestProcessor(validator, "expectRequest(\""+resourceName+"\")");
 		return this;
 	}
-	public SimpleMessageSender failIf(String expression, Map<String, String> namespaceMap) {
+	public WsMockControl failIf(String expression, Map<String, String> namespaceMap) {
 		XPathRequestValidator validator = new XPathRequestValidator();
 		validator.setExceptionMapping(Collections.singletonMap(expression, "XPath assertion \""+expression+"\" failed."));
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
@@ -54,7 +66,7 @@ public class SimpleMessageSender {
 		addRequestProcessor(validator);
 		return this;
 	}
-	public SimpleMessageSender assertThat(String expression, Map<String, String> namespaceMap) {
+	public WsMockControl assertThat(String expression, Map<String, String> namespaceMap) {
 		ExpressionAssertRequestValidator validator = new ExpressionAssertRequestValidator();
 		validator.setAssertExpression(expression);
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
@@ -82,6 +94,25 @@ public class SimpleMessageSender {
 		};
 		addRequestProcessor(thrower);
 		return create();
+	}
+
+	List<VerifiableRequestProcessor> getRequestProcessors() {
+		return requestProcessors;
+	}
+
+	public WsMockControl times(int min, int max) {
+		if (requestProcessors.isEmpty())
+		{
+			throw new IllegalStateException("Can not set behaviour. No request processor defined.");
+		}
+		VerifiableRequestProcessor lastProcessor = getLastProcessor();
+		lastProcessor.setMinNumberOfProcessedRequests(min);
+		lastProcessor.setMaxNumberOfProcessedRequests(max);
+		return this; 
+	}
+
+	private VerifiableRequestProcessor getLastProcessor() {
+		return requestProcessors.get(requestProcessors.size()-1);
 	}
 
 

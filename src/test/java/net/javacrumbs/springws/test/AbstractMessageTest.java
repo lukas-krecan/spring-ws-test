@@ -16,6 +16,8 @@
 package net.javacrumbs.springws.test;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.TransportInputStreamWrapper;
@@ -33,6 +35,17 @@ public abstract class AbstractMessageTest {
 	protected SoapMessageFactory messageFactory;
 
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
+	protected static final URI TEST_URI;
+	
+	static
+	{
+		try {
+			TEST_URI = new URI("http://localhot:1234");
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	public AbstractMessageTest() {
 		XMLUnit.setIgnoreWhitespace(true);

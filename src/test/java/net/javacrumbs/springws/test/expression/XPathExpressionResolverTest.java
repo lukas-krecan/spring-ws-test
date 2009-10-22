@@ -58,6 +58,13 @@ public class XPathExpressionResolverTest extends AbstractMessageTest{
 		String result = resolveXPath(xpath);
 		assertEquals("test/default-response.xml",result);
 	}
+//	@Test
+//	public void testPayloadRootName() throws Exception
+//	{
+//		String xpath = "concat($payloadRootName,'/default-response.xml')";
+//		String result = resolveXPath(xpath);
+//		assertEquals("test/default-response.xml",result);
+//	}
 	@Test
 	public void testEvaluateComplex() throws Exception
 	{
