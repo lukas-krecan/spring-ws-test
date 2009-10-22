@@ -21,7 +21,13 @@ import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
 public class WsMockControl {
-	private final List<VerifiableRequestProcessor> requestProcessors = new ArrayList<VerifiableRequestProcessor>();
+	private final List<RequestProcessor> requestProcessors;
+	
+	public WsMockControl()
+	{
+		requestProcessors = new ArrayList<RequestProcessor>();
+		requestProcessors.add(new UsageValidator());
+	}
 	
 	public WebServiceMessageSender createMock() {
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
@@ -31,21 +37,10 @@ public class WsMockControl {
 
 	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor)
 	{
-		return addRequestProcessor(requestProcessor, requestProcessor.toString());
-	}
-	
-	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor, String requestProcessorDescription)
-	{
-		if (requestProcessor instanceof VerifiableRequestProcessor)
-		{
-			requestProcessors.add((VerifiableRequestProcessor)requestProcessor);
-		}
-		else
-		{
-			requestProcessors.add(new VerifiableRequestProcessorWrapper(requestProcessor, requestProcessorDescription));
-		}
+		requestProcessors.add(requestProcessor);
 		return this;
 	}
+
 	
 
 	public WsMockControl expectRequest(String resourceName) {
@@ -54,7 +49,7 @@ public class WsMockControl {
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
-		addRequestProcessor(validator, "expectRequest(\""+resourceName+"\")");
+		addRequestProcessor(validator);
 		return this;
 	}
 	public WsMockControl failIf(String expression, Map<String, String> namespaceMap) {
@@ -63,7 +58,7 @@ public class WsMockControl {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator, "failIf(\""+expression+"\")");
+		addRequestProcessor(validator);
 		return this;
 	}
 	public WsMockControl assertThat(String expression, Map<String, String> namespaceMap) {
@@ -72,7 +67,7 @@ public class WsMockControl {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator, "assertThat(\""+expression+"\")");
+		addRequestProcessor(validator);
 		return this;
 	}
 
@@ -81,7 +76,7 @@ public class WsMockControl {
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		responseGenerator.setResourceLookup(resourceLookup);
-		addRequestProcessor(responseGenerator, "returnResponse(\""+resourceName+"\")");
+		addRequestProcessor(responseGenerator);
 		return this;
 	}
 
@@ -92,22 +87,17 @@ public class WsMockControl {
 				throw exception;
 			}
 		};
-		addRequestProcessor(thrower, "throwException(\""+exception.getMessage()+"\")");
+		addRequestProcessor(thrower);
 		return this;
 	}
 
-	List<VerifiableRequestProcessor> getRequestProcessors() {
+	List<RequestProcessor> getRequestProcessors() {
 		return requestProcessors;
 	}
 
 	public WsMockControl times(int min, int max) {
-		if (requestProcessors.isEmpty())
-		{
-			throw new IllegalStateException("Can not set behaviour. No request processor defined.");
-		}
-		VerifiableRequestProcessor lastProcessor = getLastProcessor();
-		lastProcessor.setMinNumberOfProcessedRequests(min);
-		lastProcessor.setMaxNumberOfProcessedRequests(max);
+		getUsageValidator().setMinNumberOfProcessedRequests(min);
+		getUsageValidator().setMaxNumberOfProcessedRequests(max);
 		return this; 
 	}
 
@@ -127,16 +117,11 @@ public class WsMockControl {
 		return times(1,Integer.MAX_VALUE);
 	}
 
-	private VerifiableRequestProcessor getLastProcessor() {
-		return requestProcessors.get(requestProcessors.size()-1);
+	public void verify() {
+		getUsageValidator().verify();		
 	}
 
-
-
-
-
-
-	
-	
-
+	UsageValidator getUsageValidator() {
+		return (UsageValidator)requestProcessors.get(0);
+	}
 }

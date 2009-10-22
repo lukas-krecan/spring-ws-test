@@ -14,23 +14,13 @@ import net.javacrumbs.springws.test.WsTestException;
  * @author Lukas Krecan
  *
  */
-public class VerifiableRequestProcessorWrapper implements RequestProcessor, VerifiableRequestProcessor {
+public class UsageValidator implements RequestProcessor {
 
-	private final RequestProcessor wrappedRequestProcessor;
-	
 	private int numberOfProcessedRequests = 0;
 	
 	private int minNumberOfProcessedRequests = 1;
 	
 	private int maxNumberOfProcessedRequests = 1;
-	
-	private final String requestProcessorDescription;
-	
-	public VerifiableRequestProcessorWrapper(RequestProcessor wrappedRequestProcessor, String requestProcessorDescription) {
-		this.wrappedRequestProcessor = wrappedRequestProcessor;
-		this.requestProcessorDescription = requestProcessorDescription;
-	}
-
 
 
 	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request)
@@ -38,36 +28,29 @@ public class VerifiableRequestProcessorWrapper implements RequestProcessor, Veri
 		numberOfProcessedRequests++;
 		if (numberOfProcessedRequests>maxNumberOfProcessedRequests)
 		{
-			throw new WsTestException(generateErrorMessage());
+			throw new WsTestException(getExceptionMessage());
 		}
-		return wrappedRequestProcessor.processRequest(uri, messageFactory, request);
+		return null;
 	}
-
-
 
 	public int getNumberOfProcessedRequests() {
 		return numberOfProcessedRequests;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.javacrumbs.springws.test.simple.VerifiableRequestProcessor#verify()
+	/**
+	 * Verifies number of {@link #processRequest(URI, WebServiceMessageFactory, WebServiceMessage)} calls. If it's not between {@link #minNumberOfProcessedRequests} 
+	 * and {@link #maxNumberOfProcessedRequests} (inclusive) throws {@link WsTestException}.
+	 * @throws WsTestException
 	 */
 	public void verify() throws WsTestException{
 		if (numberOfProcessedRequests>maxNumberOfProcessedRequests || numberOfProcessedRequests<minNumberOfProcessedRequests)
 		{
-			throw new WsTestException(generateErrorMessage());
+			throw new WsTestException(getExceptionMessage());
 		}
 	}
 
-
-
-	private String generateErrorMessage() {
-		return requestProcessorDescription + ": Unexpected call, expected from "+minNumberOfProcessedRequests+" to "+maxNumberOfProcessedRequests+" calls, was "+numberOfProcessedRequests+".";
-	}
-
-
-	public RequestProcessor getWrappedRequestProcessor() {
-		return wrappedRequestProcessor;
+	private String getExceptionMessage() {
+		return "Unexpected number of WebServiceTemplate calls, expected from "+minNumberOfProcessedRequests+" to "+maxNumberOfProcessedRequests+" calls, was "+numberOfProcessedRequests+".";
 	}
 
 	/* (non-Javadoc)
@@ -109,14 +92,4 @@ public class VerifiableRequestProcessorWrapper implements RequestProcessor, Veri
 	public void setNumberOfProcessedRequests(int numberOfProcessedRequests) {
 		this.numberOfProcessedRequests = numberOfProcessedRequests;
 	}
-
-
-
-	String getRequestProcessorDescription() {
-		return requestProcessorDescription;
-	}
-
-
-
-
 }

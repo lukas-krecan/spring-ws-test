@@ -2,7 +2,7 @@ package net.javacrumbs.springws.test.simple;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.easymock.EasyMock.*;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -18,6 +18,7 @@ import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.junit.Test;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.transport.WebServiceMessageSender;
 import org.springframework.xml.transform.StringResult;
 
 
@@ -30,7 +31,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 	{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
-		assertEquals(2, sender.getRequestProcessors().size());
+		assertEquals(3, sender.getRequestProcessors().size());
 		
 		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender,0)).getControlResourceLookup();
 		assertEquals("'xml/control-message-test.xml'", lookup1.getResourceExpressions()[0]);
@@ -44,81 +45,10 @@ public class WsMockControlTest extends AbstractMessageTest{
 		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	
-	@Test
-	public void testWrapSimple()
-	{
-		RequestProcessor processor = createMock(RequestProcessor.class);
-		replay(processor);
-		
-		WsMockControl control = new WsMockControl();
-		control.addRequestProcessor(processor);
-		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
-		assertEquals(processor.toString(),processorWrapper.getRequestProcessorDescription());
-		assertEquals(1, processorWrapper.getMinNumberOfProcessedRequests());
-		assertEquals(1, processorWrapper.getMaxNumberOfProcessedRequests());
-
-		verify(processor);
-		
-	}
-	@Test(expected=IllegalStateException.class)
-	public void testTimesNoProcessor()
-	{
-		new WsMockControl().times(0, 1);
-	}
-	
-	@Test
-	public void testWrapTimes()
-	{
-		WsMockControl control = new WsMockControl();
-		control.expectRequest("xml/does-not-exist.xml").times(0,5);
-		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
-		assertEquals(0, processorWrapper.getMinNumberOfProcessedRequests());
-		assertEquals(5, processorWrapper.getMaxNumberOfProcessedRequests());
-		assertEquals("expectRequest(\"xml/does-not-exist.xml\")",processorWrapper.getRequestProcessorDescription());
-	}
-	@Test
-	public void testWrapAtLeastOnce()
-	{
-		WsMockControl control = new WsMockControl();
-		control.failIf("//ns:number!=1",NS_MAP).atLeastOnce();
-		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
-		assertEquals(1, processorWrapper.getMinNumberOfProcessedRequests());
-		assertEquals(Integer.MAX_VALUE, processorWrapper.getMaxNumberOfProcessedRequests());
-		assertEquals("failIf(\"//ns:number!=1\")",processorWrapper.getRequestProcessorDescription());
-	}
-	@Test
-	public void testWrapAnyTimes()
-	{
-		WsMockControl control = new WsMockControl();
-		control.assertThat("//ns:number=1",NS_MAP).anyTimes();
-		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
-		assertEquals(0, processorWrapper.getMinNumberOfProcessedRequests());
-		assertEquals(Integer.MAX_VALUE, processorWrapper.getMaxNumberOfProcessedRequests());
-		assertEquals("assertThat(\"//ns:number=1\")",processorWrapper.getRequestProcessorDescription());
-	}
-	@Test
-	public void testWrapTimes1()
-	{
-		WsMockControl control = new WsMockControl();
-		control.returnResponse("mock-responses/test/default-response.xml").times(5);
-		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
-		assertEquals(5, processorWrapper.getMinNumberOfProcessedRequests());
-		assertEquals(5, processorWrapper.getMaxNumberOfProcessedRequests());
-		assertEquals("returnResponse(\"mock-responses/test/default-response.xml\")",processorWrapper.getRequestProcessorDescription());
-	}
-	@Test
-	public void testWrapOnce()
-	{
-		WsMockControl control = new WsMockControl();
-		control.throwException(new WsTestException("Test error")).once();
-		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
-		assertEquals(1, processorWrapper.getMinNumberOfProcessedRequests());
-		assertEquals(1, processorWrapper.getMaxNumberOfProcessedRequests());
-		assertEquals("throwException(\"Test error\")",processorWrapper.getRequestProcessorDescription());
-	}
-	
+			
 	private RequestProcessor extractRequestProcessor(MockWebServiceMessageSender sender, int index) {
-		return ((VerifiableRequestProcessorWrapper)sender.getRequestProcessors().get(index)).getWrappedRequestProcessor();
+		//first processor is UsageValidator, hence index + 1
+		return sender.getRequestProcessors().get(index+1);
 	}
 	
 	@Test(expected=WsTestException.class)
@@ -126,7 +56,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 	{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/does-not-exist.xml").returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
-		assertEquals(2, sender.getRequestProcessors().size());
+		assertEquals(3, sender.getRequestProcessors().size());
 		
 		
 		WebServiceTemplate template = new WebServiceTemplate();
@@ -141,7 +71,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml")
 																					.failIf("//ns:number!=1",nsMap).returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
-		assertEquals(3, sender.getRequestProcessors().size());
+		assertEquals(4, sender.getRequestProcessors().size());
 		
 	
 		WebServiceTemplate template = new WebServiceTemplate();
@@ -155,7 +85,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml")
 														.assertThat("//ns:number=1",NS_MAP).returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
-		assertEquals(3, sender.getRequestProcessors().size());
+		assertEquals(4, sender.getRequestProcessors().size());
 		
 		
 		WebServiceTemplate template = new WebServiceTemplate();
@@ -169,7 +99,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 	{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").throwException(new WsTestException("Test error")).createMock();
 		assertNotNull(sender);
-		assertEquals(2, sender.getRequestProcessors().size());
+		assertEquals(3, sender.getRequestProcessors().size());
 		
 		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).getControlResourceLookup();
 		assertEquals("'xml/control-message-test.xml'", lookup1.getResourceExpressions()[0]);
@@ -180,5 +110,80 @@ public class WsMockControlTest extends AbstractMessageTest{
 		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	
+	@Test
+	public void testVerify() throws IOException
+	{
+		WsMockControl mockControl = new WsMockControl();
+		try
+		{
+			mockControl.verify();
+			fail("WsTestException expected");
+		} 
+		catch(WsTestException e)
+		{
+			assertEquals("Unexpected number of WebServiceTemplate calls, expected from 1 to 1 calls, was 0.",e.getMessage());
+		}
+		
+		WebServiceMessageSender sender = mockControl.returnResponse("mock-responses/test/default-response.xml").createMock();
+		
+		WebServiceTemplate template = new WebServiceTemplate();
+		template.setMessageSender(sender);
+		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), new StringResult() );
+		
+		mockControl.verify();
+		try
+		{
+			template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), new StringResult() );
+			fail("WsTestException expected");
+		} 
+		catch(WsTestException e)
+		{
+			assertEquals("Unexpected number of WebServiceTemplate calls, expected from 1 to 1 calls, was 2.",e.getMessage());
+		}
+	}
 	
+	@Test
+	public void testUsageValidator()
+	{
+		WsMockControl mockControl = new WsMockControl();
+		expectMinAndMaxUsage(mockControl, 1, 1);
+	}
+	@Test
+	public void testUsageValidatorOnce()
+	{
+		WsMockControl mockControl = new WsMockControl().once();
+		expectMinAndMaxUsage(mockControl, 1, 1);
+	}
+	@Test
+	public void testUsageValidatorAnyTimes()
+	{
+		WsMockControl mockControl = new WsMockControl().anyTimes();
+		expectMinAndMaxUsage(mockControl, 0, Integer.MAX_VALUE);
+	}
+	@Test
+	public void testUsageValidatorTimes1()
+	{
+		WsMockControl mockControl = new WsMockControl().times(5);
+		expectMinAndMaxUsage(mockControl, 5, 5);
+	}
+	@Test
+	public void testUsageValidatorTimes()
+	{
+		WsMockControl mockControl = new WsMockControl().times(2,5);
+		expectMinAndMaxUsage(mockControl, 2, 5);
+	}
+	@Test
+	public void testUsageValidatorAtleastOnce()
+	{
+		WsMockControl mockControl = new WsMockControl().atLeastOnce();
+		expectMinAndMaxUsage(mockControl, 1, Integer.MAX_VALUE);
+	}
+
+
+
+	private void expectMinAndMaxUsage(WsMockControl mockControl, int min, int max) {
+		assertEquals(min, mockControl.getUsageValidator().getMinNumberOfProcessedRequests());
+		assertEquals(max, mockControl.getUsageValidator().getMaxNumberOfProcessedRequests());
+	}
+		
 }
