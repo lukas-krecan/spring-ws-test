@@ -23,7 +23,7 @@ import org.springframework.ws.transport.WebServiceMessageSender;
 public class WsMockControl {
 	private final List<VerifiableRequestProcessor> requestProcessors = new ArrayList<VerifiableRequestProcessor>();
 	
-	private WebServiceMessageSender create() {
+	public WebServiceMessageSender createMock() {
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
 		messageSender.setRequestProcessors(requestProcessors);
 		return messageSender;
@@ -63,7 +63,7 @@ public class WsMockControl {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator);
+		addRequestProcessor(validator, "failIf(\""+expression+"\")");
 		return this;
 	}
 	public WsMockControl assertThat(String expression, Map<String, String> namespaceMap) {
@@ -72,28 +72,28 @@ public class WsMockControl {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator);
+		addRequestProcessor(validator, "assertThat(\""+expression+"\")");
 		return this;
 	}
 
-	public WebServiceMessageSender returnResponse(String resourceName) {
+	public WsMockControl returnResponse(String resourceName) {
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		responseGenerator.setResourceLookup(resourceLookup);
-		addRequestProcessor(responseGenerator);
-		return create();
+		addRequestProcessor(responseGenerator, "returnResponse(\""+resourceName+"\")");
+		return this;
 	}
 
-	public WebServiceMessageSender throwException(final RuntimeException exception) {
+	public WsMockControl throwException(final RuntimeException exception) {
 		RequestProcessor thrower = new RequestProcessor()
 		{
 			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 				throw exception;
 			}
 		};
-		addRequestProcessor(thrower);
-		return create();
+		addRequestProcessor(thrower, "throwException(\""+exception.getMessage()+"\")");
+		return this;
 	}
 
 	List<VerifiableRequestProcessor> getRequestProcessors() {
@@ -111,9 +111,29 @@ public class WsMockControl {
 		return this; 
 	}
 
+	public WsMockControl times(int count) {
+		return times(count, count); 		
+	}
+
+	public WsMockControl once() {
+		return times(1);
+	}
+
+	public WsMockControl anyTimes() {
+		return times(0,Integer.MAX_VALUE);
+	}
+
+	public WsMockControl atLeastOnce() {
+		return times(1,Integer.MAX_VALUE);
+	}
+
 	private VerifiableRequestProcessor getLastProcessor() {
 		return requestProcessors.get(requestProcessors.size()-1);
 	}
+
+
+
+
 
 
 	

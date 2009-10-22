@@ -23,10 +23,12 @@ import org.springframework.xml.transform.StringResult;
 
 public class WsMockControlTest extends AbstractMessageTest{
 	
+	private static final Map<String, String> NS_MAP = Collections.singletonMap("ns", "http://www.example.org/schema");
+
 	@Test
 	public void testExpectAndReturn() throws IOException
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/default-response.xml");
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
@@ -74,6 +76,46 @@ public class WsMockControlTest extends AbstractMessageTest{
 		assertEquals(5, processorWrapper.getMaxNumberOfProcessedRequests());
 		assertEquals("expectRequest(\"xml/does-not-exist.xml\")",processorWrapper.getRequestProcessorDescription());
 	}
+	@Test
+	public void testWrapAtLeastOnce()
+	{
+		WsMockControl control = new WsMockControl();
+		control.failIf("//ns:number!=1",NS_MAP).atLeastOnce();
+		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
+		assertEquals(1, processorWrapper.getMinNumberOfProcessedRequests());
+		assertEquals(Integer.MAX_VALUE, processorWrapper.getMaxNumberOfProcessedRequests());
+		assertEquals("failIf(\"//ns:number!=1\")",processorWrapper.getRequestProcessorDescription());
+	}
+	@Test
+	public void testWrapAnyTimes()
+	{
+		WsMockControl control = new WsMockControl();
+		control.assertThat("//ns:number=1",NS_MAP).anyTimes();
+		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
+		assertEquals(0, processorWrapper.getMinNumberOfProcessedRequests());
+		assertEquals(Integer.MAX_VALUE, processorWrapper.getMaxNumberOfProcessedRequests());
+		assertEquals("assertThat(\"//ns:number=1\")",processorWrapper.getRequestProcessorDescription());
+	}
+	@Test
+	public void testWrapTimes1()
+	{
+		WsMockControl control = new WsMockControl();
+		control.returnResponse("mock-responses/test/default-response.xml").times(5);
+		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
+		assertEquals(5, processorWrapper.getMinNumberOfProcessedRequests());
+		assertEquals(5, processorWrapper.getMaxNumberOfProcessedRequests());
+		assertEquals("returnResponse(\"mock-responses/test/default-response.xml\")",processorWrapper.getRequestProcessorDescription());
+	}
+	@Test
+	public void testWrapOnce()
+	{
+		WsMockControl control = new WsMockControl();
+		control.throwException(new WsTestException("Test error")).once();
+		VerifiableRequestProcessorWrapper processorWrapper = (VerifiableRequestProcessorWrapper)control.getRequestProcessors().get(0);
+		assertEquals(1, processorWrapper.getMinNumberOfProcessedRequests());
+		assertEquals(1, processorWrapper.getMaxNumberOfProcessedRequests());
+		assertEquals("throwException(\"Test error\")",processorWrapper.getRequestProcessorDescription());
+	}
 	
 	private RequestProcessor extractRequestProcessor(MockWebServiceMessageSender sender, int index) {
 		return ((VerifiableRequestProcessorWrapper)sender.getRequestProcessors().get(index)).getWrappedRequestProcessor();
@@ -82,7 +124,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testExpectResourceNotFound() throws IOException
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/does-not-exist.xml").returnResponse("mock-responses/test/default-response.xml");
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/does-not-exist.xml").returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
@@ -95,9 +137,9 @@ public class WsMockControlTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testXPathValidation() throws IOException
 	{
-		Map<String, String> nsMap = Collections.singletonMap("ns", "http://www.example.org/schema");
+		Map<String, String> nsMap = NS_MAP;
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml")
-																					.failIf("//ns:number!=1",nsMap).returnResponse("mock-responses/test/default-response.xml");
+																					.failIf("//ns:number!=1",nsMap).returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
 		assertEquals(3, sender.getRequestProcessors().size());
 		
@@ -110,9 +152,8 @@ public class WsMockControlTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testXPathAssertion() throws IOException
 	{
-		Map<String, String> nsMap = Collections.singletonMap("ns", "http://www.example.org/schema");
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml")
-														.assertThat("//ns:number=1",nsMap).returnResponse("mock-responses/test/default-response.xml");
+														.assertThat("//ns:number=1",NS_MAP).returnResponse("mock-responses/test/default-response.xml").createMock();
 		assertNotNull(sender);
 		assertEquals(3, sender.getRequestProcessors().size());
 		
@@ -126,7 +167,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testExpectAndThrow() throws IOException
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").throwException(new WsTestException("Test error"));
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").throwException(new WsTestException("Test error")).createMock();
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
