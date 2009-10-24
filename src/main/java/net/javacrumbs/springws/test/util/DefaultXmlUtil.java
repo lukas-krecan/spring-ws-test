@@ -16,7 +16,10 @@
 package net.javacrumbs.springws.test.util;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -41,6 +44,10 @@ public class DefaultXmlUtil implements XmlUtil {
 	
 
 	private static final XmlUtil INSTANCE = new DefaultXmlUtil();
+	
+	private static final String SOAP11_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
+	private static final String SOAP12_NAMESPACE = "http://www.w3.org/2003/05/soap-envelope";
+	private static final Set<String> SOAP_NAMESPACES =  new HashSet<String>(Arrays.asList(SOAP11_NAMESPACE, SOAP12_NAMESPACE));
 	
 
 	public static final XmlUtil getInstance()
@@ -136,5 +143,9 @@ public class DefaultXmlUtil implements XmlUtil {
 	 */
 	public String serializeDocument(Document document) {
 		return serializeDocument(new DOMSource(document));
+	}
+
+	public boolean isSoap(Document document) {
+		return SOAP_NAMESPACES.contains(document.getFirstChild().getNamespaceURI());
 	}
 }

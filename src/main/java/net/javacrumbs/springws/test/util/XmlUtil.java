@@ -49,4 +49,6 @@ public interface XmlUtil {
 
 	public abstract String serializeDocument(Document document);
 
+	public abstract boolean isSoap(Document document);
+
 }

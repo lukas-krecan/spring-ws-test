@@ -17,9 +17,6 @@ package net.javacrumbs.springws.test.validator;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.xml.transform.Source;
 
@@ -43,10 +40,6 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 	private ResourceLookup controlResourceLookup;
 	protected final Log logger = LogFactory.getLog(getClass());
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
-	
-	private static final String SOAP11_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
-	private static final String SOAP12_NAMESPACE = "http://www.w3.org/2003/05/soap-envelope";
-	private static final Set<String> SOAP_NAMESPACES =  new HashSet<String>(Arrays.asList(SOAP11_NAMESPACE, SOAP12_NAMESPACE));
 	
 	private boolean failIfControlResourceNotFound;
 
@@ -158,7 +151,7 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 	}
 
 	public boolean isSoap(Document document) {
-		return SOAP_NAMESPACES.contains(document.getFirstChild().getNamespaceURI());
+		return xmlUtil.isSoap(document);
 	}
 
 }
