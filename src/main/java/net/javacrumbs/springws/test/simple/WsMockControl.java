@@ -21,13 +21,7 @@ import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
 public class WsMockControl {
-	private final List<RequestProcessor> requestProcessors;
-	
-	public WsMockControl()
-	{
-		requestProcessors = new ArrayList<RequestProcessor>();
-		requestProcessors.add(new UsageValidator());
-	}
+	private final List<LimitingRequestProcessor> requestProcessors = new ArrayList<LimitingRequestProcessor>();
 	
 	public WebServiceMessageSender createMock() {
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
@@ -37,10 +31,21 @@ public class WsMockControl {
 
 	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor)
 	{
-		requestProcessors.add(requestProcessor);
+		return addRequestProcessor(requestProcessor, requestProcessor.toString());
+	}
+	
+	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor, String requestProcessorDescription)
+	{
+		if (requestProcessor instanceof LimitingRequestProcessor)
+		{
+			requestProcessors.add((LimitingRequestProcessor)requestProcessor);
+		}
+		else
+		{
+			requestProcessors.add(new LimitingRequestProcessorWrapper(requestProcessor, requestProcessorDescription));
+		}
 		return this;
 	}
-
 	
 
 	public WsMockControl expectRequest(String resourceName) {
@@ -49,7 +54,7 @@ public class WsMockControl {
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
-		addRequestProcessor(validator);
+		addRequestProcessor(validator, "expectRequest(\""+resourceName+"\")");
 		return this;
 	}
 	public WsMockControl failIf(String expression, Map<String, String> namespaceMap) {
@@ -58,7 +63,7 @@ public class WsMockControl {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator);
+		addRequestProcessor(validator, "failIf(\""+expression+"\")");
 		return this;
 	}
 	public WsMockControl assertThat(String expression, Map<String, String> namespaceMap) {
@@ -67,7 +72,7 @@ public class WsMockControl {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator);
+		addRequestProcessor(validator, "assertThat(\""+expression+"\")");
 		return this;
 	}
 
@@ -76,7 +81,7 @@ public class WsMockControl {
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
 		resourceLookup.setResourceExpressions("'"+resourceName+"'");
 		responseGenerator.setResourceLookup(resourceLookup);
-		addRequestProcessor(responseGenerator);
+		addRequestProcessor(responseGenerator, "returnResponse(\""+resourceName+"\")");
 		return this;
 	}
 
@@ -87,17 +92,22 @@ public class WsMockControl {
 				throw exception;
 			}
 		};
-		addRequestProcessor(thrower);
+		addRequestProcessor(thrower, "throwException(\""+exception.getMessage()+"\")");
 		return this;
 	}
 
-	List<RequestProcessor> getRequestProcessors() {
+	List<LimitingRequestProcessor> getRequestProcessors() {
 		return requestProcessors;
 	}
 
 	public WsMockControl times(int min, int max) {
-		getUsageValidator().setMinNumberOfProcessedRequests(min);
-		getUsageValidator().setMaxNumberOfProcessedRequests(max);
+		if (requestProcessors.isEmpty())
+		{
+			throw new IllegalStateException("Can not set behaviour. No request processor defined.");
+		}
+		LimitingRequestProcessor lastProcessor = getLastProcessor();
+		lastProcessor.setMinNumberOfProcessedRequests(min);
+		lastProcessor.setMaxNumberOfProcessedRequests(max);
 		return this; 
 	}
 
@@ -117,11 +127,16 @@ public class WsMockControl {
 		return times(1,Integer.MAX_VALUE);
 	}
 
-	public void verify() {
-		getUsageValidator().verify();		
+	private LimitingRequestProcessor getLastProcessor() {
+		return requestProcessors.get(requestProcessors.size()-1);
 	}
 
-	UsageValidator getUsageValidator() {
-		return (UsageValidator)requestProcessors.get(0);
-	}
+
+
+
+
+
+	
+	
+
 }
