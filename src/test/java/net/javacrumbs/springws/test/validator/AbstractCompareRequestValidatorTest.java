@@ -19,14 +19,18 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
-import net.javacrumbs.springws.test.util.XmlUtil;
 
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
 
@@ -38,13 +42,9 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 	public void testValidateRequest() throws Exception
 	{
 		WebServiceMessage message = getValidMessage();
-		final Document messageDoc = createMock(Document.class);
-		final Document controlDoc = createMock(Document.class);
-		ByteArrayResource controlResource = new ByteArrayResource(new byte[0]);
-
-		XmlUtil xmlUtil = createMock(XmlUtil.class);
-		expect(xmlUtil.loadDocument(message)).andReturn(messageDoc);
-		expect(xmlUtil.loadDocument(controlResource)).andReturn(controlDoc);
+		final Document messageDoc = getXmlUtil().loadDocument(message);
+		Resource controlResource = new ClassPathResource("xml/control-message-test.xml");
+		final Document controlDoc = getXmlUtil().loadDocument(controlResource);
 
 		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
 		expect(resourceLookup.lookupResource(null, message)).andReturn(controlResource);
@@ -52,30 +52,61 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		AbstractCompareRequestValidator validator = new AbstractCompareRequestValidator(){
 			@Override
 			protected void compareDocuments(Document controlDocument, Document messageDocument) {
-				assertSame(controlDoc, controlDocument);
-				assertSame(messageDoc, messageDocument);
+				assertTrue(XMLUnit.compareXML(controlDoc, controlDocument).identical());
+				assertTrue(XMLUnit.compareXML(messageDoc, messageDocument).identical());
 			}
 			
 		};
-		validator.setXmlUtil(xmlUtil);
+		validator.setControlResourceLookup(resourceLookup);
+		assertTrue(validator.isSoap(controlDoc));
+		assertSame(resourceLookup, validator.getControlResourceLookup());
+		validator.afterPropertiesSet();
+		
+		replay(resourceLookup);
+		
+		validator.validateRequest(null, message);
+		
+		verify(resourceLookup);
+	}
+	
+	@Test
+	public void testValidatePayload() throws Exception
+	{
+		WebServiceMessage message = getValidMessage();
+		final Document messagePayloadDoc = getXmlUtil().loadDocument(message.getPayloadSource());
+		
+		Resource controlResource = new ClassPathResource("xml/control-message-payload-test.xml");
+		final Document controlDoc = getXmlUtil().loadDocument(controlResource);
+		
+		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
+		expect(resourceLookup.lookupResource(null, message)).andReturn(controlResource);
+		
+		AbstractCompareRequestValidator validator = new AbstractCompareRequestValidator(){
+			@Override
+			protected void compareDocuments(Document controlDocument, Document messageDocument) {
+				assertTrue(XMLUnit.compareXML(controlDoc, controlDocument).identical());
+				
+				Diff diff = new Diff(messagePayloadDoc, messageDocument);
+				assertTrue(diff.toString(), diff.similar());
+			}
+			
+		};
+		assertFalse(validator.isSoap(controlDoc));
 		validator.setControlResourceLookup(resourceLookup);
 		assertSame(resourceLookup, validator.getControlResourceLookup());
 		validator.afterPropertiesSet();
 		
-		replay(xmlUtil, resourceLookup);
+		replay(resourceLookup);
 		
 		validator.validateRequest(null, message);
 		
-		verify(xmlUtil, resourceLookup);
+		verify(resourceLookup);
 	}
+	
 	@Test
 	public void testNonExistingControlDocument() throws Exception
 	{
 		WebServiceMessage message = getValidMessage();
-		final Document messageDoc = createMock(Document.class);
-		
-		XmlUtil xmlUtil = createMock(XmlUtil.class);
-		expect(xmlUtil.loadDocument(message)).andReturn(messageDoc);
 		
 		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
 		expect(resourceLookup.lookupResource(null, message)).andReturn(null);
@@ -87,15 +118,14 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 			}
 			
 		};
-		validator.setXmlUtil(xmlUtil);
 		validator.setControlResourceLookup(resourceLookup);
 		validator.afterPropertiesSet();
 		
-		replay(xmlUtil, resourceLookup);
+		replay(resourceLookup);
 		
 		validator.validateRequest(null, message);
 		
-		verify(xmlUtil, resourceLookup);
+		verify(resourceLookup);
 	}
 	@Test(expected=WsTestException.class)
 	public void testFailIfNotFOund() throws Exception

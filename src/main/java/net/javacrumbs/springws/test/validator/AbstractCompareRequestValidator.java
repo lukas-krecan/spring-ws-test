@@ -17,6 +17,11 @@ package net.javacrumbs.springws.test.validator;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.transform.Source;
 
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
@@ -39,6 +44,10 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 	protected final Log logger = LogFactory.getLog(getClass());
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
+	private static final String SOAP11_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
+	private static final String SOAP12_NAMESPACE = "http://www.w3.org/2003/05/soap-envelope";
+	private static final Set<String> SOAP_NAMESPACES =  new HashSet<String>(Arrays.asList(SOAP11_NAMESPACE, SOAP12_NAMESPACE));
+	
 	private boolean failIfControlResourceNotFound;
 
 	public AbstractCompareRequestValidator() {
@@ -51,21 +60,35 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 		return null;
 	}
 	
+	/**
+	 * Loads controleResource and compares it with the message. If controlResource is not SOAP message, only paylod is compared.
+	 * @param uri
+	 * @param message
+	 * @throws IOException
+	 */
 	protected void validateRequest(URI uri, WebServiceMessage message) throws IOException {
-		Document messageDocument = loadDocument(message);
 	
 		Resource controlResource = controlResourceLookup.lookupResource(uri, message);
 		if (controlResource!=null)
 		{
 			Document controlDocument = loadDocument(controlResource);
-	
-			compareDocuments(controlDocument, messageDocument);
+			if (isSoap(controlDocument))
+			{
+				Document messageDocument = loadDocument(message);
+				compareDocuments(controlDocument, messageDocument);
+			}
+			else
+			{
+				Document payloadDocument = loadDocument(message.getPayloadSource());
+				compareDocuments(controlDocument, payloadDocument);
+			}
 		}
 		else
 		{
 			onControlResourceNotFound(uri, message);
 		}
 	}
+
 
 	/**
 	 * Called if control resource was not found.
@@ -102,6 +125,10 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 		return getXmlUtil().loadDocument(resource);
 	}
 	
+	protected Document loadDocument(Source source) {
+		return getXmlUtil().loadDocument(source);
+	}
+	
 	protected String serializeDocument(Document document) {
 		return getXmlUtil().serializeDocument(document);
 	}
@@ -128,6 +155,10 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 
 	public void setFailIfControlResourceNotFound(boolean failIfControlResourceNotFound) {
 		this.failIfControlResourceNotFound = failIfControlResourceNotFound;
+	}
+
+	public boolean isSoap(Document document) {
+		return SOAP_NAMESPACES.contains(document.getFirstChild().getNamespaceURI());
 	}
 
 }

@@ -33,7 +33,7 @@ import org.springframework.xml.transform.ResourceSource;
 import org.w3c.dom.Document;
 
 /**
- * Evaluats XSLT template.
+ * Evaluates XSLT template.
  * @author Lukas Krecan
  *
  */

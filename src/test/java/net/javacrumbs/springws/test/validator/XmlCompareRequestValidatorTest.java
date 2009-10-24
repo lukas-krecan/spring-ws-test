@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.springws.test.validator;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import net.javacrumbs.springws.test.WsTestException;
@@ -38,6 +40,7 @@ public class XmlCompareRequestValidatorTest extends AbstractValidatorTest {
 	public void testValid() throws IOException
 	{
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/control-message-test.xml"));
+		assertTrue(validator.isSoap(controlDocument));
 		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(getValidMessage()));
 	}
 	@Test
