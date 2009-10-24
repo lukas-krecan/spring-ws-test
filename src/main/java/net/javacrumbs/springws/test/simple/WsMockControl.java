@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
+import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
@@ -20,20 +21,57 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
+/**
+ * Utility class for easy unit-test mock preparation. Usually used in this way
+ * <code><pre>
+ * //create control
+ * WsMockControl mockControl = new WsMockControl();
+ * //create mock
+ * WebServiceMessageSender mockMessageSender = mockControl.expectRequest("PRG-DUB-request.xml").returnResponse("PRG-DUB-response.xml").createMock();
+ * //use the mock
+ * webServiceTemplate.setMessageSender(mockMessageSender);
+ * 
+ * //do your test here ...
+ * 
+ * //verify that the mock was used
+ * mockControl.verify();
+ * </pre></code>
+ * @author Lukas Krecan
+ *
+ */
 public class WsMockControl {
 	private final List<LimitingRequestProcessor> requestProcessors = new ArrayList<LimitingRequestProcessor>();
 	
+	/**
+	 * Create mock {@link WebServiceMessageSender}. If behavior not defined, throws {@link IllegalArgumentException}.
+	 * @return
+	 */
 	public WebServiceMessageSender createMock() {
+		if (requestProcessors.isEmpty())
+		{
+			throw new IllegalStateException("No request processor defined. Please call at least returnResponse() method.");
+		}
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
 		messageSender.setRequestProcessors(requestProcessors);
 		return messageSender;
 	}
 
+	/**
+	 * Adds request processor. Uses toString() method to get description of the processor and calls {@link #addRequestProcessor(RequestProcessor, String)}. 
+	 * @param requestProcessor
+	 * @return
+	 */
 	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor)
 	{
 		return addRequestProcessor(requestProcessor, requestProcessor.toString());
 	}
 	
+	/**
+	 * Adds a request processor. If the processor does not implement {@link LimitingRequestProcessor} it's wrapped in {@link LimitingRequestProcessorWrapper}.
+	 * @param requestProcessor
+	 * @param requestProcessorDescription
+	 * @return
+	 */
 	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor, String requestProcessorDescription)
 	{
 		if (requestProcessor instanceof LimitingRequestProcessor)
@@ -47,7 +85,11 @@ public class WsMockControl {
 		return this;
 	}
 	
-
+	/**
+	 * Expects that request will be the same as content of the resource.  
+	 * @param resourceName
+	 * @return
+	 */
 	public WsMockControl expectRequest(String resourceName) {
 		XmlCompareRequestValidator validator = new XmlCompareRequestValidator();
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
@@ -57,6 +99,13 @@ public class WsMockControl {
 		addRequestProcessor(validator, "expectRequest(\""+resourceName+"\")");
 		return this;
 	}
+	
+	/**
+	 * Mock will fail if the expression evaluates to true. 
+	 * @param expression
+	 * @param namespaceMap
+	 * @return
+	 */
 	public WsMockControl failIf(String expression, Map<String, String> namespaceMap) {
 		XPathRequestValidator validator = new XPathRequestValidator();
 		validator.setExceptionMapping(Collections.singletonMap(expression, "XPath assertion \""+expression+"\" failed."));
@@ -66,6 +115,12 @@ public class WsMockControl {
 		addRequestProcessor(validator, "failIf(\""+expression+"\")");
 		return this;
 	}
+	/**
+	 * Mock will fail if the expression evaluates to false. 
+	 * @param expression
+	 * @param namespaceMap
+	 * @return
+	 */
 	public WsMockControl assertThat(String expression, Map<String, String> namespaceMap) {
 		ExpressionAssertRequestValidator validator = new ExpressionAssertRequestValidator();
 		validator.setAssertExpression(expression);
@@ -76,6 +131,11 @@ public class WsMockControl {
 		return this;
 	}
 
+	/**
+	 * Mock will return response tahen from the resource.
+	 * @param resourceName
+	 * @return
+	 */
 	public WsMockControl returnResponse(String resourceName) {
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
 		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
@@ -85,6 +145,11 @@ public class WsMockControl {
 		return this;
 	}
 
+	/**
+	 * Mock will throw an exception.
+	 * @param exception
+	 * @return
+	 */
 	public WsMockControl throwException(final RuntimeException exception) {
 		RequestProcessor thrower = new RequestProcessor()
 		{
@@ -100,6 +165,14 @@ public class WsMockControl {
 		return requestProcessors;
 	}
 
+	/**
+	 * Sets number of calls for the last {@link RequestProcessor}. If given processor was called les the min times, verify will throw {@link WsTestException}, 
+	 * if it was called for more then max times, the {@link RequestProcessor} will do nothing and return null.
+	 * See {@link LimitingRequestProcessor} for more details. 
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public WsMockControl times(int min, int max) {
 		if (requestProcessors.isEmpty())
 		{
@@ -130,13 +203,16 @@ public class WsMockControl {
 	private LimitingRequestProcessor getLastProcessor() {
 		return requestProcessors.get(requestProcessors.size()-1);
 	}
-
-
-
-
-
-
 	
-	
+	/**
+	 * Verifies that all RequestProcessors were called given number of times.
+	 */
+	public void verify()
+	{
+		for (LimitingRequestProcessor processor: requestProcessors)
+		{
+			processor.verify();
+		}
+	}
 
 }

@@ -180,5 +180,18 @@ public class WsMockControlTest extends AbstractMessageTest{
 		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	
+	@Test(expected=IllegalStateException.class)
+	public void testCreateEmpty()
+	{
+		new WsMockControl().createMock();
+	}
 	
+	
+	@Test(expected=WsTestException.class)
+	public void testVerifyNoCall()
+	{
+		WsMockControl control = new WsMockControl().throwException(new WsTestException("Test error"));
+		control.verify();
+	}
+
 }
