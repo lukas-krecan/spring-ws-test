@@ -1,10 +1,14 @@
 package net.javacrumbs.springws.test.simple;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.easymock.EasyMock.*;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -23,6 +27,7 @@ import org.springframework.xml.transform.StringResult;
 
 public class WsMockControlTest extends AbstractMessageTest{
 	
+	private static final String URI = "http://example.org";
 	private static final Map<String, String> NS_MAP = Collections.singletonMap("ns", "http://www.example.org/schema");
 
 	@Test
@@ -41,7 +46,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
 		StringResult responseResult = new StringResult();
-		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	
 	@Test
@@ -132,7 +137,20 @@ public class WsMockControlTest extends AbstractMessageTest{
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
 		StringResult responseResult = new StringResult();
-		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+	}
+	@Test(expected=WsTestException.class)
+	public void testVerifyUri() throws IOException, URISyntaxException
+	{
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectUri(new URI("http://example.com")).returnResponse("mock-responses/test/default-response.xml").createMock();
+		assertNotNull(sender);
+		assertEquals(2, sender.getRequestProcessors().size());
+		
+		
+		WebServiceTemplate template = new WebServiceTemplate();
+		template.setMessageSender(sender);
+		StringResult responseResult = new StringResult();
+		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	@Test(expected=WsTestException.class)
 	public void testXPathValidation() throws IOException
@@ -147,7 +165,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
 		StringResult responseResult = new StringResult();
-		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	@Test(expected=WsTestException.class)
 	public void testXPathAssertion() throws IOException
@@ -161,7 +179,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
 		StringResult responseResult = new StringResult();
-		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	
 	@Test(expected=WsTestException.class)
@@ -177,7 +195,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
 		StringResult responseResult = new StringResult();
-		template.sendSourceAndReceiveToResult("http://example.org",createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
 	}
 	
 	@Test(expected=IllegalStateException.class)

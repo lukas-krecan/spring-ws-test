@@ -160,6 +160,26 @@ public class WsMockControl {
 		addRequestProcessor(thrower, "throwException(\""+exception.getMessage()+"\")");
 		return this;
 	}
+	
+	/**
+	 * Expects given uri. If other URI is used, {@link WsTestException} is thrown. 
+	 * @param string
+	 * @return
+	 */
+	public WsMockControl expectUri(final URI expectedUri) {
+		RequestProcessor validator = new RequestProcessor()
+		{
+			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
+				if (!uri.equals(expectedUri))
+				{
+					throw new WsTestException("Expected uri "+expectedUri+" but got "+uri); 	
+				}
+				return null;
+			}
+		};
+		addRequestProcessor(validator, "expectUri(\""+expectedUri+"\")");
+		return this;
+	}
 
 	List<LimitingRequestProcessor> getRequestProcessors() {
 		return requestProcessors;
