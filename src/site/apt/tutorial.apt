@@ -189,7 +189,8 @@ Tutorial
 ---
 
   It's similar to the default request generator, the difference is that instead of generating responses it validates the request. You can use XSLT templates here as well. 
-  You can also specify special placeholder <<<${IGNORE}>>> for values that should be ignored.
+  You can also specify special placeholder <<<${IGNORE}>>> for values that should be ignored. It is also possible to define only the payload in the
+  control file. In such case only payloads will be compared and SOAP envelope will be ignored.  
 
 ** XPathRequestValidator
   

@@ -39,7 +39,11 @@
 		</repository>
 
 	</distributionManagement>
-
+	
+	<properties>
+		<currentVersion>0.8</currentVersion>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.ws</groupId>

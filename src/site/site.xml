@@ -31,9 +31,11 @@
       <item name="Introduction" href="index.html"/>
       <item name="Quick Start" href="quick-start.html"/>
       <item name="Tutorial" href="tutorial.html"/>
-      <item name="Changes between 0.6 and 0.7" href="changes0607.html"/>
       <item name="Reference" href="reference.html"/>
-      <item name="Download" href="download.html"/>
+      <item name="Reference" href="reference.html"/>
+      <item name="Unit test support" href="unit-test-support.html"/>
+      <item name="Changes between 0.7 and 0.8" href="changes0708.html"/>
+      <item name="Changes between 0.6 and 0.7" href="changes0607.html"/>
       <item name="N.A.Q" href="naq.html"/>
       <item name="Sample app" href="sample.html"/>
     </menu>
