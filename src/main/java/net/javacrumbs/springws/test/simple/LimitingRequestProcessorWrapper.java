@@ -59,7 +59,7 @@ public class LimitingRequestProcessorWrapper implements RequestProcessor, Limiti
 	 * @see net.javacrumbs.springws.test.simple.VerifiableRequestProcessor#verify()
 	 */
 	public void verify() throws WsTestException{
-		if (numberOfProcessedRequests>maxNumberOfProcessedRequests || numberOfProcessedRequests<minNumberOfProcessedRequests)
+		if (numberOfProcessedRequests<minNumberOfProcessedRequests)
 		{
 			throw new WsTestException(generateErrorMessage());
 		}

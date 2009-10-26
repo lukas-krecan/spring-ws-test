@@ -45,6 +45,9 @@ public class LimitingRequestProcessorWrapperTest extends AbstractValidatorTest{
 		//second call will be ignored
 		assertNull(wrapper.processRequest(TEST_URI, messageFactory, request));
 		
+		//no problem
+		wrapper.verify();
+		
 		verify(processor);
 		
 	}
