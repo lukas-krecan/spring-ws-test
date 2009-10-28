@@ -15,17 +15,21 @@
  */
 package net.javacrumbs.springws.test.validator;
 
-import net.javacrumbs.springws.test.lookup.AbstractXPathResourceLookupFactoryBean;
+import net.javacrumbs.springws.test.lookup.AbstractPayloadRootResourceLookupFactoryBean;
 
 /**
  * Simplifies creation of {@link XmlCompareRequestValidator}.
  * @author Lukas Krecan
  *
  */
-public class XmlCompareRequestValidatorFactoryBean extends AbstractXPathResourceLookupFactoryBean {
+public class PayloadRootBasedXmlCompareRequestValidatorFactoryBean extends AbstractPayloadRootResourceLookupFactoryBean {
 
 	
 	private int order = XmlCompareRequestValidator.DEFAULT_ORDER;
+
+	public PayloadRootBasedXmlCompareRequestValidatorFactoryBean() {
+		setPathSuffix("request.xml");
+	}
 
 	@Override
 	protected Object createInstance() throws Exception {

@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.springws.test.generator;
 
-import net.javacrumbs.springws.test.lookup.AbstractXPathResourceLookupFactoryBean;
+import net.javacrumbs.springws.test.lookup.AbstractPayloadRootResourceLookupFactoryBean;
 
 
 
@@ -23,29 +23,21 @@ import net.javacrumbs.springws.test.lookup.AbstractXPathResourceLookupFactoryBea
 /**
  * Simplifies creation of {@link DefaultResponseGenerator}. Could be used like this
  *  <code><pre>
- * &lt;bean class="net.javacrumbs.springws.test.generator.DefaultResponseGeneratorFactoryBean"&gt;
- *	&lt;property name="namespaceMap"&gt;
- *		&lt;map&gt;
- *			&lt;entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/&gt;
- *			&lt;entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/&gt;
- *		&lt;/map&gt;
- *	&lt;/property&gt;
- *	&lt;property name="XPathExpressions"&gt;
- *		&lt;list&gt;
- *			&lt;value&gt;concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')&lt;/value&gt;
- *			&lt;value&gt;concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')&lt;/value&gt;
- *		&lt;/list&gt;
- *	&lt;/property&gt;		
- *&lt;/bean&gt;
+
  *	</pre>	
  * </code>
  * 	
  * @author Lukas Krecan
  *
  */
-public class DefaultResponseGeneratorFactoryBean extends AbstractXPathResourceLookupFactoryBean {
+public class PayloadRootBasedResponseGeneratorFactoryBean extends AbstractPayloadRootResourceLookupFactoryBean {
 
 	private int order = DefaultResponseGenerator.DEFAULT_ORDER;
+
+	public PayloadRootBasedResponseGeneratorFactoryBean() {
+		super();
+		setPathSuffix("response.xml");
+	}
 
 	@Override
 	protected Object createInstance() throws Exception {

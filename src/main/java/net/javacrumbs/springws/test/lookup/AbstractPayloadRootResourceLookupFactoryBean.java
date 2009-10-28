@@ -8,51 +8,33 @@ import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
-public abstract class AbstractResourceLookupFactoryBean extends AbstractFactoryBean {
+public abstract class AbstractPayloadRootResourceLookupFactoryBean extends AbstractFactoryBean {
 
 	private Map<String, String> namespaceMap;
-	private String[] xPathExpressions;
 	private String pathPrefix;
 	private String pathSuffix;
 	private String discriminatorDelimiter;
 	private String payloadDelimiter;
 	private Map<String, String[]> discriminators;
 
-	public AbstractResourceLookupFactoryBean() {
+	public AbstractPayloadRootResourceLookupFactoryBean() {
 		super();
 	}
 
 	protected ResourceLookup getResourceLookup() {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
-		if (xPathExpressions!=null)
-		{
-			ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
-			resourceLookup.setExpressionResolver(expressionResolver);
-			resourceLookup.setResourceExpressions(xPathExpressions);
-			return resourceLookup;
-		}
-		else
-		{
-			PayloadRootBasedResourceLookup resourceLookup = new PayloadRootBasedResourceLookup();
-			resourceLookup.setExpressionResolver(expressionResolver);
-			resourceLookup.setPathPrefix(pathPrefix);
-			resourceLookup.setPathSuffix(pathSuffix);
-			resourceLookup.setDiscriminatorDelimiter(discriminatorDelimiter);
-			resourceLookup.setPayloadDelimiter(payloadDelimiter);
-			resourceLookup.setDiscriminators(discriminators);
-			return resourceLookup;
-		}
-	
+
+		PayloadRootBasedResourceLookup resourceLookup = new PayloadRootBasedResourceLookup();
+		resourceLookup.setExpressionResolver(expressionResolver);
+		resourceLookup.setPathPrefix(pathPrefix);
+		resourceLookup.setPathSuffix(pathSuffix);
+		resourceLookup.setDiscriminatorDelimiter(discriminatorDelimiter);
+		resourceLookup.setPayloadDelimiter(payloadDelimiter);
+		resourceLookup.setDiscriminators(discriminators);
+		return resourceLookup;
 	}
 
-	public String[] getXPathExpressions() {
-		return xPathExpressions;
-	}
-
-	public void setXPathExpressions(String[] responseXPathExpressions) {
-		this.xPathExpressions = responseXPathExpressions;
-	}
 
 	public Map<String, String> getNamespaceMap() {
 		return namespaceMap;

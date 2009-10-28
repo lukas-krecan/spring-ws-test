@@ -7,11 +7,11 @@ import java.util.Collections;
 import org.junit.Test;
 
 
-public class AbstractResourceLookupFactoryBeanTest {
+public class AbstractPayloadRootResourceLookupFactoryBeanTest {
 	@Test
 	public void testSplit()
 	{
-		AbstractResourceLookupFactoryBean factoryBean = new AbstractResourceLookupFactoryBean(){
+		AbstractPayloadRootResourceLookupFactoryBean factoryBean = new AbstractPayloadRootResourceLookupFactoryBean(){
 			@Override
 			protected Object createInstance() throws Exception {
 				return null;
