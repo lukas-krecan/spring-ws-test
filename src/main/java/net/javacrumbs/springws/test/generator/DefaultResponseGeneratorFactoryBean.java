@@ -15,12 +15,10 @@
  */
 package net.javacrumbs.springws.test.generator;
 
-import java.util.Map;
+import net.javacrumbs.springws.test.lookup.AbstractResourceLookupFactoryBean;
 
-import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
-import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
 
-import org.springframework.beans.factory.config.AbstractFactoryBean;
+
 
 /**
  * Simplifies creation of {@link DefaultResponseGenerator}. Could be used like this
@@ -45,47 +43,23 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  * @author Lukas Krecan
  *
  */
-public class DefaultResponseGeneratorFactoryBean extends AbstractFactoryBean {
+public class DefaultResponseGeneratorFactoryBean extends AbstractResourceLookupFactoryBean {
 
-	private Map<String, String> namespaceMap;
-	
-	private String[] xPathExpressions;
-	
 	private int order = DefaultResponseGenerator.DEFAULT_ORDER;
 
 	@Override
 	protected Object createInstance() throws Exception {
-		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
-		expressionResolver.setNamespaceMap(namespaceMap);
-		
+				
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
-		ExpressionBasedResourceLookup responseResourceLookup = new ExpressionBasedResourceLookup();
-		responseResourceLookup.setExpressionResolver(expressionResolver);
-		responseResourceLookup.setResourceExpressions(xPathExpressions);
-		responseGenerator.setResourceLookup(responseResourceLookup);
 		responseGenerator.setOrder(order);
+		responseGenerator.setResourceLookup(getResourceLookup());
+		
 		return responseGenerator;
 	}
 
 	@Override
 	public Class<?> getObjectType() {
 		return DefaultResponseGenerator.class;
-	}
-
-	public String[] getXPathExpressions() {
-		return xPathExpressions;
-	}
-
-	public void setXPathExpressions(String[] responseXPathExpressions) {
-		this.xPathExpressions = responseXPathExpressions;
-	}
-
-	public Map<String, String> getNamespaceMap() {
-		return namespaceMap;
-	}
-
-	public void setNamespaceMap(Map<String, String> namespaceMap) {
-		this.namespaceMap = namespaceMap;
 	}
 
 	public int getOrder() {

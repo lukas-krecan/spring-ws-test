@@ -2,7 +2,6 @@ package net.javacrumbs.springws.test.lookup;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -24,7 +23,7 @@ import org.w3c.dom.Document;
  */
 public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 
-	private Map<String, List<String>> discriminators;
+	private Map<String,String[]> discriminators;
 	
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 	
@@ -48,10 +47,10 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 			return null;
 		}
 		String payloadName = payloadQName.getLocalPart();
-		List<String> expressions = discriminators.get(payloadName);
+		String[] expressions = discriminators.get(payloadName);
 		Document document = getXmlUtil().loadDocument(message);
 		Resource resource; 
-		int discriminatorsCount = expressions.size();
+		int discriminatorsCount = expressions.length;
 		do
 		{
 			resource = getResourceLoader().getResource(getResourceName(uri, payloadName, expressions, discriminatorsCount, document));
@@ -60,7 +59,7 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 		while(resource == null && discriminatorsCount>=0);
 		return resource;
 	}
-	protected String getResourceName(URI uri, String payloadName, List<String> expressions, int discriminatorsCount, Document document) {
+	protected String getResourceName(URI uri, String payloadName, String[] expressions, int discriminatorsCount, Document document) {
 		return pathPrefix+payloadName+payloadDelimiter+getDiscriminatorExpression(uri, expressions, discriminatorsCount, document)+pathSuffix;
 	}
 	/**
@@ -71,10 +70,10 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 	 * @param document
 	 * @return
 	 */
-	protected String getDiscriminatorExpression(URI uri, List<String> expressions, int discriminatorsCount, Document document) {
+	protected String getDiscriminatorExpression(URI uri, String[] expressions, int discriminatorsCount, Document document) {
 		StringBuilder result = new StringBuilder();
 		for (int i=0; i<discriminatorsCount;i++) {
-			String expression = expressions.get(i);
+			String expression = expressions[i];
 			String evaluated = evaluateExpression(expression, uri, document);
 			if (StringUtils.hasText(evaluated))
 			{
@@ -84,11 +83,11 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 		return result.toString(); 
 	}
 
-	public Map<String, List<String>> getDiscriminators() {
+	public Map<String, String[]> getDiscriminators() {
 		return discriminators;
 	}
 
-	public void setDiscriminators(Map<String, List<String>> discriminators) {
+	public void setDiscriminators(Map<String, String[]> discriminators) {
 		this.discriminators = discriminators;
 	}
 	public String getPathPrefix() {
@@ -103,16 +102,16 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 	public void setPathSuffix(String pathSuffix) {
 		this.pathSuffix = pathSuffix;
 	}
-	String getDiscriminatorDelimiter() {
+	public String getDiscriminatorDelimiter() {
 		return discriminatorDelimiter;
 	}
-	void setDiscriminatorDelimiter(String discriminatorDelimiter) {
+	public void setDiscriminatorDelimiter(String discriminatorDelimiter) {
 		this.discriminatorDelimiter = discriminatorDelimiter;
 	}
-	String getPayloadDelimiter() {
+	public String getPayloadDelimiter() {
 		return payloadDelimiter;
 	}
-	void setPayloadDelimiter(String payloadDelimiter) {
+	public void setPayloadDelimiter(String payloadDelimiter) {
 		this.payloadDelimiter = payloadDelimiter;
 	}
 }

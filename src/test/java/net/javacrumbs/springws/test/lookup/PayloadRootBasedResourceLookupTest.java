@@ -1,6 +1,5 @@
 package net.javacrumbs.springws.test.lookup;
 
-import static java.util.Arrays.asList;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -11,7 +10,6 @@ import static org.junit.Assert.assertSame;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
@@ -37,8 +35,8 @@ public class PayloadRootBasedResourceLookupTest extends AbstractValidatorTest{
 		resolver.setNamespaceMap(Collections.singletonMap("ns", "http://www.example.org/schema"));
 		
 		PayloadRootBasedResourceLookup lookup = new PayloadRootBasedResourceLookup();
-		Map<String, List<String>> discriminators = new HashMap<String, List<String>>();
-		discriminators.put("test", asList("//ns:text"));
+		Map<String, String[]> discriminators = new HashMap<String, String[]>();
+		discriminators.put("test", new String[]{"//ns:text"});
 		lookup.setDiscriminators(discriminators);
 		lookup.setResourceLoader(resourceLoader);
 		lookup.setExpressionResolver(resolver);
@@ -61,8 +59,8 @@ public class PayloadRootBasedResourceLookupTest extends AbstractValidatorTest{
 		resolver.setNamespaceMap(Collections.singletonMap("ns", "http://www.example.org/schema"));
 		
 		PayloadRootBasedResourceLookup lookup = new PayloadRootBasedResourceLookup();
-		Map<String, List<String>> discriminators = new HashMap<String, List<String>>();
-		discriminators.put("test", asList("//ns:text","//ns:number"));
+		Map<String, String[]> discriminators = new HashMap<String, String[]>();
+		discriminators.put("test", new String[]{"//ns:text","//ns:number"});
 		lookup.setDiscriminators(discriminators);
 		lookup.setResourceLoader(resourceLoader);
 		lookup.setExpressionResolver(resolver);
@@ -87,8 +85,8 @@ public class PayloadRootBasedResourceLookupTest extends AbstractValidatorTest{
 		resolver.setNamespaceMap(Collections.singletonMap("ns", "http://www.example.org/schema"));
 		
 		PayloadRootBasedResourceLookup lookup = new PayloadRootBasedResourceLookup();
-		Map<String, List<String>> discriminators = new HashMap<String, List<String>>();
-		discriminators.put("test", asList("//ns:text","//ns:number"));
+		Map<String, String[]> discriminators = new HashMap<String, String[]>();
+		discriminators.put("test",new String[]{"//ns:text","//ns:number"});
 		lookup.setDiscriminators(discriminators);
 		lookup.setResourceLoader(resourceLoader);
 		lookup.setExpressionResolver(resolver);
@@ -109,8 +107,8 @@ public class PayloadRootBasedResourceLookupTest extends AbstractValidatorTest{
 		PayloadRootBasedResourceLookup lookup = new PayloadRootBasedResourceLookup();
 		lookup.setExpressionResolver(resolver);
 		
-		assertEquals("mock-xml/test/text-response.xml",lookup.getResourceName(TEST_URI, "test", asList("//ns:text","garbage"), 2, getXmlUtil().loadDocument(getValidMessage())));
-		assertEquals("mock-xml/test/text-response.xml",lookup.getResourceName(TEST_URI, "test", asList("garbage","//ns:text"), 2, getXmlUtil().loadDocument(getValidMessage())));
+		assertEquals("mock-xml/test/text-response.xml",lookup.getResourceName(TEST_URI, "test", new String[]{"//ns:text","garbage"}, 2, getXmlUtil().loadDocument(getValidMessage())));
+		assertEquals("mock-xml/test/text-response.xml",lookup.getResourceName(TEST_URI, "test", new String[]{"garbage","//ns:text"}, 2, getXmlUtil().loadDocument(getValidMessage())));
 	}
 	@Test
 	public void testUri() throws IOException
@@ -125,7 +123,7 @@ public class PayloadRootBasedResourceLookupTest extends AbstractValidatorTest{
 		lookup.setDiscriminatorDelimiter("_");
 		lookup.setPayloadDelimiter("-");
 		
-		assertEquals("mock-request/test-localhost_text_request.xml",lookup.getResourceName(TEST_URI, "test", asList("$uri.host","//ns:text"), 2, getXmlUtil().loadDocument(getValidMessage())));
+		assertEquals("mock-request/test-localhost_text_request.xml",lookup.getResourceName(TEST_URI, "test", new String[]{"$uri.host","//ns:text"}, 2, getXmlUtil().loadDocument(getValidMessage())));
 	}
 	
 	

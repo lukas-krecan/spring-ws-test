@@ -15,59 +15,29 @@
  */
 package net.javacrumbs.springws.test.validator;
 
-import java.util.Map;
-
-import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
-
-import org.springframework.beans.factory.config.AbstractFactoryBean;
+import net.javacrumbs.springws.test.lookup.AbstractResourceLookupFactoryBean;
 
 /**
  * Simplifies creation of {@link DefaultResponseGenerator}.
  * @author Lukas Krecan
  *
  */
-public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
+public class XmlCompareRequestValidatorFactoryBean extends AbstractResourceLookupFactoryBean {
 
-	private Map<String, String> namespaceMap;
-	
-	private String[] xPathExpressions;
 	
 	private int order = XmlCompareRequestValidator.DEFAULT_ORDER;
 
 	@Override
 	protected Object createInstance() throws Exception {
-		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
-		expressionResolver.setNamespaceMap(namespaceMap);
-		
 		XmlCompareRequestValidator responseGenerator = new XmlCompareRequestValidator();
-		ExpressionBasedResourceLookup reourceLookup = new ExpressionBasedResourceLookup();
-		reourceLookup.setExpressionResolver(expressionResolver);
-		reourceLookup.setResourceExpressions(getXPathExpressions());
-		responseGenerator.setControlResourceLookup(reourceLookup);
+		responseGenerator.setControlResourceLookup(getResourceLookup());
 		return responseGenerator;
 	}
 
 	@Override
 	public Class<?> getObjectType() {
 		return XmlCompareRequestValidator.class;
-	}
-
-	public String[] getXPathExpressions() {
-		return xPathExpressions;
-	}
-
-	public void setXPathExpressions(String[] responseXPathExpressions) {
-		this.xPathExpressions = responseXPathExpressions;
-	}
-
-	public Map<String, String> getNamespaceMap() {
-		return namespaceMap;
-	}
-
-	public void setNamespaceMap(Map<String, String> namespaceMap) {
-		this.namespaceMap = namespaceMap;
 	}
 
 	public int getOrder() {
