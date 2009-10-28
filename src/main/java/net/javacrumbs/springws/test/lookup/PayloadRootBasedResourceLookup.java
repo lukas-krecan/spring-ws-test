@@ -47,7 +47,7 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 			return null;
 		}
 		String payloadName = payloadQName.getLocalPart();
-		String[] expressions = discriminators.get(payloadName);
+		String[] expressions = getDiscriminators(payloadName);
 		Document document = getXmlUtil().loadDocument(message);
 		Resource resource; 
 		int discriminatorsCount = expressions.length;
@@ -59,6 +59,12 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 		while(resource == null && discriminatorsCount>=0);
 		return resource;
 	}
+	
+	private String[] getDiscriminators(String payloadName) {
+		String[] result = discriminators.get(payloadName);
+		return result!=null?result:new String[0];
+	}
+	
 	protected String getResourceName(URI uri, String payloadName, String[] expressions, int discriminatorsCount, Document document) {
 		return pathPrefix+payloadName+payloadDelimiter+getDiscriminatorExpression(uri, expressions, discriminatorsCount, document)+pathSuffix;
 	}

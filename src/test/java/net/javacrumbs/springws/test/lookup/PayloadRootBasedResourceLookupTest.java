@@ -99,6 +99,32 @@ public class PayloadRootBasedResourceLookupTest extends AbstractValidatorTest{
 		verify(resourceLoader);
 	}
 	@Test
+	public void testUnknownPayload() throws IOException
+	{
+		ResourceLoader resourceLoader = createMock(ResourceLoader.class);
+		ByteArrayResource resource = new ByteArrayResource("Hi".getBytes());
+		expect(resourceLoader.getResource("mock-xml/test/response.xml")).andReturn(resource);
+		
+		XPathExpressionResolver resolver = new XPathExpressionResolver();
+		resolver.setNamespaceMap(Collections.singletonMap("ns", "http://www.example.org/schema"));
+		
+		PayloadRootBasedResourceLookup lookup = new PayloadRootBasedResourceLookup();
+		Map<String, String[]> discriminators = new HashMap<String, String[]>();
+		discriminators.put("known",new String[]{"//ns:text","//ns:number"});
+		lookup.setDiscriminators(discriminators);
+		lookup.setResourceLoader(resourceLoader);
+		lookup.setExpressionResolver(resolver);
+		
+		replay(resourceLoader);
+		
+		Resource result = lookup.lookupResource(TEST_URI, getValidMessage());
+		assertSame(resource, result);
+		
+		verify(resourceLoader);
+	}
+
+		
+	@Test
 	public void testNull() throws IOException
 	{
 		XPathExpressionResolver resolver = new XPathExpressionResolver();
