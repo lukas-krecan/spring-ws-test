@@ -11,10 +11,11 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 public abstract class AbstractPayloadRootResourceLookupFactoryBean extends AbstractFactoryBean {
 
 	private Map<String, String> namespaceMap;
-	private String pathPrefix;
-	private String pathSuffix;
-	private String discriminatorDelimiter;
-	private String payloadDelimiter;
+	private String pathPrefix = PayloadRootBasedResourceLookup.DEFAULT_PATH_PREFIX;
+	private String pathSuffix = PayloadRootBasedResourceLookup.DEFAULT_PATH_SUFFIX;
+	private String discriminatorDelimiter = PayloadRootBasedResourceLookup.DEFAULT_DISCRIMINATOR_DELIMITER;
+	private String payloadDelimiter = PayloadRootBasedResourceLookup.DEFAULT_PAYLOAD_DELIMITER;
+	private boolean prependUri;
 	private Map<String, String[]> discriminators;
 
 	public AbstractPayloadRootResourceLookupFactoryBean() {
@@ -32,6 +33,7 @@ public abstract class AbstractPayloadRootResourceLookupFactoryBean extends Abstr
 		resourceLookup.setDiscriminatorDelimiter(discriminatorDelimiter);
 		resourceLookup.setPayloadDelimiter(payloadDelimiter);
 		resourceLookup.setDiscriminators(discriminators);
+		resourceLookup.setPrependUri(prependUri);
 		return resourceLookup;
 	}
 
@@ -90,6 +92,14 @@ public abstract class AbstractPayloadRootResourceLookupFactoryBean extends Abstr
 			disc.put(entry.getKey(), entry.getValue().split("\\s*;\\s*"));
 		}
 		this.discriminators = disc;
+	}
+
+	public boolean isPrependUri() {
+		return prependUri;
+	}
+
+	public void setPrependUri(boolean prependUri) {
+		this.prependUri = prependUri;
 	}
 
 }

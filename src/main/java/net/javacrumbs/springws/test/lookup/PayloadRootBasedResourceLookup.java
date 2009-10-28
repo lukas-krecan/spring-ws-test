@@ -23,17 +23,28 @@ import org.w3c.dom.Document;
  */
 public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 
+	
+	static final String DEFAULT_PAYLOAD_DELIMITER = "/";
+
+	static final String DEFAULT_DISCRIMINATOR_DELIMITER = "-";
+
+	static final String DEFAULT_PATH_SUFFIX = "response.xml";
+
+	static final String DEFAULT_PATH_PREFIX = "mock-xml/";
+
 	private Map<String,String[]> discriminators;
 	
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 	
-	private String pathPrefix = "mock-xml/";
+	private String pathPrefix = DEFAULT_PATH_PREFIX;
 
-	private String pathSuffix = "response.xml";
+	private String pathSuffix = DEFAULT_PATH_SUFFIX;
 
-	private String discriminatorDelimiter = "-";
+	private String discriminatorDelimiter = DEFAULT_DISCRIMINATOR_DELIMITER;
 
-	private String payloadDelimiter = "/";
+	private String payloadDelimiter = DEFAULT_PAYLOAD_DELIMITER;
+	
+	private boolean prependUri = false;
 	
 	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException {
 		QName payloadQName;
@@ -53,11 +64,20 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 		int discriminatorsCount = expressions.length;
 		do
 		{
-			resource = getResourceLoader().getResource(getResourceName(uri, payloadName, expressions, discriminatorsCount, document));
+			String resourceName = getResourceName(uri, payloadName, expressions, discriminatorsCount, document);
+			logger.debug("Looking for resource "+resourceName);
+			resource = getResourceLoader().getResource(resourceName);
 			discriminatorsCount--;
 		}
-		while(resource == null && discriminatorsCount>=0);
-		return resource;
+		while((resource == null || !resource.exists()) && discriminatorsCount>=0);
+		if (resource!=null && resource.exists())
+		{
+			return getTemplateProcessor().processTemplate(resource, uri, message);
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	private String[] getDiscriminators(String payloadName) {
@@ -66,7 +86,8 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 	}
 	
 	protected String getResourceName(URI uri, String payloadName, String[] expressions, int discriminatorsCount, Document document) {
-		return pathPrefix+payloadName+payloadDelimiter+getDiscriminatorExpression(uri, expressions, discriminatorsCount, document)+pathSuffix;
+		String uriHost = prependUri?(uri.getHost()+payloadDelimiter):"";
+		return pathPrefix+uriHost+payloadName+payloadDelimiter+getDiscriminatorExpression(uri, expressions, discriminatorsCount, document)+pathSuffix;
 	}
 	/**
 	 * Returns expression generated from discriminators
@@ -119,5 +140,13 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 	}
 	public void setPayloadDelimiter(String payloadDelimiter) {
 		this.payloadDelimiter = payloadDelimiter;
+	}
+
+	public boolean isPrependUri() {
+		return prependUri;
+	}
+
+	public void setPrependUri(boolean prependUri) {
+		this.prependUri = prependUri;
 	}
 }

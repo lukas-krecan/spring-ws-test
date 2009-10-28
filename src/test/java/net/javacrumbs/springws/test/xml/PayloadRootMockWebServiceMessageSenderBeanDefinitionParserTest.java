@@ -53,7 +53,10 @@ public class PayloadRootMockWebServiceMessageSenderBeanDefinitionParserTest {
 		assertEquals(5, requestProcessors.size());
 		Iterator<RequestProcessor> iterator = requestProcessors.iterator();
 		XmlCompareRequestValidator compareRequestValidator = (XmlCompareRequestValidator) iterator.next();
-		assertEquals(PayloadRootBasedResourceLookup.class, compareRequestValidator.getControlResourceLookup().getClass());
+		PayloadRootBasedResourceLookup controlResourceLookup = (PayloadRootBasedResourceLookup) compareRequestValidator.getControlResourceLookup();
+		assertNotNull(controlResourceLookup.getPayloadDelimiter());
+		assertEquals("request.xml",controlResourceLookup.getPathSuffix());
+		
 		assertEquals(SchemaRequestValidator.class, iterator.next().getClass());
 		
 		XPathRequestValidator xpathRequestValidator = (XPathRequestValidator)iterator.next();
