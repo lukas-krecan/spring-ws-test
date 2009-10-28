@@ -41,7 +41,7 @@ public abstract class AbstractMessageTest {
 	static
 	{
 		try {
-			TEST_URI = new URI("http://localhot:1234");
+			TEST_URI = new URI("http://localhost:1234");
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}

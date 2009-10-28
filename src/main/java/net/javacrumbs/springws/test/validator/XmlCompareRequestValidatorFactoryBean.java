@@ -19,7 +19,7 @@ import java.util.Map;
 
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
+import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
@@ -42,7 +42,7 @@ public class XmlCompareRequestValidatorFactoryBean extends AbstractFactoryBean {
 		expressionResolver.setNamespaceMap(namespaceMap);
 		
 		XmlCompareRequestValidator responseGenerator = new XmlCompareRequestValidator();
-		DefaultResourceLookup reourceLookup = new DefaultResourceLookup();
+		ExpressionBasedResourceLookup reourceLookup = new ExpressionBasedResourceLookup();
 		reourceLookup.setExpressionResolver(expressionResolver);
 		reourceLookup.setResourceExpressions(getXPathExpressions());
 		responseGenerator.setControlResourceLookup(reourceLookup);

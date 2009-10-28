@@ -17,7 +17,7 @@ import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
+import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.junit.Test;
@@ -37,11 +37,11 @@ public class WsMockControlTest extends AbstractMessageTest{
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
-		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender,0)).getControlResourceLookup();
-		assertEquals("'xml/control-message-test.xml'", lookup1.getResourceExpressions()[0]);
+		ExpressionBasedResourceLookup lookup1 = (ExpressionBasedResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender,0)).getControlResourceLookup();
+		assertEquals("xml/control-message-test.xml", lookup1.getResourceExpressions()[0]);
 		
-		DefaultResourceLookup lookup2 = (DefaultResourceLookup)((DefaultResponseGenerator)extractRequestProcessor(sender,1)).getResourceLookup();
-		assertEquals("'mock-responses/test/default-response.xml'", lookup2.getResourceExpressions()[0]);
+		ExpressionBasedResourceLookup lookup2 = (ExpressionBasedResourceLookup)((DefaultResponseGenerator)extractRequestProcessor(sender,1)).getResourceLookup();
+		assertEquals("mock-responses/test/default-response.xml", lookup2.getResourceExpressions()[0]);
 		
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
@@ -189,8 +189,8 @@ public class WsMockControlTest extends AbstractMessageTest{
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
-		DefaultResourceLookup lookup1 = (DefaultResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).getControlResourceLookup();
-		assertEquals("'xml/control-message-test.xml'", lookup1.getResourceExpressions()[0]);
+		ExpressionBasedResourceLookup lookup1 = (ExpressionBasedResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).getControlResourceLookup();
+		assertEquals("xml/control-message-test.xml", lookup1.getResourceExpressions()[0]);
 			
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);

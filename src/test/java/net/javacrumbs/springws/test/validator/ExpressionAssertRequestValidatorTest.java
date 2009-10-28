@@ -1,5 +1,13 @@
 package net.javacrumbs.springws.test.validator;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.io.IOException;
 import java.net.URI;
 
@@ -8,8 +16,6 @@ import net.javacrumbs.springws.test.expression.ExpressionResolver;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
-
-import static org.easymock.EasyMock.*;
 
 
 public class ExpressionAssertRequestValidatorTest extends AbstractValidatorTest{

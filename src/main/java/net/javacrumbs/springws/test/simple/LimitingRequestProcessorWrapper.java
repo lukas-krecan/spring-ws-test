@@ -3,11 +3,11 @@ package net.javacrumbs.springws.test.simple;
 import java.io.IOException;
 import java.net.URI;
 
-import org.springframework.ws.WebServiceMessage;
-import org.springframework.ws.WebServiceMessageFactory;
-
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
+
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 
 /**
  * Request processor wrapper that limits number of {@link #processRequest(URI, WebServiceMessageFactory, WebServiceMessage)} calls.

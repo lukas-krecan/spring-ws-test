@@ -18,4 +18,51 @@
 ~~
 Unit test support
 
-  In case you want to test only your code and not Spring configuration, it is possible to use our unit test support.
+  In case you want to test only your code and not Spring configuration, it is possible to use our unit test support. Since one example tells more then 1000 words, here you are
+  
+---
+public class AirlineWsClientTest {
+
+	private AirlineWsClient client;
+	private WebServiceTemplate webServiceTemplate;
+	
+	
+	@Test
+	public void testGetFligts()
+	{
+		
+		//create control
+		WsMockControl mockControl = new WsMockControl();
+		//teach mock what to do and create it
+		WebServiceMessageSender mockMessageSender = mockControl.expectRequest("PRG-DUB-request.xml").returnResponse("PRG-DUB-response.xml").createMock();
+		webServiceTemplate.setMessageSender(mockMessageSender);
+		
+		//do the test
+		List<Flight> flights = client.getFlights("PRG","DUB");
+		assertNotNull(flights);
+		assertEquals(1, flights.size());
+		assertEquals("PRG",flights.get(0).getFrom().getCode());
+		assertEquals("DUB",flights.get(0).getTo().getCode());
+		
+		//verify that everything was called at least once
+		mockControl.verify();
+	}
+
+	@Before
+	public void setUp() throws Exception
+	{
+		//Configure WebServiceTemplate
+		XMLUnit.setIgnoreWhitespace(true);
+		client = new AirlineWsClient();
+		webServiceTemplate = new WebServiceTemplate();
+		webServiceTemplate.setDefaultUri("http://localhost");
+		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+		marshaller.setContextPath("net.javacrumbs.airline.aggregator.jaxb");
+		marshaller.afterPropertiesSet();
+		webServiceTemplate.setMarshaller(marshaller);
+		webServiceTemplate.setUnmarshaller(marshaller);
+		client.setWebServiceTemplate(webServiceTemplate);
+	}
+}
+---
+

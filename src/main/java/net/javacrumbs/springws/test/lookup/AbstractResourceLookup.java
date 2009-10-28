@@ -15,11 +15,9 @@
  */
 package net.javacrumbs.springws.test.lookup;
 
-import java.io.IOException;
 import java.net.URI;
 
 import net.javacrumbs.springws.test.expression.ExpressionResolver;
-import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
@@ -29,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
@@ -53,52 +50,19 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAware {
-	private String[] resourceExpressions;
-
+public abstract class AbstractResourceLookup implements ResourceLookup, ResourceLoaderAware {
+	
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 	
 	protected final Log logger = LogFactory.getLog(getClass());
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
-	private ExpressionResolver expressionResolver = new XPathExpressionResolver();
+	private ExpressionResolver expressionResolver;
 	
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 
-	/**
-	 * Iterates over expressions, evaluates them and looks for resource with corresponding name. 
-	 */
-	public Resource lookupResource(URI uri, WebServiceMessage message) throws IOException {
-		if (resourceExpressions != null) {
-			Document document = loadDocument(message);
-			for (String resourceExpression: resourceExpressions) {
-				Resource resultResource = findResourceForExpression(resourceExpression, uri, document);
-				if (resultResource!=null)
-				{
-					logger.debug("Found resource "+resultResource);
-					return templateProcessor.processTemplate(resultResource, uri, message);
-				}
-			}
-		}
-		return null;
-	}
 	
-	/**
-	 * Looks for a resource using given expression.
-	 * @param xpath
-	 * @param uri
-	 * @param document
-	 * @return
-	 */
-	protected Resource findResourceForExpression(String xpath, URI uri, Document document) {
-		String resourcePath = evaluateExpression(xpath, uri, document);
-		logger.debug("Looking for resource \"" + resourcePath + "\"");
-		Resource resultResource = resourceLoader.getResource(resourcePath);
-		resultResource = resultResource.exists() ? resultResource : null;
-		return resultResource;
-	}
-
 	/**
 	 * Evaluates the expression.
 	 * @param expression
@@ -115,8 +79,6 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 		return getXmlUtil().loadDocument(message);
 	}
 
-
-
 	public ResourceLoader getResourceLoader() {
 		return resourceLoader;
 	}
@@ -124,15 +86,6 @@ public class DefaultResourceLookup implements ResourceLookup, ResourceLoaderAwar
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}
-
-	public String[] getResourceExpressions() {
-		return resourceExpressions;
-	}
-
-	public void setResourceExpressions(String... resourceExpressions) {
-		this.resourceExpressions = resourceExpressions;
-	}
-
 	
 	public XmlUtil getXmlUtil() {
 		return xmlUtil;

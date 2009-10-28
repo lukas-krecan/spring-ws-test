@@ -3,14 +3,14 @@ package net.javacrumbs.springws.test.validator;
 import java.io.IOException;
 import java.net.URI;
 
-import org.springframework.ws.WebServiceMessage;
-import org.springframework.ws.WebServiceMessageFactory;
-
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.expression.ExpressionResolver;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.XmlUtil;
+
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 
 /**
  * Fails if expression is evaluated to false.

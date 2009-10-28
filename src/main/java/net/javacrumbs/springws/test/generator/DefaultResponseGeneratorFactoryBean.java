@@ -18,7 +18,7 @@ package net.javacrumbs.springws.test.generator;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
-import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
+import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
 
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
@@ -59,7 +59,7 @@ public class DefaultResponseGeneratorFactoryBean extends AbstractFactoryBean {
 		expressionResolver.setNamespaceMap(namespaceMap);
 		
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
-		DefaultResourceLookup responseResourceLookup = new DefaultResourceLookup();
+		ExpressionBasedResourceLookup responseResourceLookup = new ExpressionBasedResourceLookup();
 		responseResourceLookup.setExpressionResolver(expressionResolver);
 		responseResourceLookup.setResourceExpressions(xPathExpressions);
 		responseGenerator.setResourceLookup(responseResourceLookup);

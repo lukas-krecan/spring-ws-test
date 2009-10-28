@@ -10,9 +10,10 @@ import java.util.Map;
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.expression.ExpressionResolver;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.DefaultResourceLookup;
+import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
 import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
 import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
@@ -92,8 +93,9 @@ public class WsMockControl {
 	 */
 	public WsMockControl expectRequest(String resourceName) {
 		XmlCompareRequestValidator validator = new XmlCompareRequestValidator();
-		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
-		resourceLookup.setResourceExpressions("'"+resourceName+"'");
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
+		resourceLookup.setExpressionResolver(ExpressionResolver.DUMMY_EXPRESSION_RESOLVER);
+		resourceLookup.setResourceExpressions(resourceName);
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
 		addRequestProcessor(validator, "expectRequest(\""+resourceName+"\")");
@@ -138,8 +140,9 @@ public class WsMockControl {
 	 */
 	public WsMockControl returnResponse(String resourceName) {
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
-		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
-		resourceLookup.setResourceExpressions("'"+resourceName+"'");
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
+		resourceLookup.setExpressionResolver(ExpressionResolver.DUMMY_EXPRESSION_RESOLVER);
+		resourceLookup.setResourceExpressions(resourceName);
 		responseGenerator.setResourceLookup(resourceLookup);
 		addRequestProcessor(responseGenerator, "returnResponse(\""+resourceName+"\")");
 		return this;

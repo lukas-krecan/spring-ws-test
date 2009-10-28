@@ -17,7 +17,7 @@
 		<list>
 				<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidator">
 					<property name="controlResourceLookup">
-						<bean class="net.javacrumbs.springws.test.lookup.DefaultResourceLookup">
+						<bean class="net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup">
 							<property name="resourceExpressions">
 								<list>
 									<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
@@ -52,7 +52,7 @@
 				</bean>
 				<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
 					<property name="resourceLookup">
-						<bean class="net.javacrumbs.springws.test.lookup.DefaultResourceLookup">
+						<bean class="net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup">
 							<property name="resourceExpressions">
 								<list>
 									<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>

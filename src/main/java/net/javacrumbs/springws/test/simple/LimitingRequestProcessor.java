@@ -2,11 +2,11 @@ package net.javacrumbs.springws.test.simple;
 
 import java.net.URI;
 
-import org.springframework.ws.WebServiceMessage;
-import org.springframework.ws.WebServiceMessageFactory;
-
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
+
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 
 public interface LimitingRequestProcessor extends RequestProcessor{
 

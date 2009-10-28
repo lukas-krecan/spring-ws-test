@@ -20,7 +20,22 @@
 				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
 				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
 			</list>
-		</property>		
+		</property>
+		<!-- Alternative configuration -->
+<!--		<property name="pathPrefix" value="mock-responses/"/> Default value, does not have to be specified, payload root name will be appended.-->
+<!--		<property name="pathSuffix" value="response.xml"/> Default value, does not have to be specified.-->
+<!--		<property name="discriminators"> If they are present, will be concatenated with "-" as delimiter. If null, given discriminator will be skipped-->
+<!--			<map>-->
+<!--				<entry key="bookFlight" value="//ns:flightNumber"/>-->
+<!--				<entry key="getFlights" value="//ns:from,//ns:to"/>-->
+<!--			</map>-->
+<!--		</property>-->
+		<!-- Will look for resources in the following order (for a PRG-DUB flight):
+			PRG-DUB-response.xml
+			PRG-response.xml
+			default-response.xml
+		 -->
+				
 	</bean>		
 	
 	<!-- 'mock-responses/' + $uri.host + '/' + #payloadRootName + '/' + #xpath(//ns:from) + '-' + #xpath(//ns:to) + '-response.xml' -->	

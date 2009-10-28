@@ -37,13 +37,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
 
-public class DefaultResourceLookupTest extends AbstractMessageTest{
+public class ExpressionBasedResourceLookupTest extends AbstractMessageTest{
 
 	
 	@Test
 	public void testNoExpressions() throws IOException
 	{
-		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
 		
 		assertNull(resourceLookup.lookupResource(null, createMessage("xml/valid-message.xml")));
 	}
@@ -53,7 +53,7 @@ public class DefaultResourceLookupTest extends AbstractMessageTest{
 		WebServiceMessage request = createMessage("xml/valid-message.xml");
 		String responsePath = "mock-responses/test/default-response.xml";
 
-		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
 		resourceLookup.setResourceExpressions(new String[]{"expr1","expr2"});
 		
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
@@ -72,7 +72,7 @@ public class DefaultResourceLookupTest extends AbstractMessageTest{
 		WebServiceMessage request = createMessage("xml/valid-message.xml");
 		String responsePath = "mock-responses/test/default-response.xml";
 		
-		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
 		resourceLookup.setResourceExpressions(new String[]{"expr1","expr2"});
 		
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
@@ -91,7 +91,7 @@ public class DefaultResourceLookupTest extends AbstractMessageTest{
 	{
 		WebServiceMessage request = createMessage("xml/valid-message.xml");
 		
-		DefaultResourceLookup resourceLookup = new DefaultResourceLookup();
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
 		resourceLookup.setResourceExpressions(new String[]{"expr1","expr2"});
 		
 		ExpressionResolver resolve = createMock(ExpressionResolver.class);
