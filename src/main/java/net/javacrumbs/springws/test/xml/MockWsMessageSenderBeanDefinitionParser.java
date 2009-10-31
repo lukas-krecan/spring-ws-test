@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
+import net.javacrumbs.springws.test.generator.PayloadRootBasedResponseGeneratorFactoryBean;
 import net.javacrumbs.springws.test.validator.PayloadRootBasedXmlCompareRequestValidatorFactoryBean;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 
@@ -38,6 +39,10 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 			addRequestProcessor(requestProcessors, schemaRequestValidator);
 		}
 		
+		BeanDefinitionBuilder defaultResponseGenerator = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedResponseGeneratorFactoryBean.class);
+		defaultResponseGenerator.addPropertyValue("namespaceMap", namespaces);
+		defaultResponseGenerator.addPropertyValue("discriminators", discriminators);
+		addRequestProcessor(requestProcessors, defaultResponseGenerator);
 		
 		bean.addPropertyValue("requestProcessors", requestProcessors);		
 		
