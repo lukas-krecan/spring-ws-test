@@ -20,12 +20,20 @@ Changes between version 0.7 and 0.8
 
    There were some changes between versions 0.7 and 0.8 too. The most important is that some parts of API have changed. If your test do not work after upgrading to 0.8, here you will find how to fix it.
 
+* Simplified configuration
+
+  Configuration has been simplified. Please consult {{{quick-start.html}Quick Start}} tutorial for more details.  
+
+
 * ResponseGenerators renamed to RequestProcessors
+
   After removing responseValidators in previous version, name ResponseGenerator did not have much sense. Now we have RequestProcessors and I am finally happy. Please note that implementation classes are still called
   RequestValidator and ResponseGenerator, but it's OK, it just reflects their purpose.
   
 * Support for payload only validators
+
   Since version 0.8 you can use only payload content for request validation
   
 * Support for unit-test configuration
+
   Since version 0.8 you can easily configure the mock form unit test code.

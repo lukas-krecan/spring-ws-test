@@ -18,48 +18,10 @@
 ~~
 Quick start
 
+* Sample request
 
-* Configuration file 
-
-   You have to start with new Spring configuration file. Lets call it "dummy-message-sender.xml"
-
----
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-	<!-- Creates mock message sender -->
-	<bean id="messageSender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender"/>
-	
-	<!-- Injects mock message sender into WebServiceTemplate -->
-	<bean class="net.javacrumbs.springws.test.util.MockMessageSenderInjector"/>
-	
-	<!-- Looks for responses on the disc based on the provided XPath -->
-	<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGeneratorFactoryBean">
-		<property name="namespaceMap">
-			<map>
-				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-			</map>
-		</property>
-		<property name="XPathExpressions">
-			<list>
-				<value>concat(local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
-			</list>
-		</property>		
-	</bean>
-</beans>			
----
-
-	When this configuration will be loaded by Spring, MockWebServiceMessageSender will be created and automatically injected into 
-	the {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/client/core/WebServiceTemplate.html}WebServiceTemplate}}. Default {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}WebServiceMessageSender}} will be replaced by the mock.  
-	Please note that WebServiceTemplate is not defined here, you probably have it already defined in another configuration file.  "dummy-message-sender.xml" is used for test only.
-    
-    When you call WebServiceTemplate, the call is delegated to MockWebServiceMessageSender and DefaultResponseGenerator is used to generate
-    mock response. 
-
-    Let's say that following request is used
-    
+  In this tutorial we will the use following request as an example.
+  
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
@@ -69,25 +31,66 @@ Quick start
 			xmlns:ns2="http://www.springframework.org/spring-ws/samples/airline/schemas/types"
 			xmlns:ns3="http://www.springframework.org/spring-ws/samples/airline/schemas/messages">
 			<ns3:from>PRG</ns3:from>
-			<ns3:to>CAIX</ns3:to>
-			<ns3:departureDate>${IGNORE}</ns3:departureDate>
+			<ns3:to>DUB</ns3:to>
+			<ns3:departureDate>2009-10-31+01:00</ns3:departureDate>
 			<ns3:serviceClass>economy</ns3:serviceClass>
 		</ns3:GetFlightsRequest>
 	</SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ---
 
-    XPath expression "concat(local-name(//soapenv:Body/*[1]),'/default-response.xml')" will be evaluated and the result of the 
-    expression evaluation will be used as resource name of the response. In our example it means that file "GetFlightsRequest/default-response.xml" will be returned
-    as response.
-    
-    Of course one mock response is usually not enough. Do not worry you can use more complicated XPath expressions. 
-    More sophisticated expressions are shown {{{reference.html#XPathEval}here}}. 
-    
-* Mock response
+* Mock response structure
+  
+  We can start by creating mock responses. To do this we have to create a special directory structure in our classpath. 
+  If you are using Maven, the ideal place to create it 
+  is in <<<src/test/resources>>>. Default directory name where mock responses are looked for is "mock-xml/<payloadRootName>". 
+  For example, if your WS message payload root element is called "GetFlightsRequest", resources from "mock-xml/GetFlightsRequest" are used.
+  
+  If you do not specify otherwise "response.xml" file is used as template for generating response.
+  
+  Of course, only one mock response per service is not sufficient. You usually need to define more response files. To be able to do this, 
+  you have to define a way how to decide which file will be used. By default XPath discriminators are used. For example, if you define "//ns:from;//ns:to"
+  as discriminators for given service and our sample request is used, content of "mock-xml/GetFlightsRequest/PRG-DUB-response.xml" will be returned as a mock 
+  response. If this file is not found "mock-xml/GetFlightsRequest/PRG-response.xml" will be used and if even that file is not found, default response will 
+  be returned.
 
-    When you have the configuration, you have to create mock response(s). In our case, you have to create "GetFlightsRequest/default-response.xml" on your test classpath.
-    If you are using Maven, the best place is the "src/test/resources" directory.
+* Configuration file 
+
+   Usual configuration will look like the following example.
+
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:swst="http://javacrumbs.net/schema/1.0/spring-ws-test"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://javacrumbs.net/schema/1.0/spring-ws-test http://javacrumbs.net/schema/1.0/spring-ws-test.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<swst:mock-ws-message-sender>
+		<swst:namespaces>
+			<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+		</swst:namespaces>
+		<swst:resource-config>
+			<swst:discriminators>
+				<entry key="GetFlightsRequest" value="//ns:from;//ns:to"/>
+			</swst:discriminators>		
+		</swst:resource-config>
+		<swst:schemas>
+				xsd/messages.xsd
+				xsd/types.xsd
+		</swst:schemas>
+	</swst:mock-ws-message-sender>
+</beans>
+---
+
+	When this configuration will be loaded by Spring a mock message sender will be created and automatically injected into 
+	the {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/client/core/WebServiceTemplate.html}WebServiceTemplate}}. 
+	Default {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}WebServiceMessageSender}} will be replaced by the mock.  
+	Please note that WebServiceTemplate is not defined here, you probably have it already defined in another configuration file.  
     
 * Test
 
@@ -95,33 +98,53 @@ Quick start
     and write your test. For example:
     
 ---
-@RunWith(SpringJUnit4ClassRunner.class)
+RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:spring/beans.xml","classpath:spring/dummy-message-sender.xml"})
-public class End2EndTest {
+public class AirlineAggregatorTest {
 
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	@Autowired
-	private MessageDispatcher messageDispatcher;
-	private SaajSoapMessageFactory messageFactory;
+	private AirlineAggregator aggregator;
 	
-	public End2EndTest() throws Exception
+	public AirlineAggregatorTest()
 	{
-		messageFactory = new SaajSoapMessageFactory();
-		messageFactory.afterPropertiesSet();
+		XMLUnit.setIgnoreWhitespace(true);
+	}
+	
+	@After
+	public void tearDown()
+	{
+		WsTestContextHolder.getTestContext().clear();
 	}
 	
 	@Test
-	public void testCall() throws Exception
+	public void testGetFligts()
 	{
-		InputStream inputStream = new ClassPathResource("e2e/PRG-DUB-request.xml").getInputStream();
-		WebServiceMessage request = messageFactory.createWebServiceMessage(inputStream);
-		DefaultMessageContext context = new DefaultMessageContext(request, messageFactory );
-		messageDispatcher.receive(context);
-		assertNotNull(context.getResponse());
-	}
-} 
----    
-    
-     
+		Flight[] flights = aggregator.getFlights("PRG", "DUB", Calendar.getInstance(), ServiceClass.ECONOMY);
+		assertNotNull(flights);
+		assertEquals(2, flights.length);
+		
+		assertEquals("PRG", flights[0].getFrom().getCode());
+		assertEquals("EI647", flights[0].getNumber());
 
+		assertEquals("PRG", flights[1].getFrom().getCode());
+		assertEquals("OK0650", flights[1].getNumber());
+		
+	}
+}
+---    
+
+  As you can see, nothing special here.
+  
+* Validation
+  
+  If you want to validate your request you can either define schemas or it is also possible to compare request with predefined templates.
+  The only thing you have to do is to create file "PRG-DUB-request.xml" in the same directory and the request will be automatically compared to
+  the content of the file. 
+  
+  
+* Templates
+     
+  It is also possible to use XSLT templates for both response generation and request validation. Please consult {{{tutorial.html}tutorial}} for more details.  
        
 
