@@ -98,7 +98,7 @@ Quick start
     and write your test. For example:
     
 ---
-RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:spring/beans.xml","classpath:spring/dummy-message-sender.xml"})
 public class AirlineAggregatorTest {
 

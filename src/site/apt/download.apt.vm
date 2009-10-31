@@ -33,6 +33,6 @@ Maven dependency
 
 Download  
   
-  {{{http://javacrumbs.net/spring-ws-test-files/net/javacrumbs/spring-ws-test/${currentVersion}/spring-ws-test-${currentVersion}}Download}}
+  {{{http://javacrumbs.net/spring-ws-test-files/net/javacrumbs/spring-ws-test/${currentVersion}/spring-ws-test-${currentVersion}.jar}Download}}
 
   {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test-sample/tags/spring-ws-test-sample-${currentVersion}}Sample application}} (SVN repository)
