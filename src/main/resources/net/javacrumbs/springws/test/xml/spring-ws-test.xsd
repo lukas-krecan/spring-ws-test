@@ -27,13 +27,36 @@
    
    
    <xsd:element name="mock-ws-message-sender">
+   	  <xsd:annotation>
+   	  	<xsd:documentation>
+   	  		Configures mock message sender.
+   	  	</xsd:documentation>
+   	  </xsd:annotation>
       <xsd:complexType>
   			<xsd:sequence>
-  				<xsd:element name="namespaces" minOccurs="0" type="beans:mapType"/>
+  				<xsd:element name="namespaces" minOccurs="0" type="beans:mapType">
+  					<xsd:annotation>
+	  					<xsd:documentation>
+	   	  					Map of namespace prefixies. It is used for all XPath expressions in discriminators at al. 
+	   	  				</xsd:documentation>
+   	  				</xsd:annotation>
+  				</xsd:element>
   				<xsd:element name="resource-config">
+  					<xsd:annotation>
+	  					<xsd:documentation>
+	   	  					Configuration of resources used for mock responses and for request comparison. 
+	   	  				</xsd:documentation>
+   	  				</xsd:annotation>
   					<xsd:complexType>
   						<xsd:sequence>
-			  				<xsd:element name="discriminators" minOccurs="0" type="beans:mapType"/>
+			  				<xsd:element name="discriminators" minOccurs="0" type="beans:mapType">
+								<xsd:annotation>
+									<xsd:documentation>
+										Map of discriminators. Contains payload root local name as key and ';' delimited list of discriminators as 
+										value.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
   						</xsd:sequence>
   						<xsd:attribute name="pathPrefix" type="xsd:string" default="mock-xml/"/>
 			  			<xsd:attribute name="prependUri" type="xsd:boolean" default="false"/>
