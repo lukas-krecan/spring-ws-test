@@ -1,1 +1,1 @@
-http\://net.javacrumbs/schema/spring-ws-test=net.javacrumbs.springws.test.xml.SpringWsTestNamespaceHandler
+http\://javacrumbs.net/schema/1.0/spring-ws-test=net.javacrumbs.springws.test.xml.SpringWsTestNamespaceHandler

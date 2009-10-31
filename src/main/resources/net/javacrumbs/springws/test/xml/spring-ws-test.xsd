@@ -19,9 +19,9 @@
 <xsd:schema xmlns="http://www.mycompany.com/schema/myns"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:beans="http://www.springframework.org/schema/beans"
-    targetNamespace="http://net.javacrumbs/schema/spring-ws-test"
+    targetNamespace="http://javacrumbs.net/schema/1.0/spring-ws-test"
     elementFormDefault="qualified"
-    attributeFormDefault="unqualified" xmlns:Q1="http://net.javacrumbs/schema/spring-ws-test">
+    attributeFormDefault="unqualified" xmlns:Q1="http://javacrumbs.net/schema/1.0/spring-ws-test">
 
    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
    
@@ -29,7 +29,15 @@
       <xsd:complexType>
   			<xsd:sequence>
   				<xsd:element name="namespaces" minOccurs="0" type="beans:mapType"/>
-  				<xsd:element name="discriminators" minOccurs="0" type="beans:mapType"/>
+  				<xsd:element name="resource-config">
+  					<xsd:complexType>
+  						<xsd:sequence>
+			  				<xsd:element name="discriminators" minOccurs="0" type="beans:mapType"/>
+  						</xsd:sequence>
+  						<xsd:attribute name="pathPrefix" type="xsd:string" default="mock-xml/"/>
+			  			<xsd:attribute name="prependUri" type="xsd:boolean" default="false"/>
+  					</xsd:complexType>
+  				</xsd:element>
   				<xsd:element name="schemas" type="xsd:string" minOccurs="0"/>
   			</xsd:sequence>
   			<xsd:attribute name="id" type="xsd:ID"/>

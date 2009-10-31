@@ -23,12 +23,16 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
 		Map<?, ?> namespaces = parseNamespaces(element, parserContext, bean);
 		Map<?, ?> discriminators = parseDiscriminators(element, parserContext, bean);
+		String pathPrefix = DomUtils.getChildElementByTagName(element, "resource-config").getAttribute("pathPrefix");
+		String prependUri = DomUtils.getChildElementByTagName(element, "resource-config").getAttribute("prependUri");
 		
 		ManagedList requestProcessors = new ManagedList();	
 		
 		BeanDefinitionBuilder xmlCompareRequestValidator = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedXmlCompareRequestValidatorFactoryBean.class);
 		xmlCompareRequestValidator.addPropertyValue("namespaceMap", namespaces);
 		xmlCompareRequestValidator.addPropertyValue("discriminators", discriminators);
+		xmlCompareRequestValidator.addPropertyValue("pathPrefix", pathPrefix);
+		xmlCompareRequestValidator.addPropertyValue("prependUri", prependUri);
 		addRequestProcessor(requestProcessors, xmlCompareRequestValidator);
 		
 		String[] schemas = parseRequestValidationSchemas(element, bean);
@@ -42,6 +46,8 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		BeanDefinitionBuilder defaultResponseGenerator = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedResponseGeneratorFactoryBean.class);
 		defaultResponseGenerator.addPropertyValue("namespaceMap", namespaces);
 		defaultResponseGenerator.addPropertyValue("discriminators", discriminators);
+		defaultResponseGenerator.addPropertyValue("pathPrefix", pathPrefix);
+		defaultResponseGenerator.addPropertyValue("prependUri", prependUri);
 		addRequestProcessor(requestProcessors, defaultResponseGenerator);
 		
 		bean.addPropertyValue("requestProcessors", requestProcessors);		
