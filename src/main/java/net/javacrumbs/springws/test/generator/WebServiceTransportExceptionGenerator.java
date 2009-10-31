@@ -23,7 +23,7 @@ import org.springframework.core.Ordered;
 import org.springframework.ws.client.WebServiceTransportException;
 
 /**
- * Validates request using given XPath expressions. If the expression is evaluated to true {@link WebServiceTransportException} is thrown.
+ * Applies given XPath expressions on request. If the expression is evaluated to true {@link WebServiceTransportException} is thrown.
  * @author Lukas Krecan
  *
  */

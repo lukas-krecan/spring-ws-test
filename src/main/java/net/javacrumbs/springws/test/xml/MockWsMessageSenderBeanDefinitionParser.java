@@ -5,9 +5,14 @@ import java.util.Map;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.generator.PayloadRootBasedResponseGeneratorFactoryBean;
+import net.javacrumbs.springws.test.util.MockMessageSenderInjector;
 import net.javacrumbs.springws.test.validator.PayloadRootBasedXmlCompareRequestValidatorFactoryBean;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -17,7 +22,9 @@ import org.w3c.dom.Element;
 
 public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
-	
+	protected final Log logger = LogFactory.getLog(getClass());
+
+	private static final String TRUE = Boolean.TRUE.toString();
 
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
@@ -26,8 +33,10 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		String pathPrefix = DomUtils.getChildElementByTagName(element, "resource-config").getAttribute("pathPrefix");
 		String prependUri = DomUtils.getChildElementByTagName(element, "resource-config").getAttribute("prependUri");
 		
-		ManagedList requestProcessors = new ManagedList();	
+		bean.addPropertyValue("autowireRequestProcessors", element.getAttribute("autowireRequestProcessors"));
 		
+		ManagedList requestProcessors = new ManagedList();	
+				
 		BeanDefinitionBuilder xmlCompareRequestValidator = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedXmlCompareRequestValidatorFactoryBean.class);
 		xmlCompareRequestValidator.addPropertyValue("namespaceMap", namespaces);
 		xmlCompareRequestValidator.addPropertyValue("discriminators", discriminators);
@@ -50,8 +59,14 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		defaultResponseGenerator.addPropertyValue("prependUri", prependUri);
 		addRequestProcessor(requestProcessors, defaultResponseGenerator);
 		
-		bean.addPropertyValue("requestProcessors", requestProcessors);		
+		bean.addPropertyValue("requestProcessors", requestProcessors);
 		
+		if (TRUE.equals(element.getAttribute("autoinjectMock")))
+		{
+			AbstractBeanDefinition injector = BeanDefinitionBuilder.rootBeanDefinition(MockMessageSenderInjector.class).getBeanDefinition();
+			BeanDefinitionHolder holder = new BeanDefinitionHolder(injector, parserContext.getReaderContext().generateBeanName(injector));
+			registerBeanDefinition(holder, parserContext.getRegistry());
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -71,12 +86,13 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 	}
 	
 	protected Map<?,?> parseDiscriminators(Element element,  ParserContext parserContext, BeanDefinitionBuilder bean) {
-		Element namespaces = DomUtils.getChildElementByTagName(element, "discriminators");
-		if (namespaces != null) {
-			return parserContext.getDelegate().parseMapElement(namespaces, bean.getRawBeanDefinition());
+		Element discriminators = DomUtils.getChildElementByTagName(DomUtils.getChildElementByTagName(element, "resource-config"),"discriminators");
+		if (discriminators != null) {
+			return parserContext.getDelegate().parseMapElement(discriminators, bean.getRawBeanDefinition());
 		}
 		else
 		{
+			logger.warn("No discriminators found");
 			return Collections.emptyMap();
 		}
 	}
@@ -88,6 +104,7 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		}
 		else
 		{
+			logger.warn("No namespaces found");
 			return Collections.emptyMap();
 		}
 	}

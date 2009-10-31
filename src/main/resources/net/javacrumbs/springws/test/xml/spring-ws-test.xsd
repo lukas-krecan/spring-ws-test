@@ -41,6 +41,8 @@
   				<xsd:element name="schemas" type="xsd:string" minOccurs="0"/>
   			</xsd:sequence>
   			<xsd:attribute name="id" type="xsd:ID"/>
+  			<xsd:attribute name="autowireRequestProcessors" type="xsd:boolean" default="true"/>
+  			<xsd:attribute name="autoinjectMock" type="xsd:boolean" default="true"/>
       </xsd:complexType>
    </xsd:element>
    

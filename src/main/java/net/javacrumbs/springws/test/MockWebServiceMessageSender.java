@@ -71,9 +71,13 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 	private void autowireRequestProcessors() {
 		if (isAutowireRequestProcessors())
 		{
-			List<RequestProcessor> generators = new ArrayList<RequestProcessor>(applicationContext.getBeansOfType(RequestProcessor.class).values());
-			Collections.sort(generators, new OrderComparator());
-			requestProcessors.addAll(generators);
+			List<RequestProcessor> processors = new ArrayList<RequestProcessor>(applicationContext.getBeansOfType(RequestProcessor.class).values());
+			if (!processors.isEmpty())
+			{
+				processors.addAll(requestProcessors);
+				Collections.sort(processors, new OrderComparator());
+				requestProcessors = processors;
+			}
 		}
 	}
 

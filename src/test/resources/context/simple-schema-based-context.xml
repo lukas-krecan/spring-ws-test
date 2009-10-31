@@ -7,7 +7,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 		http://javacrumbs.net/schema/1.0/spring-ws-test http://javacrumbs.net/schema/1.0/spring-ws-test.xsd">
 
-	<swst:mock-ws-message-sender id="mock-sender">
+	<swst:mock-ws-message-sender id="mock-sender" autowireRequestProcessors="false" autoinjectMock="false">
 		<swst:namespaces>
 			<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
 		</swst:namespaces>
@@ -19,6 +19,9 @@
 		<swst:schemas>
 			xml/schema.xsd
 	    </swst:schemas>
+	    <swst:exception-generator>
+	    	
+	    </swst:exception-generator>
 	</swst:mock-ws-message-sender>
 	
 </beans>

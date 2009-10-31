@@ -1,5 +1,6 @@
 package net.javacrumbs.springws.test.xml;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -11,6 +12,7 @@ import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.PayloadRootBasedResourceLookup;
+import net.javacrumbs.springws.test.util.MockMessageSenderInjector;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
@@ -27,6 +29,8 @@ public class SimpleSchemaBasedTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("context/simple-schema-based-context.xml");
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) context.getBean("mock-sender");
 		assertNotNull(sender);
+		assertFalse(sender.isAutowireRequestProcessors());
+		
 		List<RequestProcessor> requestProcessors = sender.getRequestProcessors();
 		assertNotNull(requestProcessors);
 		
@@ -36,6 +40,7 @@ public class SimpleSchemaBasedTest {
 		PayloadRootBasedResourceLookup controlResourceLookup = (PayloadRootBasedResourceLookup) xmlCompareValidator.getControlResourceLookup();
 		assertEquals("request.xml",controlResourceLookup.getPathSuffix());
 		assertEquals("mock/", controlResourceLookup.getPathPrefix());
+		assertArrayEquals(new String[]{"//ns:from","//ns:to"},controlResourceLookup.getDiscriminators().get("getFlightsRequest"));
 		assertTrue(controlResourceLookup.isPrependUri());
 
 		SchemaRequestValidator schemaValidator = (SchemaRequestValidator) requestProcessors.get(1);
@@ -45,7 +50,10 @@ public class SimpleSchemaBasedTest {
 		PayloadRootBasedResourceLookup resourceLookup = (PayloadRootBasedResourceLookup)generator.getResourceLookup();
 		assertEquals("response.xml",resourceLookup.getPathSuffix());
 		assertEquals("mock/", resourceLookup.getPathPrefix());
+		assertArrayEquals(new String[]{"//ns:from","//ns:to"},resourceLookup.getDiscriminators().get("getFlightsRequest"));
 		assertTrue(resourceLookup.isPrependUri());
+		
+		assertEquals(0, context.getBeansOfType(MockMessageSenderInjector.class).size());
 
 	}
 	@Test
@@ -54,6 +62,8 @@ public class SimpleSchemaBasedTest {
 		ApplicationContext context = new ClassPathXmlApplicationContext("context/minimal-schema-based-context.xml");
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) context.getBean("mock-sender");
 		assertNotNull(sender);
+		assertTrue(sender.isAutowireRequestProcessors());
+		
 		List<RequestProcessor> requestProcessors = sender.getRequestProcessors();
 		assertNotNull(requestProcessors);
 		
@@ -70,6 +80,8 @@ public class SimpleSchemaBasedTest {
 		assertEquals("response.xml",resourceLookup.getPathSuffix());
 		assertEquals("mock-xml/", resourceLookup.getPathPrefix());
 		assertFalse(resourceLookup.isPrependUri());
+		
+		assertEquals(1, context.getBeansOfType(MockMessageSenderInjector.class).size());
 		
 	}
 }
