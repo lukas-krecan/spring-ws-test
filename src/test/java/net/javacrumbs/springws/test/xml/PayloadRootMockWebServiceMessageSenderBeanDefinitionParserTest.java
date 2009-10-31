@@ -42,7 +42,6 @@ public class PayloadRootMockWebServiceMessageSenderBeanDefinitionParserTest {
 	{
 		configurationTest("classpath:context/simple-context-factory-based-autowired.xml");
 	}
-	
 
 	private void configurationTest(String contextPath) {
 		ApplicationContext context = new ClassPathXmlApplicationContext(contextPath);

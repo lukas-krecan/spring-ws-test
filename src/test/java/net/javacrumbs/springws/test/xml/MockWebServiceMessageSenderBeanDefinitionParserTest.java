@@ -36,21 +36,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 	
-	@Test
-	public void testSchemaBased()
-	{
-		configurationTest("classpath:context/context-schema-based.xml");
-	}
-	@Test
-	public void testSchemaBasedAutowired()
-	{
-		configurationTest("classpath:context/context-schema-based-autowired.xml");
-	}
-	@Test
-	public void testSchemaBasedAutowiredPlaceholder()
-	{
-		configurationTest("classpath:context/context-schema-based-autowired-placeholder.xml");
-	}
+	
 	@Test
 	public void testFactoryBased()
 	{

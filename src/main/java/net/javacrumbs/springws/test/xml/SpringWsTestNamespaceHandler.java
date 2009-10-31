@@ -20,11 +20,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class SpringWsTestNamespaceHandler extends NamespaceHandlerSupport {
 
 	public void init() {
-		registerBeanDefinitionParser("response-generator", new DefaultResponseGeneratorBeanDefinitionParser());        
-		registerBeanDefinitionParser("compare-validator", new XmlCompareRequestValidatorBeanDefinitionParser());        
-		registerBeanDefinitionParser("schema-validator", new SchemaRequestValidatorBeanDefinitionParser());        
-		registerBeanDefinitionParser("xpath-validator", new XPathRequestValidatorBeanDefinitionParser());        
-		registerBeanDefinitionParser("transport-exception-generator", new WebServiceTransportGeneratorBeanDefinitionParser());        
+		registerBeanDefinitionParser("mock-ws-message-sender", new MockWsMessageSenderBeanDefinitionParser());        
 	}
 
 }
