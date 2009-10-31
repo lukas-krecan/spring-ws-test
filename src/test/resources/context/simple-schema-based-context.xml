@@ -19,9 +19,6 @@
 		<swst:schemas>
 			xml/schema.xsd
 	    </swst:schemas>
-	    <swst:exception-generator>
-	    	
-	    </swst:exception-generator>
 	</swst:mock-ws-message-sender>
 	
 </beans>
