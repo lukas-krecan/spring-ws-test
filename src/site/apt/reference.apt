@@ -38,6 +38,13 @@ Reference
    
    [[1]] an exception - if an exception is thrown, processing is terminated and the same exception is re-thrown from the message sender. Validators throw 
                         WsTestException if the validation does not succeed. 
+
+** Configuration
+ 
+   Some parts of the library are complex. The complexity is not arbitrary, it's caused by configurability of the library. To make your life easier, most common configuration options
+   are encapsulated in factory beans and the most common configuration is facilitated by a custom tag library. For 90% of scenarios provided custom tag library should suffice. 
+   The rest can use more complicated configuration which provides more flexibility.
+      
    
 
 * XPath evaluation
