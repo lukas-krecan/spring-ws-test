@@ -18,6 +18,28 @@
 ~~
 Reference
 
+* Architecture
+
+** MockWebServiceMessageSender
+
+   MockWebServiceMessageSender is the entry-point to Spring WS Test. If you use this sender instead of standard 
+   {{{WebServiceMessageSender}http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}}
+   all requests will be processed by the library. 
+
+** RequestProcessor
+
+   Request processor is a building block of the library. There are two basic types of ReqestProcessors - request validators and response generators. 
+   This division is logical only. Both groups implement the same interface. When a request processor is called with a request, there are three 
+   possible outcomes.
+   
+   [[1]] <<<null>>> - if a request processor returns null, next processor from the list is called. If the last processor return null, an exception is thrown.
+   
+   [[1]] a response - if a request processor returns a response, processing is terminated and the response is returned from MockWebServiceMessageSender
+   
+   [[1]] an exception - if an exception is thrown, processing is terminated and the same exception is re-thrown from the message sender. Validators throw 
+                        WsTestException if the validation does not succeed. 
+   
+
 * XPath evaluation
 
   In this part we will describe possibilities of the XPath evaluation.
