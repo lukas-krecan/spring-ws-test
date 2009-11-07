@@ -28,11 +28,11 @@ Reference
 
 ** RequestProcessor
 
-   Request processor is a building block of the library. There are two basic types of ReqestProcessors - request validators and response generators. 
+   Request processor is a basic building block of the library. There are two basic types of ReqestProcessors - request validators and response generators. 
    This division is logical only. Both groups implement the same interface. When a request processor is called with a request, there are three 
    possible outcomes.
    
-   [[1]] <<<null>>> - if a request processor returns null, next processor from the list is called. If the last processor return null, an exception is thrown.
+   [[1]] <<<null>>> - if a request processor returns null, next processor from the list is called. If the last processor returns null, an exception is thrown.
    
    [[1]] a response - if a request processor returns a response, processing is terminated and the response is returned from MockWebServiceMessageSender
    
@@ -42,8 +42,8 @@ Reference
 * Configuration
  
    Some parts of the library are complex. The complexity is not arbitrary, it's caused by the number of configuration settings. To make your life easier, most common configuration options
-   are encapsulated in factory beans and the most common configuration is facilitated by a custom tag library. For majority of scenarios provided custom tag library should suffice. 
-   The rest can use more complicated configuration which provides more flexibility.
+   are encapsulated in a custom tag library. For majority of scenarios provided custom tag library should suffice. 
+   The rest can use standard configuration which provides more flexibility.
    
 ** Schema based configuration
 
@@ -71,12 +71,12 @@ Reference
 </beans>
 ---	   
       
-   Basics of schema based configuration are explained in the {{{quick-start.html}Quick start}} documentation. Here we will cover only advanced features.
+   Schema based configuration are explained in the {{{quick-start.html}Quick start}} documentation. Here we will cover only advanced features.
   
-   * <<autowireRequestProcessors>> - if set to <<<true>>> <<<RequestProcessor>>s are looked up in the ApplicationContext and automatically used by MockWebServiceMessageSender. Default
+   * <<autowireRequestProcessors>> - if set to <<<true>>> <<<RequestProcessor>>>s are looked up in the ApplicationContext and automatically used by MockWebServiceMessageSender. Default
    value is <<<true>>>.
    
-   * <<autoinjectMock>> - if set to MockWebServiceMessageSender is injected into all WebServiceTemplates found in the ApplicationContext. Default is <<<true>>>.
+   * <<autoinjectMock>> - if set to <<<true>>> <<<MockWebServiceMessageSender>>> is injected into all WebServiceTemplates found in the ApplicationContext. Default is <<<true>>>.
    
    * <<pathPrefix>> tells us, in which directory will be the mock responses and control request stored. Default value is "mock-xml".
    
@@ -89,6 +89,22 @@ Reference
 
   In this part list of basic components and their configuration options will be described.
   
+** ExpressionResolver
+
+   Resolves expressions. It's used in various parts of the library. Default implementation is XPathExpressionResolver. In order to use
+   XPathExpression resolver, it's necessary to configure namespace prefixes.
+   
+---
+<bean id="xpathResolver" class="net.javacrumbs.springws.test.expression.XPathExpressionResolver">
+	<property name="namespaceMap">
+		<map>
+			<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/" />
+			<entry key="ns"	value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages" />
+		</map>
+	</property>	
+</bean>
+---
+  
 ** ResourceLookup
    
    Resource lookup looks up a resource based on the request, uri and context attributes. It has two basic implementation.
@@ -98,10 +114,91 @@ Reference
    
    * <<ExpressionBasedResourceLookup>> does lookup based on custom XPath expression.
    
+   Both variants require expression resolver to be set.
+   
+   Both implementations also use a TemplateProcessor which processes a template. By default XsltTemplateProcessor is used, so 
+   a XSLT template can be used in all resources.  
+   
 ** DefaultResponseGenerator
 
-   Generates mock response based on   
-      
+   Generates mock response based on provided resource lookup. If the resource is not found, returns null.
+
+---
+<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
+	<property name="resourceLookup">
+		<bean class="net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup">
+			<property name="resourceExpressions">
+				<list>
+					<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+					<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+				</list>
+			</property>
+			<property name="expressionResolver" ref="xpathResolver"/>
+		</bean>
+	</property>
+</bean>	
+---
+   
+** XmlCompareRequestValidator
+
+  It's similar to the default request generator, the difference is that instead of generating responses it validates the request. You can use XSLT templates here as well. 
+  You can also specify special placeholder <<<${IGNORE}>>> for values that should be ignored. It is also possible to define only payload in the
+  control file. In such case only payloads will be compared and SOAP envelope will be ignored. 
+  
+---
+<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidator">
+	<property name="controlResourceLookup">
+		<bean class="net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup">
+			<property name="resourceExpressions">
+				<list>
+					<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
+				</list>
+			</property>
+		</bean>
+	</property>		
+</bean>		
+---
+
+** XPathRequestValidator
+  
+  It is also possible to validate request using XPath. For example you can use following configuration.
+  
+---
+<bean class="net.javacrumbs.springws.test.validator.XPathRequestValidator">
+	<property name="expressionResolver" ref="xpathResolver"/>
+	<property name="exceptionMapping">
+		<map>
+			<entry key="//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'" value="Unsupported service class"/>
+		</map>
+	</property>
+</bean>
+---
+
+   Validator configured in this way will throw an exception if service class is not "economy" or "business".
+   
+** WebServiceTransportExceptionGenerator
+
+   Similar to XPathRequestValidator is WebServiceTransportExceptionGenerator. The only difference is the exception thrown. 
+   <<<WebServiceTransportException>>> is throw so this class can be used to simulate connection problems.    
+
+
+* Test context
+
+  Test context is useful, when you need to use some specific configuration. For example you want to set expected departure time and use it in the response.
+ 
+---
+WsTestContextHolder.getTestContext().setAttribute("departureTime", "2009-07-14");
+--- 
+
+  You can set the attribute in the test method and then use it 
+  
+  * In the XSLT template as a template parameter.
+  
+  * In the XPath using <<<$context.departureTime>>>
+  
+  * Programatically
+  
+  It's a good idea to clear the test context at the tearDown() method.
    
 
 * XPath evaluation
@@ -195,7 +292,7 @@ concat($context.testName,'-response.xml')
 
 * Default order when autowiring is used
 
-  When <<<ResponseGenerator>>> autowiring is used, they are by default invoked in the following order.
+  When <<<RequestProcessor>>> autowiring is used, they are by default invoked in the following order.
   
 *-------------------------------------------+-------+
 ||Class                                     ||Order |

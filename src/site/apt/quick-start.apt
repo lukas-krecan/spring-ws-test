@@ -145,6 +145,6 @@ public class AirlineAggregatorTest {
   
 * Templates
      
-  It is also possible to use XSLT templates for both response generation and request validation. Please consult {{{tutorial.html}tutorial}} for more details.  
+  It is also possible to use XSLT templates for both response generation and request validation. Please consult {{{reference.html}reference}} for more details.  
        
 

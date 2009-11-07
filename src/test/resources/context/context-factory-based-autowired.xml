@@ -31,8 +31,6 @@
 		</property>
 	</bean>	
 	
-	<!-- 'mock-responses/' + $uri.host + '/' + #payloadRootName + '/' + #xpath(//ns:from) + '-' + #xpath(//ns:to) + '-response.xml' -->	
-
 	<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidator">
 		<property name="controlResourceLookup">
 			<bean class="net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup">
