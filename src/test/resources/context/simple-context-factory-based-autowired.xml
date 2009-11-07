@@ -17,31 +17,33 @@
 		</property>	
 	</bean>
 
-	<bean class="net.javacrumbs.springws.test.generator.PayloadRootBasedResponseGeneratorFactoryBean">
-		<property name="namespaceMap">
-			<map>
-				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-			</map>
+	<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
+		<property name="resourceLookup">
+			<bean class="net.javacrumbs.springws.test.lookup.PayloadRootBasedResourceLookup">
+				<property name="discriminators">
+					<map>
+						<entry key="getFlightsRequest" value="//ns:from;//ns:to"/>
+					</map>
+				</property>
+				<property name="pathSuffix" value="response.xml"/>
+				<property name="expressionResolver" ref="xpathResolver"/>
+			</bean>
 		</property>
-		<property name="discriminators">
-			<map>
-				<entry key="getFlightsRequest" value="//ns:from;//ns:to"/>
-			</map>
-		</property>
-	</bean>		
-	
+	</bean>	
+		
 
-	<bean class="net.javacrumbs.springws.test.validator.PayloadRootBasedXmlCompareRequestValidatorFactoryBean">
-		<property name="namespaceMap">
-			<map>
-				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-			</map>
+	<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidator">
+		<property name="controlResourceLookup">
+			<bean class="net.javacrumbs.springws.test.lookup.PayloadRootBasedResourceLookup">
+				<property name="discriminators">
+					<map>
+						<entry key="getFlightsRequest" value="//ns:from;//ns:to"/>
+					</map>
+				</property>
+				<property name="pathSuffix" value="request.xml"/>
+				<property name="expressionResolver" ref="xpathResolver"/>
+			</bean>
 		</property>
-		<property name="discriminators">
-			<map>
-				<entry key="getFlightsRequest" value="//ns:from;//ns:to"/>
-			</map>
-		</property>	
 	</bean>			
 	
 	<bean class="net.javacrumbs.springws.test.validator.SchemaRequestValidator">

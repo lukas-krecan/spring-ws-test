@@ -17,7 +17,9 @@ package net.javacrumbs.springws.test.lookup;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -125,13 +127,23 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 		return result.toString(); 
 	}
 
-	public Map<String, String[]> getDiscriminators() {
+	public Map<String, String[]> getDiscriminatorsMap() {
 		return discriminators;
 	}
 
-	public void setDiscriminators(Map<String, String[]> discriminators) {
+	public void setDiscriminatorsMap(Map<String, String[]> discriminators) {
 		this.discriminators = discriminators;
 	}
+	
+	public void setDiscriminators(Map<String, String> discriminators) {
+		Map<String, String[]> disc = new HashMap<String, String[]>();
+		for(Entry<String, String> entry:discriminators.entrySet())
+		{
+			disc.put(entry.getKey(), entry.getValue().split("\\s*;\\s*"));
+		}
+		this.discriminators = disc;
+	}
+	
 	public String getPathPrefix() {
 		return pathPrefix;
 	}

@@ -19,10 +19,12 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
-import net.javacrumbs.springws.test.generator.PayloadRootBasedResponseGeneratorFactoryBean;
+import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
+import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
+import net.javacrumbs.springws.test.lookup.PayloadRootBasedResourceLookup;
 import net.javacrumbs.springws.test.util.MockMessageSenderInjector;
-import net.javacrumbs.springws.test.validator.PayloadRootBasedXmlCompareRequestValidatorFactoryBean;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
+import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,13 +52,21 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		
 		bean.addPropertyValue("autowireRequestProcessors", element.getAttribute("autowireRequestProcessors"));
 		
-		ManagedList requestProcessors = new ManagedList();	
-				
-		BeanDefinitionBuilder xmlCompareRequestValidator = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedXmlCompareRequestValidatorFactoryBean.class);
-		xmlCompareRequestValidator.addPropertyValue("namespaceMap", namespaces);
-		xmlCompareRequestValidator.addPropertyValue("discriminators", discriminators);
-		xmlCompareRequestValidator.addPropertyValue("pathPrefix", pathPrefix);
-		xmlCompareRequestValidator.addPropertyValue("prependUri", prependUri);
+		BeanDefinitionBuilder expressionResolver = BeanDefinitionBuilder.rootBeanDefinition(XPathExpressionResolver.class);
+		expressionResolver.addPropertyValue("namespaceMap", namespaces);
+		
+		ManagedList requestProcessors = new ManagedList();
+						
+		BeanDefinitionBuilder controlResourceLookup = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedResourceLookup.class);
+		controlResourceLookup.addPropertyValue("expressionResolver", expressionResolver.getBeanDefinition());
+		controlResourceLookup.addPropertyValue("discriminators", discriminators);
+		controlResourceLookup.addPropertyValue("pathPrefix", pathPrefix);
+		controlResourceLookup.addPropertyValue("prependUri", prependUri);
+		controlResourceLookup.addPropertyValue("pathSuffix", "request.xml");
+
+		BeanDefinitionBuilder xmlCompareRequestValidator = BeanDefinitionBuilder.rootBeanDefinition(XmlCompareRequestValidator.class);
+		xmlCompareRequestValidator.addPropertyValue("controlResourceLookup", controlResourceLookup.getBeanDefinition());
+
 		addRequestProcessor(requestProcessors, xmlCompareRequestValidator);
 		
 		String[] schemas = parseRequestValidationSchemas(element, bean);
@@ -67,11 +77,16 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 			addRequestProcessor(requestProcessors, schemaRequestValidator);
 		}
 		
-		BeanDefinitionBuilder defaultResponseGenerator = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedResponseGeneratorFactoryBean.class);
-		defaultResponseGenerator.addPropertyValue("namespaceMap", namespaces);
-		defaultResponseGenerator.addPropertyValue("discriminators", discriminators);
-		defaultResponseGenerator.addPropertyValue("pathPrefix", pathPrefix);
-		defaultResponseGenerator.addPropertyValue("prependUri", prependUri);
+		
+		BeanDefinitionBuilder responseResourceLookup = BeanDefinitionBuilder.rootBeanDefinition(PayloadRootBasedResourceLookup.class);
+		responseResourceLookup.addPropertyValue("expressionResolver", expressionResolver.getBeanDefinition());
+		responseResourceLookup.addPropertyValue("discriminators", discriminators);
+		responseResourceLookup.addPropertyValue("pathPrefix", pathPrefix);
+		responseResourceLookup.addPropertyValue("prependUri", prependUri);
+		responseResourceLookup.addPropertyValue("pathSuffix", "response.xml");
+		
+		BeanDefinitionBuilder defaultResponseGenerator = BeanDefinitionBuilder.rootBeanDefinition(DefaultResponseGenerator.class);
+		defaultResponseGenerator.addPropertyValue("resourceLookup", responseResourceLookup.getBeanDefinition());
 		addRequestProcessor(requestProcessors, defaultResponseGenerator);
 		
 		bean.addPropertyValue("requestProcessors", requestProcessors);

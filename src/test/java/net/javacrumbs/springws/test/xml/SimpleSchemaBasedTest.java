@@ -55,7 +55,7 @@ public class SimpleSchemaBasedTest {
 		PayloadRootBasedResourceLookup controlResourceLookup = (PayloadRootBasedResourceLookup) xmlCompareValidator.getControlResourceLookup();
 		assertEquals("request.xml",controlResourceLookup.getPathSuffix());
 		assertEquals("mock/", controlResourceLookup.getPathPrefix());
-		assertArrayEquals(new String[]{"//ns:from","//ns:to"},controlResourceLookup.getDiscriminators().get("getFlightsRequest"));
+		assertArrayEquals(new String[]{"//ns:from","//ns:to"},controlResourceLookup.getDiscriminatorsMap().get("getFlightsRequest"));
 		assertTrue(controlResourceLookup.isPrependUri());
 
 		SchemaRequestValidator schemaValidator = (SchemaRequestValidator) requestProcessors.get(1);
@@ -65,7 +65,7 @@ public class SimpleSchemaBasedTest {
 		PayloadRootBasedResourceLookup resourceLookup = (PayloadRootBasedResourceLookup)generator.getResourceLookup();
 		assertEquals("response.xml",resourceLookup.getPathSuffix());
 		assertEquals("mock/", resourceLookup.getPathPrefix());
-		assertArrayEquals(new String[]{"//ns:from","//ns:to"},resourceLookup.getDiscriminators().get("getFlightsRequest"));
+		assertArrayEquals(new String[]{"//ns:from","//ns:to"},resourceLookup.getDiscriminatorsMap().get("getFlightsRequest"));
 		assertTrue(resourceLookup.isPrependUri());
 		
 		assertEquals(0, context.getBeansOfType(MockMessageSenderInjector.class).size());

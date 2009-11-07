@@ -38,14 +38,9 @@ public class MockWebServiceMessageSenderBeanDefinitionParserTest {
 	
 	
 	@Test
-	public void testFactoryBased()
-	{
-		configurationTest("classpath:context/context-factory-based.xml");
-	}
-	@Test
 	public void testFactoryBasedAutowired()
 	{
-		configurationTest("classpath:context/context-factory-based-autowired.xml");
+		configurationTest("classpath:context/context-autowired.xml");
 	}
 	@Test
 	public void testContextComplex()
