@@ -19,9 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import javax.xml.transform.dom.DOMSource;
+
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
+import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.TransportInputStreamWrapper;
+import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +33,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
+import org.w3c.dom.Document;
 
 /**
  * Looks-up resource using {@link ResourceLookup} and generates {@link WebServiceMessage} based on the resource. 
@@ -44,6 +49,8 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 	private ResourceLookup resourceLookup;
 	
 	private int order = DEFAULT_ORDER;
+	
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 
 	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
@@ -52,9 +59,20 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 			return null;
 		} else {
 			logger.debug("Creating response from "+resultResource);
-			WebServiceMessage message = messageFactory.createWebServiceMessage(createInputStream(resultResource));
-			postprocessMessage(message, uri, messageFactory, request);
-			return message;
+			Document document = getXmlUtil().loadDocument(resultResource);
+			if (getXmlUtil().isSoap(document))
+			{
+				WebServiceMessage message = messageFactory.createWebServiceMessage(createInputStream(resultResource));
+				postprocessMessage(message, uri, messageFactory, request);
+				return message;
+			}
+			else
+			{
+				WebServiceMessage message = messageFactory.createWebServiceMessage();
+				getXmlUtil().transform(new DOMSource(document), message.getPayloadResult());
+				postprocessMessage(message, uri, messageFactory, request);
+				return message;
+			}
 		}
 	}
 
@@ -99,5 +117,13 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
 	}
 }

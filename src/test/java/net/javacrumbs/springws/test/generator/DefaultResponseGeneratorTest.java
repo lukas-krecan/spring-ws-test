@@ -63,6 +63,28 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		verify(resourceLookup);
 	}
 	@Test
+	public void testDefaultResponsePayload() throws IOException
+	{
+		WebServiceMessage request = createMessage("xml/valid-message.xml");
+		
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
+		expect(resourceLookup.lookupResource(null, request)).andReturn(new ClassPathResource("mock-responses/test/default-response-payload.xml"));
+		
+		generator.setResourceLookup(resourceLookup);
+		
+		replay(resourceLookup);
+		
+		WebServiceMessage response = generator.processRequest(null, messageFactory, request);
+		assertNotNull(response);
+		
+		Document controlDocument = loadDocument(new ClassPathResource("mock-responses/test/default-response.xml"));
+		Diff diff = new Diff(controlDocument, loadDocument(response));
+		assertTrue(diff.toString(), diff.similar());
+		
+		verify(resourceLookup);
+	}
+	@Test
 	public void testNoResourceFound() throws IOException
 	{
 		WebServiceMessage request = createMessage("xml/valid-message.xml");
