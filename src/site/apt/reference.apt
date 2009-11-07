@@ -23,7 +23,7 @@ Reference
 ** MockWebServiceMessageSender
 
    MockWebServiceMessageSender is the entry-point to Spring WS Test. If you use this sender instead of standard 
-   {{{WebServiceMessageSender}http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}}
+   {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}WebServiceMessageSender}}
    all requests will be processed by the library. 
 
 ** RequestProcessor
@@ -39,11 +39,68 @@ Reference
    [[1]] an exception - if an exception is thrown, processing is terminated and the same exception is re-thrown from the message sender. Validators throw 
                         WsTestException if the validation does not succeed. 
 
-** Configuration
+* Configuration
  
-   Some parts of the library are complex. The complexity is not arbitrary, it's caused by configurability of the library. To make your life easier, most common configuration options
-   are encapsulated in factory beans and the most common configuration is facilitated by a custom tag library. For 90% of scenarios provided custom tag library should suffice. 
+   Some parts of the library are complex. The complexity is not arbitrary, it's caused by the number of configuration settings. To make your life easier, most common configuration options
+   are encapsulated in factory beans and the most common configuration is facilitated by a custom tag library. For majority of scenarios provided custom tag library should suffice. 
    The rest can use more complicated configuration which provides more flexibility.
+   
+** Schema based configuration
+
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:swst="http://javacrumbs.net/schema/1.0/spring-ws-test"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://javacrumbs.net/schema/1.0/spring-ws-test http://javacrumbs.net/schema/1.0/spring-ws-test.xsd">
+		
+	<swst:mock-ws-message-sender id="mock-sender" autowireRequestProcessors="true" autoinjectMock="true">
+		<swst:namespaces>
+			<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+		</swst:namespaces>
+		<swst:resource-config pathPrefix="mock-xml/" prependUri="false">
+			<swst:discriminators>
+				<entry key="getFlightsRequest" value="//ns:from;//ns:to"/>
+			</swst:discriminators>		
+		</swst:resource-config>
+		<swst:schemas>
+			xml/schema.xsd
+	    </swst:schemas>
+	</swst:mock-ws-message-sender>
+</beans>
+---	   
+      
+   Basics of schema based configuration are explained in the {{{quick-start.html}Quick start}} documentation. Here we will cover only advanced features.
+  
+   * <<autowireRequestProcessors>> - if set to <<<true>>> <<<RequestProcessor>>s are looked up in the ApplicationContext and automatically used by MockWebServiceMessageSender. Default
+   value is <<<true>>>.
+   
+   * <<autoinjectMock>> - if set to MockWebServiceMessageSender is injected into all WebServiceTemplates found in the ApplicationContext. Default is <<<true>>>.
+   
+   * <<pathPrefix>> tells us, in which directory will be the mock responses and control request stored. Default value is "mock-xml".
+   
+   * <<prependUri>> - if set to true, hostname from service uri is prepended before name of the file. For example path "mock-xml/www.aerlingus.com/GetFlightsRequest/PRG-DUB-response.xml"
+   will be used. Default value is <<<false>>>.
+   
+   * schemas element contains whitespace separated list of schemas, that are used for request validation. This element is optional.
+  
+* Basic components
+
+  In this part list of basic components and their configuration options will be described.
+  
+** ResourceLookup
+   
+   Resource lookup looks up a resource based on the request, uri and context attributes. It has two basic implementation.
+   
+   * <<PayloadRootBasedResourceLookup>> looks up resource based on request payload, path prefix, suffix and other parameters. 
+   this lookup is used by schema based config for both control request and mock response lookup.
+   
+   * <<ExpressionBasedResourceLookup>> does lookup based on custom XPath expression.
+   
+** DefaultResponseGenerator
+
+   Generates mock response based on   
       
    
 

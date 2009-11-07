@@ -8,34 +8,40 @@
 
 	<bean id="mock-sender" class="net.javacrumbs.springws.test.MockWebServiceMessageSender"/>
 
-	<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGeneratorFactoryBean">
+	<bean id="xpathResolver" class="net.javacrumbs.springws.test.expression.XPathExpressionResolver">
 		<property name="namespaceMap">
 			<map>
-				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
+				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/" />
+				<entry key="ns"	value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages" />
 			</map>
+		</property>	
+	</bean>
+
+	<bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
+		<property name="resourceLookup">
+			<bean class="net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup">
+				<property name="resourceExpressions">
+					<list>
+						<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
+						<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
+					</list>
+				</property>
+				<property name="expressionResolver" ref="xpathResolver"/>
+			</bean>
 		</property>
-		<property name="XPathExpressions">
-			<list>
-				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-response.xml')</value>
-				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/default-response.xml')</value>
-			</list>
-		</property>
-	</bean>		
+	</bean>	
 	
 	<!-- 'mock-responses/' + $uri.host + '/' + #payloadRootName + '/' + #xpath(//ns:from) + '-' + #xpath(//ns:to) + '-response.xml' -->	
 
-	<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidatorFactoryBean">
-		<property name="namespaceMap">
-			<map>
-				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-			</map>
-		</property>
-		<property name="XPathExpressions">
-			<list>
-				<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
-			</list>
+	<bean class="net.javacrumbs.springws.test.validator.XmlCompareRequestValidator">
+		<property name="controlResourceLookup">
+			<bean class="net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup">
+				<property name="resourceExpressions">
+					<list>
+						<value>concat('mock-responses/',$uri.host, '/', local-name(//soapenv:Body/*[1]),'/',//ns:from,'-',//ns:to,'-request.xml')</value>
+					</list>
+				</property>
+			</bean>
 		</property>		
 	</bean>			
 	
@@ -43,13 +49,8 @@
 		<property name="schema" value="xml/schema.xsd"/>
 	</bean>
 	
-	<bean class="net.javacrumbs.springws.test.validator.XPathRequestValidatorFactoryBean">
-		<property name="namespaceMap">
-			<map>
-				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-			</map>
-		</property>
+	<bean class="net.javacrumbs.springws.test.validator.XPathRequestValidator">
+		<property name="expressionResolver" ref="xpathResolver"/>
 		<property name="exceptionMapping">
 			<map>
 				<entry key="//ns:serviceClass != 'economy' and //ns:serviceClass != 'business'" value="Unsupported service class"/>
@@ -57,13 +58,8 @@
 		</property>
 	</bean>
 	
-	<bean class="net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGeneratorFactoryBean">
-		<property name="namespaceMap">
-			<map>
-				<entry key="soapenv" value="http://schemas.xmlsoap.org/soap/envelope/"/>
-				<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
-			</map>
-		</property>
+	<bean class="net.javacrumbs.springws.test.generator.WebServiceTransportExceptionGenerator">
+		<property name="expressionResolver" ref="xpathResolver"/>	
 		<property name="exceptionMapping">
 			<map>
 				<entry key="//ns:from = 'DUB' and //ns:to = 'LHR'" value="Authorization failed"/>
