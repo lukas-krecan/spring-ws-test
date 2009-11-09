@@ -15,27 +15,34 @@
  */
 package net.javacrumbs.springws.test;
 
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.context.MessageContext;
+import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 
 
-public class MockWebServiceConnectionTest {
+public class MockWebServiceConnectionTest extends AbstractMessageTest{
 	protected SaajSoapMessageFactory messageFactory;
 	private MockWebServiceConnection connection;
 	private URI uri;
@@ -187,4 +194,105 @@ public class MockWebServiceConnectionTest {
 		
 		verify(request, requestValidator1, requestValidator2);
 	}
+	
+	@Test
+	public void testInterceptorsOk() throws Exception
+	{
+		WebServiceMessage request = createMock(WebServiceMessage.class);
+		
+		List<EndpointInterceptor> interceptors = new ArrayList<EndpointInterceptor>();
+		EndpointInterceptor interceptor1 = createMock(EndpointInterceptor.class);
+		expect(interceptor1.handleRequest((MessageContext)anyObject(), isNull())).andReturn(true);
+		expect(interceptor1.handleResponse((MessageContext)anyObject(), isNull())).andReturn(true);
+		
+		interceptors.add(interceptor1);
+		
+		connection.setInterceptors(interceptors);
+		
+		RequestProcessor requestProcessor = createMock(RequestProcessor.class);
+		WebServiceMessage response = createMock(WebServiceMessage.class);
+		connection.setRequestProcessors(Collections.singletonList(requestProcessor));
+		expect(requestProcessor.processRequest(uri, messageFactory, request)).andReturn(response);
+		
+		
+		replay(request, response, interceptor1, requestProcessor);
+		
+		connection.send(request);
+		assertSame(response, connection.receive(messageFactory));
+		
+		verify(request, response, interceptor1, requestProcessor);
+	}
+	@Test
+	public void testHandleFault() throws Exception
+	{
+		WebServiceMessage request = createMock(WebServiceMessage.class);
+		
+		List<EndpointInterceptor> interceptors = new ArrayList<EndpointInterceptor>();
+		EndpointInterceptor interceptor1 = createMock(EndpointInterceptor.class);
+		expect(interceptor1.handleRequest((MessageContext)anyObject(), isNull())).andReturn(true);
+		expect(interceptor1.handleFault((MessageContext)anyObject(), isNull())).andReturn(true);
+		
+		interceptors.add(interceptor1);
+		
+		connection.setInterceptors(interceptors);
+		
+		RequestProcessor requestProcessor = createMock(RequestProcessor.class);
+		WebServiceMessage response = createMessage("xml/fault.xml");
+		connection.setRequestProcessors(Collections.singletonList(requestProcessor));
+		expect(requestProcessor.processRequest(uri, messageFactory, request)).andReturn(response);
+		
+		
+		replay(request,  interceptor1, requestProcessor);
+		
+		connection.send(request);
+		assertSame(response, connection.receive(messageFactory));
+		
+		verify(request, interceptor1, requestProcessor);
+	}
+	@Test
+	public void testInterceptorsBlockOnRequest() throws Exception
+	{
+		final WebServiceMessage request = createMock(WebServiceMessage.class);
+		final List<Boolean> handleResponseCalled = new ArrayList<Boolean>();
+		
+		List<EndpointInterceptor> interceptors = new ArrayList<EndpointInterceptor>();
+		final WebServiceMessage response = createMock(WebServiceMessage.class);
+		EndpointInterceptor interceptor1 = new EndpointInterceptor() {
+			public boolean handleResponse(MessageContext messageContext, Object endpoint) throws Exception {
+				assertSame(request, messageContext.getRequest());
+				assertSame(response, messageContext.getResponse());
+				handleResponseCalled.add(true);
+				return false;
+			}
+			
+			public boolean handleRequest(MessageContext messageContext, Object endpoint) throws Exception {
+				messageContext.setResponse(response);
+				return false;
+			}
+			
+			public boolean handleFault(MessageContext messageContext, Object endpoint) throws Exception {
+				throw new AssertionError("Should not be called");
+			}
+		};
+		interceptors.add(interceptor1);
+		
+		EndpointInterceptor interceptor2 = createMock(EndpointInterceptor.class);
+		interceptors.add(interceptor2);
+		
+		
+		connection.setInterceptors(interceptors);
+		
+		RequestProcessor requestProcessor = createMock(RequestProcessor.class);
+		connection.setRequestProcessors(Collections.singletonList(requestProcessor));
+		
+		
+		replay(request, response, requestProcessor, interceptor2);
+		
+		connection.send(request);
+		assertSame(response, connection.receive(messageFactory));
+		assertTrue(handleResponseCalled.size()>0);
+		
+		verify(request, response, requestProcessor, interceptor2);
+	}
 }
+ 

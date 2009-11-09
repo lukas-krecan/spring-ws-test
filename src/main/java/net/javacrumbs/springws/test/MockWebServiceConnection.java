@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
@@ -26,8 +27,12 @@ import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.ws.FaultAwareWebServiceMessage;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
+import org.springframework.ws.context.DefaultMessageContext;
+import org.springframework.ws.context.MessageContext;
+import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.transport.WebServiceConnection;
 
 
@@ -44,6 +49,8 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	private WebServiceMessage request;
 	
 	private List<RequestProcessor> requestProcessors;
+	
+	private List<EndpointInterceptor> interceptors = Collections.emptyList();
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
@@ -64,7 +71,53 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	 * Generates mock response
 	 */
 	public WebServiceMessage receive(WebServiceMessageFactory messageFactory) throws IOException {
-		return generateResponse(messageFactory);
+		DefaultMessageContext messageContext = new DefaultMessageContext(request, messageFactory);
+		boolean callRequestProcessors = handeRequest(messageContext);
+		if (callRequestProcessors)
+		{
+			WebServiceMessage response = generateResponse(messageFactory);
+			messageContext.setResponse(response);
+		}
+		handleResponse(messageContext);
+		return messageContext.getResponse();
+	}
+
+	protected boolean handeRequest(MessageContext messageContext) throws IOException {
+		for (EndpointInterceptor interceptor:interceptors)
+		{
+			try {
+				if (!interceptor.handleRequest(messageContext, null))
+				{
+					return false;
+				}
+			} catch (Exception e) {
+				throw new IOException("Unexpected exception",e);
+			}
+		}
+		return true;
+	}
+
+	protected void handleResponse(MessageContext messageContext) throws IOException {
+		boolean hasFault = false;
+        WebServiceMessage response = messageContext.getResponse();
+        if (response instanceof FaultAwareWebServiceMessage) {
+            hasFault = ((FaultAwareWebServiceMessage) response).hasFault();
+        }
+		for (EndpointInterceptor interceptor:interceptors)
+		{
+			try {
+				if (!hasFault)
+				{
+					if (!interceptor.handleResponse(messageContext, null)) return;
+				}
+				else
+				{
+					if (!interceptor.handleFault(messageContext, null)) return;
+				}
+			} catch (Exception e) {
+				throw new IOException("Unexpected exception",e);
+			}
+		}
 	}
 
 	/**
@@ -137,5 +190,13 @@ public class MockWebServiceConnection implements WebServiceConnection {
 
 	public void setRequestProcessors(List<RequestProcessor> responseGenerators) {
 		this.requestProcessors = responseGenerators;
+	}
+
+	public List<EndpointInterceptor> getInterceptors() {
+		return interceptors;
+	}
+
+	public void setInterceptors(List<EndpointInterceptor> interceptors) {
+		this.interceptors = interceptors;
 	}
 }
