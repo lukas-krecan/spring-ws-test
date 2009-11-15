@@ -69,6 +69,8 @@ public class SimpleSchemaBasedTest {
 		assertTrue(resourceLookup.isPrependUri());
 		
 		assertEquals(0, context.getBeansOfType(MockMessageSenderInjector.class).size());
+		
+		assertEquals(1, sender.getInterceptors().size());
 
 	}
 	@Test

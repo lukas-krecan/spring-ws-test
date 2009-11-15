@@ -26,6 +26,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.OrderComparator;
+import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.transport.WebServiceConnection;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
@@ -42,9 +43,12 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 	
 	private ApplicationContext applicationContext;
 	
+	private List<EndpointInterceptor> interceptors = Collections.emptyList();
+	
 	public WebServiceConnection createConnection(URI uri) throws IOException {
 		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
 		connection.setRequestProcessors(getRequestProcessors());
+		connection.setInterceptors(interceptors);
 		return connection;
 	}
 
@@ -91,5 +95,13 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;		
+	}
+
+	public List<EndpointInterceptor> getInterceptors() {
+		return Collections.unmodifiableList(interceptors);
+	}
+
+	public void setInterceptors(List<? extends EndpointInterceptor> interceptors) {
+		this.interceptors = new ArrayList<EndpointInterceptor>(interceptors);
 	}
 }

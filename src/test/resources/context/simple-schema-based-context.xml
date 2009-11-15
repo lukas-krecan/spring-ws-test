@@ -17,6 +17,10 @@
 		<swst:schemas>
 			xml/schema.xsd
 	    </swst:schemas>
+	    <swst:interceptors>
+	    	<bean id="loggingInterceptor" class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
+	    </swst:interceptors>
 	</swst:mock-ws-message-sender>
+	
 	
 </beans>

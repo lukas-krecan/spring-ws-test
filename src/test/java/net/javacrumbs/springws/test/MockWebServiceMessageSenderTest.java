@@ -15,13 +15,17 @@
  */
 package net.javacrumbs.springws.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
-import org.springframework.ws.transport.WebServiceConnection;
+import org.springframework.ws.server.EndpointInterceptor;
+import org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor;
 
 
 public class MockWebServiceMessageSenderTest {
@@ -32,7 +36,12 @@ public class MockWebServiceMessageSenderTest {
 		MockWebServiceMessageSender sender = new MockWebServiceMessageSender();
 		URI uri = new URI("http://example.org/");
 		assertTrue(sender.supports(uri));
-		WebServiceConnection connection = sender.createConnection(uri);
+		List<EndpointInterceptor> interceptors = Arrays.<EndpointInterceptor>asList(new PayloadLoggingInterceptor());
+		sender.setInterceptors(interceptors);
+		
+		
+		MockWebServiceConnection connection = (MockWebServiceConnection) sender.createConnection(uri);
 		assertNotNull(connection);
+		assertEquals(interceptors, connection.getInterceptors());
 	}
 }

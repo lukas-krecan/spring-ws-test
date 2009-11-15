@@ -16,6 +16,7 @@
 package net.javacrumbs.springws.test.xml;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
@@ -97,6 +98,8 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 			BeanDefinitionHolder holder = new BeanDefinitionHolder(injector, parserContext.getReaderContext().generateBeanName(injector));
 			registerBeanDefinition(holder, parserContext.getRegistry());
 		}
+		
+		bean.addPropertyValue("interceptors",parseInterceptors(element, parserContext, bean));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -124,6 +127,16 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		{
 			logger.warn("No discriminators found");
 			return Collections.emptyMap();
+		}
+	}
+	protected List<?> parseInterceptors(Element element,  ParserContext parserContext, BeanDefinitionBuilder bean) {
+		Element interceptors = DomUtils.getChildElementByTagName(element, "interceptors");
+		if (interceptors != null) {
+			return parserContext.getDelegate().parseListElement(interceptors, bean.getRawBeanDefinition());
+		}
+		else
+		{
+			return Collections.emptyList();
 		}
 	}
 		
