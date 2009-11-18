@@ -60,7 +60,7 @@
   						</xsd:sequence>
   						<xsd:attribute name="pathPrefix" type="xsd:string" default="mock-xml/"/>
 			  			<xsd:attribute name="prependUri" type="xsd:boolean" default="false"/>
-			  			<xsd:attribute name="templateProcessor">
+			  			<xsd:attribute name="templateProcessor" default="XSLT">
 			  				  <xsd:simpleType>
             					<xsd:restriction base="xsd:string">
                   					<xsd:enumeration value="XSLT"/>
