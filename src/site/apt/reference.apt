@@ -59,7 +59,7 @@ Reference
 		<swst:namespaces>
 			<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
 		</swst:namespaces>
-		<swst:resource-config pathPrefix="mock-xml/" prependUri="false">
+		<swst:resource-config pathPrefix="mock-xml/" prependUri="false" templateProcessor="FreeMarker">
 			<swst:discriminators>
 				<entry key="getFlightsRequest" value="//ns:from;//ns:to"/>
 			</swst:discriminators>		
@@ -82,6 +82,8 @@ Reference
    
    * <<prependUri>> - if set to true, hostname from service uri is prepended before name of the file. For example path "mock-xml/www.aerlingus.com/GetFlightsRequest/PRG-DUB-response.xml"
    will be used. Default value is <<<false>>>.
+   
+   * <<templateProcessor>> - sets template processor. Default value is XSLT, FreeMarker is the only other possible option.
    
    * schemas element contains whitespace separated list of schemas, that are used for request validation. This element is optional.
   
@@ -198,6 +200,8 @@ WsTestContextHolder.getTestContext().setAttribute("departureTime", "2009-07-14")
   
   * In the XPath using <<<$context.departureTime>>>
   
+  * In the FreeMarker template as a variable.
+  
   * Programatically
   
   It's a good idea to clear the test context at the tearDown() method.
@@ -294,9 +298,12 @@ concat($context.testName,'-response.xml')
 * Template processors
   
   Sometimes it useful to specify both requests and responses using templates. This way it's possible to use one file for 
-  multiple tests. By default XSLT template processor is used. A template could look like the following example. 
+  multiple tests. By default XSLT template processor is used. 
 
 ** XSLT template
+
+  XSLT template uses the request as input. It's also possible to use context variables. A template can look like the following example. Please note how context variable 
+  is used for the departure time and value from the request for service class.
 
 ---
 <?xml version="1.0" encoding="UTF-8"?>
@@ -332,7 +339,7 @@ concat($context.testName,'-response.xml')
 ** FreeMarker template
 
   It's also possible to use a FreeMarker template. In this case you have to set "templateProcessor" attribute of "resource-config" element to "FreeMarker". 
-  Or set templateProcessor property on resource lookup bean, if you are not using simplified configuration. A FreeMarker template could
+  Alternatively, it's possible to set templateProcessor property on resource lookup bean, if you are not using simplified configuration. A FreeMarker template could
   look like the following one.
     
 
