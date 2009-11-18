@@ -121,7 +121,9 @@ Reference
    
 ** DefaultResponseGenerator
 
-   Generates mock response based on provided resource lookup. If the resource is not found, returns null.
+   Generates mock response based on provided resource lookup. If the resource is not found, returns null. It's possible
+   to include SOAP elements to the response but it's also possible to specify only payload. In this case SOAP envelope will be 
+   automatically generated.
 
 ---
 <bean class="net.javacrumbs.springws.test.generator.DefaultResponseGenerator">
@@ -289,6 +291,76 @@ concat($context.testName,'-response.xml')
 	</xsl:template>
 </xsl:stylesheet>
 --- 
+* Template processors
+  
+  Sometimes it useful to specify both requests and responses using templates. This way it's possible to use one file for 
+  multiple tests. By default XSLT template processor is used. A template could look like the following example. 
+
+** XSLT template
+
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+	<xsl:param name="departureTime"/>
+	<xsl:template match="/">
+		<GetFlightsResponse
+			xmlns="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"
+			xmlns:msg="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"
+			xmlns:tps="http://www.springframework.org/spring-ws/samples/airline/schemas/types">
+			<flight>
+				<tps:number>OK0651</tps:number>
+				<tps:departureTime><xsl:value-of select="$departureTime"/></tps:departureTime>
+				<tps:from>
+					<tps:code>PRG</tps:code>
+					<tps:name>Prague</tps:name>
+					<tps:city>Prague</tps:city>
+				</tps:from>
+				<tps:arrivalTime>2001-12-31T12:00:00
+				</tps:arrivalTime>
+				<tps:to>
+					<tps:code>CDG</tps:code>
+					<tps:name>CDG</tps:name>
+					<tps:city>Paris</tps:city>
+				</tps:to>
+				<tps:serviceClass><xsl:value-of select="//msg:serviceClass"/></tps:serviceClass>
+			</flight>
+		</GetFlightsResponse>
+	</xsl:template>
+</xsl:stylesheet>
+---
+
+** FreeMarker template
+
+  It's also possible to use a FreeMarker template. In this case you have to set "templateProcessor" attribute of "resource-config" element to "FreeMarker". 
+  Or set templateProcessor property on resource lookup bean, if you are not using simplified configuration. A FreeMarker template could
+  look like the following one.
+    
+
+---
+<#ftl ns_prefixes={"msg":"http://www.springframework.org/spring-ws/samples/airline/schemas/messages"}>
+<GetFlightsResponse
+	xmlns="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"
+	xmlns:msg="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"
+	xmlns:tps="http://www.springframework.org/spring-ws/samples/airline/schemas/types">
+	<flight>
+		<tps:number>OK0651</tps:number>
+		<tps:departureTime>${departureTime}</tps:departureTime>
+		<tps:from>
+			<tps:code>PRG</tps:code>
+			<tps:name>Prague</tps:name>
+			<tps:city>Prague</tps:city>
+		</tps:from>
+		<tps:arrivalTime>2001-12-31T12:00:00
+		</tps:arrivalTime>
+		<tps:to>
+			<tps:code>CDG</tps:code>
+			<tps:name>CDG</tps:name>
+			<tps:city>Paris</tps:city>
+		</tps:to>
+		<tps:serviceClass>${request["//msg:serviceClass"]}</tps:serviceClass>
+	</flight>
+</GetFlightsResponse>
+---
 
 * Default order when autowiring is used
 

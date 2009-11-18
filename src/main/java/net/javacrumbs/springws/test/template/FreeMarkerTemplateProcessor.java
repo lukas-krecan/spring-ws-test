@@ -75,6 +75,8 @@ public class FreeMarkerTemplateProcessor implements TemplateProcessor, Initializ
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.putAll(WsTestContextHolder.getTestContext().getAttributeMap());
 			properties.put("request", getXmlUtil().loadDocument(message));
+			properties.put("IGNORE", "${IGNORE}");
+			
 			StringWriter out = new StringWriter();
 			configuration.getTemplate(resource.getURL().toString()).process(properties, out);
 			return new ByteArrayResource(out.toString().getBytes("UTF-8"));

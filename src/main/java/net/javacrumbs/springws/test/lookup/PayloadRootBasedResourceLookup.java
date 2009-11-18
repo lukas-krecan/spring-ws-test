@@ -89,6 +89,7 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 		while((resource == null || !resource.exists()) && discriminatorsCount>=0);
 		if (resource!=null && resource.exists())
 		{
+			logger.debug("Found resource "+resource);
 			return getTemplateProcessor().processTemplate(resource, uri, message);
 		}
 		else

@@ -58,7 +58,6 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 			logger.debug("Resource not found, returning null.");
 			return null;
 		} else {
-			logger.debug("Creating response from "+resultResource);
 			Document document = getXmlUtil().loadDocument(resultResource);
 			if (getXmlUtil().isSoap(document))
 			{

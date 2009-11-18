@@ -44,4 +44,19 @@ public class FreeMarkerTemplateProcessorTest extends AbstractMessageTest {
 		
 		WsTestContextHolder.getTestContext().clear();
 	}
+	@Test
+	public void testIgnore() throws IOException
+	{
+		WebServiceMessage request = createMessage("xml/valid-message2.xml");
+		ClassPathResource template = new ClassPathResource("xml/control-message-payload-test.xml");
+		Resource resource = processor.processTemplate(template, null, request);
+		
+		
+		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/control-message-payload-test.xml"));
+		Document responseDocument = getXmlUtil().loadDocument(resource);
+		Diff diff = new Diff(controlDocument, responseDocument);
+		assertTrue(diff.toString(), diff.similar());
+		
+		WsTestContextHolder.getTestContext().clear();
+	}
 }
