@@ -27,6 +27,8 @@ import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.PayloadRootBasedResourceLookup;
+import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
+import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.util.MockMessageSenderInjector;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
@@ -57,6 +59,7 @@ public class SimpleSchemaBasedTest {
 		assertEquals("mock/", controlResourceLookup.getPathPrefix());
 		assertArrayEquals(new String[]{"//ns:from","//ns:to"},controlResourceLookup.getDiscriminatorsMap().get("getFlightsRequest"));
 		assertTrue(controlResourceLookup.isPrependUri());
+		assertEquals(FreeMarkerTemplateProcessor.class, controlResourceLookup.getTemplateProcessor().getClass());
 
 		SchemaRequestValidator schemaValidator = (SchemaRequestValidator) requestProcessors.get(1);
 		assertEquals(1, schemaValidator.getSchemas().length);
@@ -67,6 +70,7 @@ public class SimpleSchemaBasedTest {
 		assertEquals("mock/", resourceLookup.getPathPrefix());
 		assertArrayEquals(new String[]{"//ns:from","//ns:to"},resourceLookup.getDiscriminatorsMap().get("getFlightsRequest"));
 		assertTrue(resourceLookup.isPrependUri());
+		assertEquals(FreeMarkerTemplateProcessor.class, resourceLookup.getTemplateProcessor().getClass());
 		
 		assertEquals(0, context.getBeansOfType(MockMessageSenderInjector.class).size());
 		
@@ -91,12 +95,14 @@ public class SimpleSchemaBasedTest {
 		assertEquals("request.xml",controlResourceLookup.getPathSuffix());
 		assertEquals("mock-xml/", controlResourceLookup.getPathPrefix());
 		assertFalse(controlResourceLookup.isPrependUri());
+		assertEquals(XsltTemplateProcessor.class, controlResourceLookup.getTemplateProcessor().getClass());
 			
 		DefaultResponseGenerator generator = (DefaultResponseGenerator) requestProcessors.get(1);
 		PayloadRootBasedResourceLookup resourceLookup = (PayloadRootBasedResourceLookup)generator.getResourceLookup();
 		assertEquals("response.xml",resourceLookup.getPathSuffix());
 		assertEquals("mock-xml/", resourceLookup.getPathPrefix());
 		assertFalse(resourceLookup.isPrependUri());
+		assertEquals(XsltTemplateProcessor.class, resourceLookup.getTemplateProcessor().getClass());
 		
 		assertEquals(1, context.getBeansOfType(MockMessageSenderInjector.class).size());
 		

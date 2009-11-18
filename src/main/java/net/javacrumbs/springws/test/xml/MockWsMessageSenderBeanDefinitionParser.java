@@ -23,6 +23,8 @@ import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.PayloadRootBasedResourceLookup;
+import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
+import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.util.MockMessageSenderInjector;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
@@ -48,8 +50,10 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
 		Map<?, ?> namespaces = parseNamespaces(element, parserContext, bean);
 		Map<?, ?> discriminators = parseDiscriminators(element, parserContext, bean);
-		String pathPrefix = DomUtils.getChildElementByTagName(element, "resource-config").getAttribute("pathPrefix");
-		String prependUri = DomUtils.getChildElementByTagName(element, "resource-config").getAttribute("prependUri");
+		Element resourceConfig = DomUtils.getChildElementByTagName(element, "resource-config");
+		String pathPrefix = resourceConfig.getAttribute("pathPrefix");
+		String prependUri = resourceConfig.getAttribute("prependUri");
+		BeanDefinitionBuilder templateProcessor = getTemplateProcessor(resourceConfig);
 		
 		bean.addPropertyValue("autowireRequestProcessors", element.getAttribute("autowireRequestProcessors"));
 		
@@ -64,6 +68,7 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		controlResourceLookup.addPropertyValue("pathPrefix", pathPrefix);
 		controlResourceLookup.addPropertyValue("prependUri", prependUri);
 		controlResourceLookup.addPropertyValue("pathSuffix", "request.xml");
+		controlResourceLookup.addPropertyValue("templateProcessor", templateProcessor.getBeanDefinition());
 
 		BeanDefinitionBuilder xmlCompareRequestValidator = BeanDefinitionBuilder.rootBeanDefinition(XmlCompareRequestValidator.class);
 		xmlCompareRequestValidator.addPropertyValue("controlResourceLookup", controlResourceLookup.getBeanDefinition());
@@ -85,6 +90,7 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		responseResourceLookup.addPropertyValue("pathPrefix", pathPrefix);
 		responseResourceLookup.addPropertyValue("prependUri", prependUri);
 		responseResourceLookup.addPropertyValue("pathSuffix", "response.xml");
+		responseResourceLookup.addPropertyValue("templateProcessor", templateProcessor.getBeanDefinition());
 		
 		BeanDefinitionBuilder defaultResponseGenerator = BeanDefinitionBuilder.rootBeanDefinition(DefaultResponseGenerator.class);
 		defaultResponseGenerator.addPropertyValue("resourceLookup", responseResourceLookup.getBeanDefinition());
@@ -100,6 +106,18 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		}
 		
 		bean.addPropertyValue("interceptors",parseInterceptors(element, parserContext, bean));
+	}
+
+	private BeanDefinitionBuilder getTemplateProcessor(Element resourceConfig) {
+		String templateProcessorName = resourceConfig.getAttribute("templateProcessor");
+		if ("FreeMarker".equals(templateProcessorName))
+		{
+			return BeanDefinitionBuilder.rootBeanDefinition(FreeMarkerTemplateProcessor.class);
+		}
+		else
+		{
+			return BeanDefinitionBuilder.rootBeanDefinition(XsltTemplateProcessor.class);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
