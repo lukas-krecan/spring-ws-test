@@ -119,13 +119,24 @@ public class WsMockControl {
 	 */
 	public WsMockControl expectRequest(String resourceName) {
 		XmlCompareRequestValidator validator = new XmlCompareRequestValidator();
-		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
-		resourceLookup.setExpressionResolver(ExpressionResolver.DUMMY_EXPRESSION_RESOLVER);
-		resourceLookup.setResourceExpressions(resourceName);
+		ExpressionBasedResourceLookup resourceLookup = createResourceLookup(resourceName);
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
 		addRequestProcessor(validator, "expectRequest(\"" + resourceName + "\")");
 		return this;
+	}
+
+	/**
+	 * Creates resource lookup to be used in request validators and response generators.
+	 * @param resourceName
+	 * @return
+	 */
+	protected ExpressionBasedResourceLookup createResourceLookup(String resourceName) {
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
+		resourceLookup.setExpressionResolver(ExpressionResolver.DUMMY_EXPRESSION_RESOLVER);
+		resourceLookup.setResourceExpressions(resourceName);
+		resourceLookup.setTemplateProcessor(templateProcessor);
+		return resourceLookup;
 	}
 
 	/**
@@ -164,28 +175,34 @@ public class WsMockControl {
 	}
 
 	/**
-	 * Mock will return response tahen from the resource.
+	 * Mock will return response taken from the resource.
 	 * 
 	 * @param resourceName
 	 * @return
 	 */
 	public WsMockControl returnResponse(String resourceName) {
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
-		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
-		resourceLookup.setExpressionResolver(ExpressionResolver.DUMMY_EXPRESSION_RESOLVER);
-		resourceLookup.setResourceExpressions(resourceName);
-		resourceLookup.setTemplateProcessor(templateProcessor);
+		ExpressionBasedResourceLookup resourceLookup = createResourceLookup(resourceName);
 		responseGenerator.setResourceLookup(resourceLookup);
 		addRequestProcessor(responseGenerator, "returnResponse(\"" + resourceName + "\")");
 		return this;
 	}
 
+	/**
+	 * From now use FreeMarker for templates.
+	 * @return
+	 */
 	public WsMockControl useFreeMarkerTemplateProcessor() {
 		FreeMarkerTemplateProcessor freemarkerTemplateProcessor = new FreeMarkerTemplateProcessor();
 		freemarkerTemplateProcessor.setResourceLoader(new DefaultResourceLoader());
 		freemarkerTemplateProcessor.afterPropertiesSet();
 		return useTemplateProcessor(freemarkerTemplateProcessor);
 	}
+	
+	/**
+	 * From now use XSLT for templates.
+	 * @return
+	 */
 	public WsMockControl useXsltTemplateProcessor() {
 		return useTemplateProcessor(new XsltTemplateProcessor());
 	}
