@@ -1,10 +1,5 @@
 <#ftl ns_prefixes={"ns":"http://www.example.org/schema"}>
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-	<soapenv:Header />
-	<soapenv:Body>
-		<ns:test xmlns:ns="http://www.example.org/schema">
-			<ns:number>${number}</ns:number>
-			<ns:text>${request["//ns:text"]}${request["//ns:number"]}</ns:text>
-		</ns:test>
-	</soapenv:Body>
-</soapenv:Envelope>
+<ns:test xmlns:ns="http://www.example.org/schema">
+	<ns:number>${number}</ns:number>
+	<ns:text>${request["//ns:text"]}${request["//ns:number"]}</ns:text>
+</ns:test>

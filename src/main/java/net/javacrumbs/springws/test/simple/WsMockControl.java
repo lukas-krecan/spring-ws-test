@@ -29,10 +29,14 @@ import net.javacrumbs.springws.test.expression.ExpressionResolver;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
+import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
+import net.javacrumbs.springws.test.template.TemplateProcessor;
+import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
 import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
@@ -58,6 +62,14 @@ import org.springframework.ws.transport.WebServiceMessageSender;
 public class WsMockControl {
 	private final List<LimitingRequestProcessor> requestProcessors = new ArrayList<LimitingRequestProcessor>();
 	
+	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
+	
+	public static final TemplateProcessor FREEMARKER_TEMPLATE_PROCESSOR = new FreeMarkerTemplateProcessor(){
+		{
+			setResourceLoader(new DefaultResourceLoader());
+			afterPropertiesSet();
+		}
+	};
 	/**
 	 * Create mock {@link WebServiceMessageSender}. If behavior not defined, throws {@link IllegalArgumentException}.
 	 * @return
@@ -101,6 +113,7 @@ public class WsMockControl {
 		return this;
 	}
 	
+
 	/**
 	 * Expects that request will be the same as content of the resource.  
 	 * @param resourceName
@@ -158,8 +171,20 @@ public class WsMockControl {
 		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
 		resourceLookup.setExpressionResolver(ExpressionResolver.DUMMY_EXPRESSION_RESOLVER);
 		resourceLookup.setResourceExpressions(resourceName);
+		resourceLookup.setTemplateProcessor(templateProcessor);
 		responseGenerator.setResourceLookup(resourceLookup);
 		addRequestProcessor(responseGenerator, "returnResponse(\""+resourceName+"\")");
+		return this;
+	}
+	
+	/**
+	 * Sets template processor to be used.
+	 * @param templateProcessor
+	 * @return
+	 */
+	public WsMockControl useTemplateProcessor(TemplateProcessor templateProcessor)
+	{
+		this.templateProcessor = templateProcessor;
 		return this;
 	}
 

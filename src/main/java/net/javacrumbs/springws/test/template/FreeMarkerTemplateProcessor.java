@@ -85,7 +85,7 @@ public class FreeMarkerTemplateProcessor implements TemplateProcessor, Initializ
 		}
 	}
 
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet(){
 		if (configurationFactory==null)
 		{
 			configurationFactory = new FreeMarkerConfigurationFactory();

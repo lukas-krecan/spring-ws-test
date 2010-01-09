@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="windows-1250"?>
-		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
-			<soapenv:Header />
-			<soapenv:Body>
-				<test xmlns="http://www.example.org/schema">
-					<number>2</number>
-					<text>different0</text>
-				</test>
-			</soapenv:Body>
-		</soapenv:Envelope>
-
+<test xmlns="http://www.example.org/schema">
+	<number>2</number>
+	<text>different0</text>
+</test>
 

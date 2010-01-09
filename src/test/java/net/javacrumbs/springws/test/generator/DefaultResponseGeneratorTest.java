@@ -27,12 +27,10 @@ import java.io.IOException;
 
 import net.javacrumbs.springws.test.AbstractMessageTest;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
-import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
 
@@ -103,10 +101,5 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		
 		verify(resourceLookup);
 	}
-	private Document loadDocument(WebServiceMessage message) {
-		return DefaultXmlUtil.getInstance().loadDocument(message);
-	}
-	private Document loadDocument(Resource resource) throws IOException {
-		return DefaultXmlUtil.getInstance().loadDocument(resource);
-	}
+	
 }

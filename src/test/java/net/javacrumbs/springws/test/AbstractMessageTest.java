@@ -25,10 +25,12 @@ import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.SoapMessageFactory;
 import org.springframework.ws.soap.axiom.AxiomSoapMessageFactory;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+import org.w3c.dom.Document;
 
 public abstract class AbstractMessageTest {
 	
@@ -82,5 +84,15 @@ public abstract class AbstractMessageTest {
 	}
 	protected void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
+	}
+	
+	protected Document loadDocument(String path) throws IOException {
+		return loadDocument(new ClassPathResource(path));
+	}
+	protected Document loadDocument(WebServiceMessage message) {
+		return getXmlUtil().loadDocument(message);
+	}
+	protected Document loadDocument(Resource resource) throws IOException {
+		return getXmlUtil().loadDocument(resource);
 	}
 }

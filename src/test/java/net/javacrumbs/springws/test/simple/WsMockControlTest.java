@@ -20,8 +20,10 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -31,13 +33,18 @@ import net.javacrumbs.springws.test.AbstractMessageTest;
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.xml.transform.StringResult;
+import org.xml.sax.SAXException;
 
 
 public class WsMockControlTest extends AbstractMessageTest{
@@ -62,6 +69,35 @@ public class WsMockControlTest extends AbstractMessageTest{
 		template.setMessageSender(sender);
 		StringResult responseResult = new StringResult();
 		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+	}
+	
+	@Test
+	public void testExpectAndReturnXsltTemplate() throws IOException, SAXException
+	{
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/different-response.xml").createMock();
+		doTemplateTest(sender);
+	}
+	
+	@Test
+	public void testExpectAndReturnFreemarkerTemplate() throws IOException, SAXException
+	{
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().useTemplateProcessor(WsMockControl.FREEMARKER_TEMPLATE_PROCESSOR).expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/freemarker-response.xml").createMock();
+		doTemplateTest(sender);
+	}
+	
+	private void doTemplateTest(MockWebServiceMessageSender sender) throws IOException, SAXException {
+		assertNotNull(sender);
+		assertEquals(2, sender.getRequestProcessors().size());
+		
+		WsTestContextHolder.getTestContext().setAttribute("number", 2);
+		
+		WebServiceTemplate template = new WebServiceTemplate();
+		template.setMessageSender(sender);
+		StringResult responseResult = new StringResult();
+		template.sendSourceAndReceiveToResult(URI,createMessage("xml/valid-message2.xml").getPayloadSource(), responseResult);
+		
+		Diff diff = XMLUnit.compareXML(new InputStreamReader(new ClassPathResource("xml/resolved-different-response.xml").getInputStream()), responseResult.toString());
+		assertTrue(diff.toString(), diff.similar());
 	}
 	
 	@Test
