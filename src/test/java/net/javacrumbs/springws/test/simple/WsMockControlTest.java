@@ -74,14 +74,14 @@ public class WsMockControlTest extends AbstractMessageTest{
 	@Test
 	public void testExpectAndReturnXsltTemplate() throws IOException, SAXException
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/different-response.xml").createMock();
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().useXsltTemplateProcessor().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/different-response.xml").createMock();
 		doTemplateTest(sender);
 	}
 	
 	@Test
 	public void testExpectAndReturnFreemarkerTemplate() throws IOException, SAXException
 	{
-		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().useTemplateProcessor(WsMockControl.FREEMARKER_TEMPLATE_PROCESSOR).expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/freemarker-response.xml").createMock();
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().useFreeMarkerTemplateProcessor().expectRequest("xml/control-message-test.xml").returnResponse("mock-responses/test/freemarker-response.xml").createMock();
 		doTemplateTest(sender);
 	}
 	
