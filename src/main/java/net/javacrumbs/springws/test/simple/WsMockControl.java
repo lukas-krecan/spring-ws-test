@@ -56,28 +56,25 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  * //verify that the mock was used
  * mockControl.verify();
  * </pre></code>
+ * 
  * @author Lukas Krecan
- *
+ * 
  */
 public class WsMockControl {
 	private final List<LimitingRequestProcessor> requestProcessors = new ArrayList<LimitingRequestProcessor>();
-	
+
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
-	
-	public static final TemplateProcessor FREEMARKER_TEMPLATE_PROCESSOR = new FreeMarkerTemplateProcessor(){
-		{
-			setResourceLoader(new DefaultResourceLoader());
-			afterPropertiesSet();
-		}
-	};
+
 	/**
-	 * Create mock {@link WebServiceMessageSender}. If behavior not defined, throws {@link IllegalArgumentException}.
+	 * Create mock {@link WebServiceMessageSender}. If behavior not defined,
+	 * throws {@link IllegalArgumentException}.
+	 * 
 	 * @return
 	 */
 	public WebServiceMessageSender createMock() {
-		if (requestProcessors.isEmpty())
-		{
-			throw new IllegalStateException("No request processor defined. Please call at least returnResponse() method.");
+		if (requestProcessors.isEmpty()) {
+			throw new IllegalStateException(
+					"No request processor defined. Please call at least returnResponse() method.");
 		}
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
 		messageSender.setRequestProcessors(requestProcessors);
@@ -85,37 +82,38 @@ public class WsMockControl {
 	}
 
 	/**
-	 * Adds request processor. Uses toString() method to get description of the processor and calls {@link #addRequestProcessor(RequestProcessor, String)}. 
+	 * Adds request processor. Uses toString() method to get description of the
+	 * processor and calls
+	 * {@link #addRequestProcessor(RequestProcessor, String)}.
+	 * 
 	 * @param requestProcessor
 	 * @return
 	 */
-	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor)
-	{
+	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor) {
 		return addRequestProcessor(requestProcessor, requestProcessor.toString());
 	}
-	
+
 	/**
-	 * Adds a request processor. If the processor does not implement {@link LimitingRequestProcessor} it's wrapped in {@link LimitingRequestProcessorWrapper}.
+	 * Adds a request processor. If the processor does not implement
+	 * {@link LimitingRequestProcessor} it's wrapped in
+	 * {@link LimitingRequestProcessorWrapper}.
+	 * 
 	 * @param requestProcessor
 	 * @param requestProcessorDescription
 	 * @return
 	 */
-	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor, String requestProcessorDescription)
-	{
-		if (requestProcessor instanceof LimitingRequestProcessor)
-		{
-			requestProcessors.add((LimitingRequestProcessor)requestProcessor);
-		}
-		else
-		{
+	public WsMockControl addRequestProcessor(RequestProcessor requestProcessor, String requestProcessorDescription) {
+		if (requestProcessor instanceof LimitingRequestProcessor) {
+			requestProcessors.add((LimitingRequestProcessor) requestProcessor);
+		} else {
 			requestProcessors.add(new LimitingRequestProcessorWrapper(requestProcessor, requestProcessorDescription));
 		}
 		return this;
 	}
-	
 
 	/**
-	 * Expects that request will be the same as content of the resource.  
+	 * Expects that request will be the same as content of the resource.
+	 * 
 	 * @param resourceName
 	 * @return
 	 */
@@ -126,27 +124,31 @@ public class WsMockControl {
 		resourceLookup.setResourceExpressions(resourceName);
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
-		addRequestProcessor(validator, "expectRequest(\""+resourceName+"\")");
+		addRequestProcessor(validator, "expectRequest(\"" + resourceName + "\")");
 		return this;
 	}
-	
+
 	/**
-	 * Mock will fail if the expression evaluates to true. 
+	 * Mock will fail if the expression evaluates to true.
+	 * 
 	 * @param expression
 	 * @param namespaceMap
 	 * @return
 	 */
 	public WsMockControl failIf(String expression, Map<String, String> namespaceMap) {
 		XPathRequestValidator validator = new XPathRequestValidator();
-		validator.setExceptionMapping(Collections.singletonMap(expression, "XPath assertion \""+expression+"\" failed."));
+		validator.setExceptionMapping(Collections.singletonMap(expression, "XPath assertion \"" + expression
+				+ "\" failed."));
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator, "failIf(\""+expression+"\")");
+		addRequestProcessor(validator, "failIf(\"" + expression + "\")");
 		return this;
 	}
+
 	/**
-	 * Mock will fail if the expression evaluates to false. 
+	 * Mock will fail if the expression evaluates to false.
+	 * 
 	 * @param expression
 	 * @param namespaceMap
 	 * @return
@@ -157,12 +159,13 @@ public class WsMockControl {
 		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
 		expressionResolver.setNamespaceMap(namespaceMap);
 		validator.setExpressionResolver(expressionResolver);
-		addRequestProcessor(validator, "assertThat(\""+expression+"\")");
+		addRequestProcessor(validator, "assertThat(\"" + expression + "\")");
 		return this;
 	}
 
 	/**
 	 * Mock will return response tahen from the resource.
+	 * 
 	 * @param resourceName
 	 * @return
 	 */
@@ -173,54 +176,66 @@ public class WsMockControl {
 		resourceLookup.setResourceExpressions(resourceName);
 		resourceLookup.setTemplateProcessor(templateProcessor);
 		responseGenerator.setResourceLookup(resourceLookup);
-		addRequestProcessor(responseGenerator, "returnResponse(\""+resourceName+"\")");
+		addRequestProcessor(responseGenerator, "returnResponse(\"" + resourceName + "\")");
 		return this;
 	}
-	
+
+	public WsMockControl useFreeMarkerTemplateProcessor() {
+		FreeMarkerTemplateProcessor freemarkerTemplateProcessor = new FreeMarkerTemplateProcessor();
+		freemarkerTemplateProcessor.setResourceLoader(new DefaultResourceLoader());
+		freemarkerTemplateProcessor.afterPropertiesSet();
+		return useTemplateProcessor(freemarkerTemplateProcessor);
+	}
+	public WsMockControl useXsltTemplateProcessor() {
+		return useTemplateProcessor(new XsltTemplateProcessor());
+	}
+
 	/**
 	 * Sets template processor to be used.
+	 * 
 	 * @param templateProcessor
 	 * @return
 	 */
-	public WsMockControl useTemplateProcessor(TemplateProcessor templateProcessor)
-	{
+	public WsMockControl useTemplateProcessor(TemplateProcessor templateProcessor) {
 		this.templateProcessor = templateProcessor;
 		return this;
 	}
 
 	/**
 	 * Mock will throw an exception.
+	 * 
 	 * @param exception
 	 * @return
 	 */
 	public WsMockControl throwException(final RuntimeException exception) {
-		RequestProcessor thrower = new RequestProcessor()
-		{
-			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
+		RequestProcessor thrower = new RequestProcessor() {
+			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,
+					WebServiceMessage request) throws IOException {
 				throw exception;
 			}
 		};
-		addRequestProcessor(thrower, "throwException(\""+exception.getMessage()+"\")");
+		addRequestProcessor(thrower, "throwException(\"" + exception.getMessage() + "\")");
 		return this;
 	}
-	
+
 	/**
-	 * Expects given uri. If other URI is used, {@link WsTestException} is thrown. 
+	 * Expects given uri. If other URI is used, {@link WsTestException} is
+	 * thrown.
+	 * 
 	 * @param string
 	 * @return
 	 */
 	public WsMockControl expectUri(final URI expectedUri) {
-		RequestProcessor validator = new RequestProcessor()
-		{
-			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
-				if (!uri.equals(expectedUri))
-				{
-					throw new WsTestException("Expected uri "+expectedUri+" but got "+uri); 	
+		RequestProcessor validator = new RequestProcessor() {
+			public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,
+					WebServiceMessage request) throws IOException {
+				if (!uri.equals(expectedUri)) {
+					throw new WsTestException("Expected uri " + expectedUri + " but got " + uri);
 				}
 				return null;
 			}
 		};
-		addRequestProcessor(validator, "expectUri(\""+expectedUri+"\")");
+		addRequestProcessor(validator, "expectUri(\"" + expectedUri + "\")");
 		return this;
 	}
 
@@ -229,26 +244,28 @@ public class WsMockControl {
 	}
 
 	/**
-	 * Sets number of calls for the last {@link RequestProcessor}. If given processor was called les the min times, verify will throw {@link WsTestException}, 
-	 * if it was called for more then max times, the {@link RequestProcessor} will do nothing and return null.
-	 * See {@link LimitingRequestProcessor} for more details. 
+	 * Sets number of calls for the last {@link RequestProcessor}. If given
+	 * processor was called les the min times, verify will throw
+	 * {@link WsTestException}, if it was called for more then max times, the
+	 * {@link RequestProcessor} will do nothing and return null. See
+	 * {@link LimitingRequestProcessor} for more details.
+	 * 
 	 * @param min
 	 * @param max
 	 * @return
 	 */
 	public WsMockControl times(int min, int max) {
-		if (requestProcessors.isEmpty())
-		{
+		if (requestProcessors.isEmpty()) {
 			throw new IllegalStateException("Can not set behaviour. No request processor defined.");
 		}
 		LimitingRequestProcessor lastProcessor = getLastProcessor();
 		lastProcessor.setMinNumberOfProcessedRequests(min);
 		lastProcessor.setMaxNumberOfProcessedRequests(max);
-		return this; 
+		return this;
 	}
 
 	public WsMockControl times(int count) {
-		return times(count, count); 		
+		return times(count, count);
 	}
 
 	public WsMockControl once() {
@@ -256,24 +273,22 @@ public class WsMockControl {
 	}
 
 	public WsMockControl anyTimes() {
-		return times(0,Integer.MAX_VALUE);
+		return times(0, Integer.MAX_VALUE);
 	}
 
 	public WsMockControl atLeastOnce() {
-		return times(1,Integer.MAX_VALUE);
+		return times(1, Integer.MAX_VALUE);
 	}
 
 	private LimitingRequestProcessor getLastProcessor() {
-		return requestProcessors.get(requestProcessors.size()-1);
+		return requestProcessors.get(requestProcessors.size() - 1);
 	}
-	
+
 	/**
 	 * Verifies that all RequestProcessors were called given number of times.
 	 */
-	public void verify()
-	{
-		for (LimitingRequestProcessor processor: requestProcessors)
-		{
+	public void verify() {
+		for (LimitingRequestProcessor processor : requestProcessors) {
 			processor.verify();
 		}
 	}
