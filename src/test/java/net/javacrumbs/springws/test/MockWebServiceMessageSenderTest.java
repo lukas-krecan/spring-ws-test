@@ -33,7 +33,7 @@ public class MockWebServiceMessageSenderTest {
 	@Test
 	public void testCreateConnection() throws Exception
 	{
-		MockWebServiceMessageSender sender = new MockWebServiceMessageSender();
+		AbstractMockWebServiceMessageSender sender = new MockWebServiceMessageSender();
 		URI uri = new URI("http://example.org/");
 		assertTrue(sender.supports(uri));
 		List<EndpointInterceptor> interceptors = Arrays.<EndpointInterceptor>asList(new PayloadLoggingInterceptor());

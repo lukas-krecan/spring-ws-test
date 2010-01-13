@@ -15,8 +15,6 @@
  */
 package net.javacrumbs.springws.test;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +24,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.OrderComparator;
-import org.springframework.ws.server.EndpointInterceptor;
-import org.springframework.ws.transport.WebServiceConnection;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
 /**
@@ -35,26 +31,13 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  * @author Lukas Krecan
  *
  */
-public class MockWebServiceMessageSender implements WebServiceMessageSender, InitializingBean, ApplicationContextAware {
+public class MockWebServiceMessageSender extends AbstractMockWebServiceMessageSender implements WebServiceMessageSender, InitializingBean, ApplicationContextAware {
 	
 	private List<RequestProcessor> requestProcessors = new ArrayList<RequestProcessor>();
 	
 	private boolean autowireRequestProcessors = true;
 	
 	private ApplicationContext applicationContext;
-	
-	private List<EndpointInterceptor> interceptors = Collections.emptyList();
-	
-	public WebServiceConnection createConnection(URI uri) throws IOException {
-		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
-		connection.setRequestProcessors(getRequestProcessors());
-		connection.setInterceptors(interceptors);
-		return connection;
-	}
-
-	public boolean supports(URI uri) {
-		return true;
-	}
 	
 	/**
 	 * Response generators used to generate the response.
@@ -95,13 +78,5 @@ public class MockWebServiceMessageSender implements WebServiceMessageSender, Ini
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;		
-	}
-
-	public List<EndpointInterceptor> getInterceptors() {
-		return Collections.unmodifiableList(interceptors);
-	}
-
-	public void setInterceptors(List<? extends EndpointInterceptor> interceptors) {
-		this.interceptors = new ArrayList<EndpointInterceptor>(interceptors);
 	}
 }

@@ -17,7 +17,7 @@ package net.javacrumbs.springws.test.util;
 
 import java.util.Collection;
 
-import net.javacrumbs.springws.test.MockWebServiceMessageSender;
+import net.javacrumbs.springws.test.AbstractMockWebServiceMessageSender;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
@@ -41,7 +41,7 @@ public class MockMessageSenderInjector implements BeanFactoryPostProcessor {
 			throw new BeanCreationException("No WebServiceTemplate found in the servlet context.");
 		}
 		
-		Collection<MockWebServiceMessageSender> mockSenders = beanFactory.getBeansOfType(MockWebServiceMessageSender.class).values();
+		Collection<AbstractMockWebServiceMessageSender> mockSenders = beanFactory.getBeansOfType(AbstractMockWebServiceMessageSender.class).values();
 		WebServiceMessageSender[] mockSenderArray = mockSenders.toArray(new WebServiceMessageSender[mockSenders.size()]);
 		for (WebServiceTemplate template: templates)
 		{
