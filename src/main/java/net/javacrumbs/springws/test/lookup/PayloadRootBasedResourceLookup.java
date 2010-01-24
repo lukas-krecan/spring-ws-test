@@ -90,13 +90,14 @@ public class PayloadRootBasedResourceLookup extends AbstractResourceLookup {
 		if (resource!=null && resource.exists())
 		{
 			logger.debug("Found resource "+resource);
-			return getTemplateProcessor().processTemplate(resource, uri, message);
+			return processResource(uri, message, resource);
 		}
 		else
 		{
 			return null;
 		}
 	}
+
 	
 	private String[] getDiscriminators(String payloadName) {
 		String[] result = discriminators.get(payloadName);

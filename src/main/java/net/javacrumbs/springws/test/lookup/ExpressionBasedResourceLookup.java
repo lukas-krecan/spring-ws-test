@@ -56,7 +56,7 @@ public class ExpressionBasedResourceLookup extends AbstractResourceLookup {
 				if (resultResource!=null)
 				{
 					logger.debug("Found resource "+resultResource);
-					return getTemplateProcessor().processTemplate(resultResource, uri, message);
+					return processResource(uri, message, resultResource);
 				}
 			}
 		}

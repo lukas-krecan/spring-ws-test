@@ -25,10 +25,10 @@ import java.util.Map;
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
-import net.javacrumbs.springws.test.expression.ExpressionResolver;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
+import net.javacrumbs.springws.test.lookup.ResourceLookup;
+import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
 import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
@@ -117,19 +117,33 @@ public class WsMockControl {
 
 	/**
 	 * Expects that request will be the same as content of the resource.
-	 * 
 	 * @param resourceName
 	 * @return
 	 */
 	public WsMockControl expectRequest(String resourceName) {
+			return expectRequest(getResourceLoader().getResource(resourceName));
+	}
+	
+	/**
+	 * Expects that request will be the same as content of the resource.
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public WsMockControl expectRequest(Resource resource) {
 		XmlCompareRequestValidator validator = new XmlCompareRequestValidator();
-		ExpressionBasedResourceLookup resourceLookup = createResourceLookup(resourceName);
+		ResourceLookup resourceLookup = createResourceLookup(resource);
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
-		addRequestProcessor(validator, "expectRequest(\"" + resourceName + "\")");
+		addRequestProcessor(validator, "expectRequest(" + resource.getDescription() + ")");
 		return this;
 	}
 	
+	/**
+	 * Validate requests using given schemas.
+	 * @param xsds
+	 * @return
+	 */
 	public WsMockControl validateSchema(Resource... xsds) {
 		SchemaRequestValidator validator = new SchemaRequestValidator();
 		validator.setSchemas(xsds);
@@ -142,6 +156,11 @@ public class WsMockControl {
 		return this;
 	}
 	
+	/**
+	 * Validate requests using given schemas.
+	 * @param xsdPaths
+	 * @return
+	 */
 	public WsMockControl validateSchema(String... xsdPaths) {
 		Resource[] resources = new Resource[xsdPaths.length];
 		for (int i = 0; i < xsdPaths.length; i++) {
@@ -155,10 +174,8 @@ public class WsMockControl {
 	 * @param resourceName
 	 * @return
 	 */
-	protected ExpressionBasedResourceLookup createResourceLookup(String resourceName) {
-		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
-		resourceLookup.setExpressionResolver(ExpressionResolver.DUMMY_EXPRESSION_RESOLVER);
-		resourceLookup.setResourceExpressions(resourceName);
+	protected ResourceLookup createResourceLookup(Resource resource) {
+		SimpleResourceLookup resourceLookup = new SimpleResourceLookup(resource);
 		resourceLookup.setTemplateProcessor(templateProcessor);
 		return resourceLookup;
 	}
@@ -199,18 +216,20 @@ public class WsMockControl {
 	}
 	
 	
-
+	public WsMockControl returnResponse(String resourceName) {
+		return returnResponse(getResourceLoader().getResource(resourceName));
+	}
 	/**
 	 * Mock will return response taken from the resource.
 	 * 
 	 * @param resourceName
 	 * @return
 	 */
-	public WsMockControl returnResponse(String resourceName) {
+	public WsMockControl returnResponse(Resource resource) {
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
-		ExpressionBasedResourceLookup resourceLookup = createResourceLookup(resourceName);
+		ResourceLookup resourceLookup = createResourceLookup(resource);
 		responseGenerator.setResourceLookup(resourceLookup);
-		addRequestProcessor(responseGenerator, "returnResponse(\"" + resourceName + "\")");
+		addRequestProcessor(responseGenerator, "returnResponse(" + resource.getDescription() + ")");
 		return this;
 	}
 

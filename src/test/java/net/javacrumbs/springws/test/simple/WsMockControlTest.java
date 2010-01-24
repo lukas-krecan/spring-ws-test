@@ -36,7 +36,7 @@ import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
+import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
@@ -45,6 +45,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.xml.transform.StringResult;
 import org.xml.sax.SAXException;
@@ -62,11 +63,11 @@ public class WsMockControlTest extends AbstractMessageTest{
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
-		ExpressionBasedResourceLookup lookup1 = (ExpressionBasedResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender,0)).getControlResourceLookup();
-		assertEquals("xml/control-message-test.xml", lookup1.getResourceExpressions()[0]);
+		SimpleResourceLookup lookup1 = (SimpleResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender,0)).getControlResourceLookup();
+		assertEquals("control-message-test.xml", lookup1.getResultResource().getFilename());
 		
-		ExpressionBasedResourceLookup lookup2 = (ExpressionBasedResourceLookup)((DefaultResponseGenerator)extractRequestProcessor(sender,1)).getResourceLookup();
-		assertEquals("mock-responses/test/default-response.xml", lookup2.getResourceExpressions()[0]);
+		SimpleResourceLookup lookup2 = (SimpleResourceLookup)((DefaultResponseGenerator)extractRequestProcessor(sender,1)).getResourceLookup();
+		assertEquals("default-response.xml", lookup2.getResultResource().getFilename());
 		
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);
@@ -133,7 +134,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		LimitingRequestProcessorWrapper processorWrapper = (LimitingRequestProcessorWrapper)control.getRequestProcessors().get(0);
 		assertEquals(0, processorWrapper.getMinNumberOfProcessedRequests());
 		assertEquals(5, processorWrapper.getMaxNumberOfProcessedRequests());
-		assertEquals("expectRequest(\"xml/does-not-exist.xml\")",processorWrapper.getRequestProcessorDescription());
+		assertEquals("expectRequest(class path resource [xml/does-not-exist.xml])",processorWrapper.getRequestProcessorDescription());
 	}
 	@Test
 	public void testWrapAtLeastOnce()
@@ -163,7 +164,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		LimitingRequestProcessorWrapper processorWrapper = (LimitingRequestProcessorWrapper)control.getRequestProcessors().get(0);
 		assertEquals(5, processorWrapper.getMinNumberOfProcessedRequests());
 		assertEquals(5, processorWrapper.getMaxNumberOfProcessedRequests());
-		assertEquals("returnResponse(\"mock-responses/test/default-response.xml\")",processorWrapper.getRequestProcessorDescription());
+		assertEquals("returnResponse(class path resource [mock-responses/test/default-response.xml])",processorWrapper.getRequestProcessorDescription());
 	}
 	@Test
 	public void testWrapOnce()
@@ -180,7 +181,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		return ((LimitingRequestProcessorWrapper)sender.getRequestProcessors().get(index)).getWrappedRequestProcessor();
 	}
 	
-	@Test(expected=WsTestException.class)
+	@Test(expected=WebServiceIOException.class)
 	public void testExpectResourceNotFound() throws IOException
 	{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender)new WsMockControl().expectRequest("xml/does-not-exist.xml").returnResponse("mock-responses/test/default-response.xml").createMock();
@@ -243,8 +244,8 @@ public class WsMockControlTest extends AbstractMessageTest{
 		assertNotNull(sender);
 		assertEquals(2, sender.getRequestProcessors().size());
 		
-		ExpressionBasedResourceLookup lookup1 = (ExpressionBasedResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).getControlResourceLookup();
-		assertEquals("xml/control-message-test.xml", lookup1.getResourceExpressions()[0]);
+		SimpleResourceLookup lookup1 = (SimpleResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).getControlResourceLookup();
+		assertEquals("control-message-test.xml", lookup1.getResultResource().getFilename());
 			
 		WebServiceTemplate template = new WebServiceTemplate();
 		template.setMessageSender(sender);

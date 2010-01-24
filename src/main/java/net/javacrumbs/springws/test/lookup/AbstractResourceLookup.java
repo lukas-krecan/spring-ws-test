@@ -18,17 +18,10 @@ package net.javacrumbs.springws.test.lookup;
 import java.net.URI;
 
 import net.javacrumbs.springws.test.expression.ExpressionResolver;
-import net.javacrumbs.springws.test.template.TemplateProcessor;
-import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
-import net.javacrumbs.springws.test.util.DefaultXmlUtil;
-import net.javacrumbs.springws.test.util.XmlUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
 
 
@@ -50,18 +43,11 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public abstract class AbstractResourceLookup implements ResourceLookup, ResourceLoaderAware {
+public abstract class AbstractResourceLookup extends AbstractTemplateProcessingResourceLookup implements ResourceLookup, ResourceLoaderAware {
 	
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 	
-	protected final Log logger = LogFactory.getLog(getClass());
-	
-	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
-	
 	private ExpressionResolver expressionResolver;
-	
-	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
-
 	
 	/**
 	 * Evaluates the expression.
@@ -75,10 +61,6 @@ public abstract class AbstractResourceLookup implements ResourceLookup, Resource
 		return expressionResolver.resolveExpression(expression, uri, document);
 	}
 
-	protected Document loadDocument(WebServiceMessage message) {
-		return getXmlUtil().loadDocument(message);
-	}
-
 	public ResourceLoader getResourceLoader() {
 		return resourceLoader;
 	}
@@ -87,28 +69,12 @@ public abstract class AbstractResourceLookup implements ResourceLookup, Resource
 		this.resourceLoader = resourceLoader;
 	}
 	
-	public XmlUtil getXmlUtil() {
-		return xmlUtil;
-	}
-
-	public void setXmlUtil(XmlUtil xmlUtil) {
-		this.xmlUtil = xmlUtil;
-	}
-
 	public ExpressionResolver getExpressionResolver() {
 		return expressionResolver;
 	}
 
 	public void setExpressionResolver(ExpressionResolver expressionResolver) {
 		this.expressionResolver = expressionResolver;
-	}
-
-	public TemplateProcessor getTemplateProcessor() {
-		return templateProcessor;
-	}
-
-	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
-		this.templateProcessor = templateProcessor;
 	}
 
 }
