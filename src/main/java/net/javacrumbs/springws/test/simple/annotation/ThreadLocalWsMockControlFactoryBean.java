@@ -4,7 +4,14 @@ import net.javacrumbs.springws.test.simple.WsMockControl;
 
 import org.springframework.beans.factory.FactoryBean;
 
-public class ThreadLocalWsMockControlFactoryBean implements FactoryBean {
+
+/**
+ * Factory bean that keep WsMockControl in {@link ThreadLocal}. This way we make sure that parallel execution of tests
+ * works. 
+ * @author Lukas Krecan
+ *
+ */
+class ThreadLocalWsMockControlFactoryBean implements FactoryBean {
 
 	private static final ThreadLocal<WsMockControl> wsMockControl = new ThreadLocal<WsMockControl>()
 	{
