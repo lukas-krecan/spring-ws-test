@@ -1,12 +1,12 @@
 package net.javacrumbs.springws.test.simple.annotation;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import net.javacrumbs.springws.test.AbstractMessageTest;
+import net.javacrumbs.springws.test.NoResponseGeneratorSpecifiedException;
 import net.javacrumbs.springws.test.simple.WsMockControl;
 
 import org.custommonkey.xmlunit.Diff;
@@ -55,11 +55,20 @@ public class AnnotationConfigTest extends AbstractMessageTest{
 	{
 		testResponse("mock-responses/test/default-response-payload.xml");
 	}
+
+	@Test(expected=NoResponseGeneratorSpecifiedException.class)
+	public void testNoConfiguration() throws WebServiceClientException, IOException, SAXException
+	{
+		StringResult responseResult = new StringResult();
+		template.sendSourceAndReceiveToResult(TEST_URI.toString(),createMessage("xml/valid-message.xml").getPayloadSource(), responseResult );
+	}
+	
+	
 	
 	@After
 	public void tearDown()
 	{
-		assertEquals(2, mockControl.getRequestProcessors().size());
+		assertTrue(mockControl.getRequestProcessors().size()>=1);
 	}
 
 	private void testResponse(String response) throws IOException, SAXException {
