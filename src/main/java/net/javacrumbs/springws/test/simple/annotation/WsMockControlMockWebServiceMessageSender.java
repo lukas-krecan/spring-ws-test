@@ -13,7 +13,7 @@ import net.javacrumbs.springws.test.RequestProcessor;
  * @author Lukas Krecan
  *
  */
-public class WsMockControlMockWebServiceMessageSender extends AbstractMockWebServiceMessageSender {
+class WsMockControlMockWebServiceMessageSender extends AbstractMockWebServiceMessageSender {
 
 	@Override
 	protected List<RequestProcessor> getRequestProcessors() {
