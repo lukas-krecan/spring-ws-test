@@ -20,6 +20,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -65,6 +66,7 @@ public class WsMockControlTest extends AbstractMessageTest{
 		
 		SimpleResourceLookup lookup1 = (SimpleResourceLookup)((XmlCompareRequestValidator)extractRequestProcessor(sender,0)).getControlResourceLookup();
 		assertEquals("control-message-test.xml", lookup1.getResultResource().getFilename());
+		assertTrue(((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).isIgnoreWhitespace());
 		
 		SimpleResourceLookup lookup2 = (SimpleResourceLookup)((DefaultResponseGenerator)extractRequestProcessor(sender,1)).getResourceLookup();
 		assertEquals("default-response.xml", lookup2.getResultResource().getFilename());
@@ -278,6 +280,13 @@ public class WsMockControlTest extends AbstractMessageTest{
 		SchemaRequestValidator validator = (SchemaRequestValidator) extractRequestProcessor(sender, 0);
 		assertArrayEquals(new Resource[]{new ClassPathResource(schema)}, validator.getSchemas());
 		assertNotNull(validator.getValidator());
+	}
+	@Test
+	public void testIgnoreWhitespace()
+	{
+		WsMockControl control = new WsMockControl().ignoreWhitespace(false).expectRequest("xml/control-message-test.xml");
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) control.createMock();
+		assertFalse(((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).isIgnoreWhitespace());
 	}
 
 }

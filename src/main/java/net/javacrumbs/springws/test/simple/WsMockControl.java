@@ -69,6 +69,8 @@ public class WsMockControl {
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 	
 	private ResourceLoader resourceLoader = new DefaultResourceLoader();
+	
+	private boolean ignoreWhitespace = true;
 
 	/**
 	 * Create mock {@link WebServiceMessageSender}. If behavior not defined,
@@ -135,6 +137,7 @@ public class WsMockControl {
 		ResourceLookup resourceLookup = createResourceLookup(resource);
 		validator.setControlResourceLookup(resourceLookup);
 		validator.setFailIfControlResourceNotFound(true);
+		validator.setIgnoreWhitespace(ignoreWhitespace);
 		addRequestProcessor(validator, "expectRequest(" + resource.getDescription() + ")");
 		return this;
 	}
@@ -361,6 +364,15 @@ public class WsMockControl {
 
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
+	}
+
+	public boolean isIgnoreWhitespace() {
+		return ignoreWhitespace;
+	}
+
+	public WsMockControl ignoreWhitespace(boolean ignoreWhitespace) {
+		this.ignoreWhitespace = ignoreWhitespace;
+		return this;
 	}
 
 

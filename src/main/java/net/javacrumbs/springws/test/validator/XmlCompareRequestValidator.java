@@ -21,6 +21,7 @@ import net.javacrumbs.springws.test.WsTestException;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.springframework.core.Ordered;
 import org.w3c.dom.Document;
 
@@ -36,6 +37,8 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 	static final int DEFAULT_ORDER = 10;
 	
 	private int order = DEFAULT_ORDER;
+	
+	private boolean ignoreWhitespace = true; 
 	
 	/**
 	 * Diff that ignores "${IGNORE}" placeholder
@@ -76,6 +79,10 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 
 
 	protected Diff createDiff(Document controlDocument, Document messageDocument) {
+		if (ignoreWhitespace != XMLUnit.getIgnoreWhitespace())
+		{
+			XMLUnit.setIgnoreWhitespace(ignoreWhitespace);
+		}
 		return new IgnoringDiff(controlDocument, messageDocument);
 	}
 
@@ -87,6 +94,16 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+
+	public boolean isIgnoreWhitespace() {
+		return ignoreWhitespace;
+	}
+
+
+	public void setIgnoreWhitespace(boolean ignoreWhitespace) {
+		this.ignoreWhitespace = ignoreWhitespace;
 	}
 
 }
