@@ -85,7 +85,7 @@ public class SchemaRequestValidator implements InitializingBean, RequestProcesso
 		throw new WsTestException("Request not valid. "+Arrays.toString(errors));
 	}
 
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() throws IOException {
         if (validator == null && !ObjectUtils.isEmpty(schemas)) {
             Assert.hasLength(schemaLanguage, "schemaLanguage is required");
             for (int i = 0; i < schemas.length; i++) {
@@ -165,7 +165,7 @@ public class SchemaRequestValidator implements InitializingBean, RequestProcesso
         this.validator = schemaCollection.createValidator();
     }
 
-	XmlValidator getValidator() {
+	public XmlValidator getValidator() {
 		return validator;
 	}
 

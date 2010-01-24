@@ -18,6 +18,7 @@ package net.javacrumbs.springws.test.simple;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,12 +37,14 @@ import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.ExpressionBasedResourceLookup;
+import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.xml.transform.StringResult;
 import org.xml.sax.SAXException;
@@ -261,6 +264,19 @@ public class WsMockControlTest extends AbstractMessageTest{
 	{
 		WsMockControl control = new WsMockControl().throwException(new WsTestException("Test error"));
 		control.verify();
+	}
+	
+	@Test
+	public void testValidateSchema()
+	{
+		String schema = "xml/schema.xsd";
+		WsMockControl control = new WsMockControl().validateSchema(schema);
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) control.createMock();
+		assertEquals(1, sender.getRequestProcessors().size());
+		
+		SchemaRequestValidator validator = (SchemaRequestValidator) extractRequestProcessor(sender, 0);
+		assertArrayEquals(new Resource[]{new ClassPathResource(schema)}, validator.getSchemas());
+		assertNotNull(validator.getValidator());
 	}
 
 }

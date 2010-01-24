@@ -33,10 +33,13 @@ import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
+import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XPathRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageSender;
@@ -64,17 +67,18 @@ public class WsMockControl {
 	private final List<LimitingRequestProcessor> requestProcessors = new ArrayList<LimitingRequestProcessor>();
 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
+	
+	private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 	/**
 	 * Create mock {@link WebServiceMessageSender}. If behavior not defined,
-	 * throws {@link IllegalArgumentException}.
+	 * throws {@link IllegalStateException}.
 	 * 
 	 * @return
 	 */
-	public WebServiceMessageSender createMock() {
+	public WebServiceMessageSender createMock() throws IllegalStateException {
 		if (requestProcessors.isEmpty()) {
-			throw new IllegalStateException(
-					"No request processor defined. Please call at least returnResponse() method.");
+			throw new IllegalStateException("No request processor defined. Please call at least returnResponse() method.");
 		}
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
 		messageSender.setRequestProcessors(requestProcessors);
@@ -125,6 +129,26 @@ public class WsMockControl {
 		addRequestProcessor(validator, "expectRequest(\"" + resourceName + "\")");
 		return this;
 	}
+	
+	public WsMockControl validateSchema(Resource... xsds) {
+		SchemaRequestValidator validator = new SchemaRequestValidator();
+		validator.setSchemas(xsds);
+		try {
+			validator.afterPropertiesSet();
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Can not create schema validator.",e); 
+		}
+		addRequestProcessor(validator);
+		return this;
+	}
+	
+	public WsMockControl validateSchema(String... xsdPaths) {
+		Resource[] resources = new Resource[xsdPaths.length];
+		for (int i = 0; i < xsdPaths.length; i++) {
+			resources[i] = resourceLoader.getResource(xsdPaths[i]);
+		}
+		return validateSchema(resources);
+	}
 
 	/**
 	 * Creates resource lookup to be used in request validators and response generators.
@@ -173,6 +197,8 @@ public class WsMockControl {
 		addRequestProcessor(validator, "assertThat(\"" + expression + "\")");
 		return this;
 	}
+	
+	
 
 	/**
 	 * Mock will return response taken from the resource.
@@ -309,5 +335,15 @@ public class WsMockControl {
 			processor.verify();
 		}
 	}
+
+	public ResourceLoader getResourceLoader() {
+		return resourceLoader;
+	}
+
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+	}
+
+
 
 }
