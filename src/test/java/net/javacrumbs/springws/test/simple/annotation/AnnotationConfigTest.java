@@ -1,14 +1,18 @@
-package net.javacrumbs.springws.test.simple;
+package net.javacrumbs.springws.test.simple.annotation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import net.javacrumbs.springws.test.AbstractMessageTest;
+import net.javacrumbs.springws.test.simple.WsMockControl;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +37,32 @@ public class AnnotationConfigTest extends AbstractMessageTest{
 	@Autowired
 	private WebServiceOperations template;
 	
+	@Before
+	public void setUp()
+	{
+		mockControl.validateSchema("xml/schema.xsd");
+	}
+	
+	
 	@Test
 	public void testConfiguration() throws WebServiceClientException, IOException, SAXException
 	{
-		String response = "xml/resolved-different-response.xml";
+		testResponse("xml/resolved-different-response.xml");
+	}
+
+	@Test
+	public void testOtherConfiguration() throws WebServiceClientException, IOException, SAXException
+	{
+		testResponse("mock-responses/test/default-response-payload.xml");
+	}
+	
+	@After
+	public void tearDown()
+	{
+		assertEquals(2, mockControl.getRequestProcessors().size());
+	}
+
+	private void testResponse(String response) throws IOException, SAXException {
 		mockControl.returnResponse(response);
 		
 		StringResult responseResult = new StringResult();
@@ -45,4 +71,6 @@ public class AnnotationConfigTest extends AbstractMessageTest{
 		Diff diff = XMLUnit.compareXML(new InputStreamReader(new ClassPathResource(response).getInputStream()), responseResult.toString());
 		assertTrue(diff.toString(), diff.similar());
 	}
+	
+	
 }
