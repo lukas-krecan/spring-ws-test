@@ -53,6 +53,7 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 		Element resourceConfig = DomUtils.getChildElementByTagName(element, "resource-config");
 		String pathPrefix = resourceConfig.getAttribute("pathPrefix");
 		String prependUri = resourceConfig.getAttribute("prependUri");
+		String ignoreWhitespace = resourceConfig.getAttribute("ignoreWhitespace");
 		BeanDefinitionBuilder templateProcessor = getTemplateProcessor(resourceConfig);
 		
 		bean.addPropertyValue("autowireRequestProcessors", element.getAttribute("autowireRequestProcessors"));
@@ -72,6 +73,7 @@ public class MockWsMessageSenderBeanDefinitionParser extends AbstractSingleBeanD
 
 		BeanDefinitionBuilder xmlCompareRequestValidator = BeanDefinitionBuilder.rootBeanDefinition(XmlCompareRequestValidator.class);
 		xmlCompareRequestValidator.addPropertyValue("controlResourceLookup", controlResourceLookup.getBeanDefinition());
+		xmlCompareRequestValidator.addPropertyValue("ignoreWhitespace", ignoreWhitespace);
 
 		addRequestProcessor(requestProcessors, xmlCompareRequestValidator);
 		

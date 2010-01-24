@@ -54,6 +54,7 @@ public class SimpleSchemaBasedTest {
 		assertEquals(3, requestProcessors.size());
 		
 		XmlCompareRequestValidator xmlCompareValidator = (XmlCompareRequestValidator) requestProcessors.get(0);
+		assertFalse(xmlCompareValidator.isIgnoreWhitespace());
 		PayloadRootBasedResourceLookup controlResourceLookup = (PayloadRootBasedResourceLookup) xmlCompareValidator.getControlResourceLookup();
 		assertEquals("request.xml",controlResourceLookup.getPathSuffix());
 		assertEquals("mock/", controlResourceLookup.getPathPrefix());
@@ -91,6 +92,7 @@ public class SimpleSchemaBasedTest {
 		assertEquals(2, requestProcessors.size());
 		
 		XmlCompareRequestValidator xmlCompareValidator = (XmlCompareRequestValidator) requestProcessors.get(0);
+		assertTrue(xmlCompareValidator.isIgnoreWhitespace());
 		PayloadRootBasedResourceLookup controlResourceLookup = (PayloadRootBasedResourceLookup) xmlCompareValidator.getControlResourceLookup();
 		assertEquals("request.xml",controlResourceLookup.getPathSuffix());
 		assertEquals("mock-xml/", controlResourceLookup.getPathPrefix());

@@ -9,7 +9,7 @@
 		<swst:namespaces>
 			<entry key="ns" value="http://www.springframework.org/spring-ws/samples/airline/schemas/messages"/>
 		</swst:namespaces>
-		<swst:resource-config pathPrefix="mock/" prependUri="true" templateProcessor="FreeMarker">
+		<swst:resource-config pathPrefix="mock/" prependUri="true" templateProcessor="FreeMarker" ignoreWhitespace="false">
 			<swst:discriminators>
 				<entry key="getFlightsRequest" value="//ns:from;//ns:to"/>
 			</swst:discriminators>		
