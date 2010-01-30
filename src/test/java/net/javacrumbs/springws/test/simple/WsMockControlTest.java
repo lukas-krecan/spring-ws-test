@@ -48,6 +48,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor;
 import org.springframework.xml.transform.StringResult;
 import org.xml.sax.SAXException;
 
@@ -287,6 +288,15 @@ public class WsMockControlTest extends AbstractMessageTest{
 		WsMockControl control = new WsMockControl().ignoreWhitespace(false).expectRequest("xml/control-message-test.xml");
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) control.createMock();
 		assertFalse(((XmlCompareRequestValidator)extractRequestProcessor(sender, 0)).isIgnoreWhitespace());
+	}
+	@Test
+	public void testAddInterceptor()
+	{
+		WsMockControl control = new WsMockControl().addInterceptor(new PayloadLoggingInterceptor()).throwException(new RuntimeException());
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) control.createMock();
+		assertEquals(1, sender.getInterceptors().size());
+		assertEquals(PayloadLoggingInterceptor.class, sender.getInterceptors().get(0).getClass());
+
 	}
 
 }

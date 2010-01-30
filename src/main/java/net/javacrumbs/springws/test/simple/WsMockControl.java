@@ -42,6 +42,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
+import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
 /**
@@ -72,6 +73,8 @@ public class WsMockControl {
 	
 	private boolean ignoreWhitespace = true;
 
+	private List<EndpointInterceptor> interceptors = new ArrayList<EndpointInterceptor>();
+
 	/**
 	 * Create mock {@link WebServiceMessageSender}. If behavior not defined,
 	 * throws {@link IllegalStateException}.
@@ -84,6 +87,7 @@ public class WsMockControl {
 		}
 		MockWebServiceMessageSender messageSender = new MockWebServiceMessageSender();
 		messageSender.setRequestProcessors(requestProcessors);
+		messageSender.setInterceptors(interceptors);
 		return messageSender;
 	}
 
@@ -372,6 +376,11 @@ public class WsMockControl {
 
 	public WsMockControl ignoreWhitespace(boolean ignoreWhitespace) {
 		this.ignoreWhitespace = ignoreWhitespace;
+		return this;
+	}
+
+	public WsMockControl addInterceptor(EndpointInterceptor interceptor) {
+		interceptors .add(interceptor);
 		return this;
 	}
 
