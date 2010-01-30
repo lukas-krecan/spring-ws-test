@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
@@ -33,10 +33,10 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
-import org.w3c.dom.Document;
 
 /**
  * Looks-up resource using {@link ResourceLookup} and generates {@link WebServiceMessage} based on the resource. 
+ * If the resource does not contain SOAP envelope, an envelope is created. You can influence this behaviour by setting {@link #alwaysCreateEnvelope} and {@link #neverCreateEnvelope}.
  * @author Lukas Krecan
  *
  */
@@ -51,6 +51,10 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 	private int order = DEFAULT_ORDER;
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
+	private boolean alwaysCreateEnvelope = false; 
+
+	private boolean neverCreateEnvelope = false; 
 
 	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
@@ -58,21 +62,31 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 			logger.debug("Resource not found, returning null.");
 			return null;
 		} else {
-			Document document = getXmlUtil().loadDocument(resultResource);
-			if (getXmlUtil().isSoap(document))
+			if (shouldCreateSoapEnvelope(resultResource))
+			{
+				WebServiceMessage message = messageFactory.createWebServiceMessage();
+				getXmlUtil().transform(new StreamSource(resultResource.getInputStream()), message.getPayloadResult());
+				postprocessMessage(message, uri, messageFactory, request);
+				return message;	
+				
+			}
+			else
 			{
 				WebServiceMessage message = messageFactory.createWebServiceMessage(createInputStream(resultResource));
 				postprocessMessage(message, uri, messageFactory, request);
 				return message;
 			}
-			else
-			{
-				WebServiceMessage message = messageFactory.createWebServiceMessage();
-				getXmlUtil().transform(new DOMSource(document), message.getPayloadResult());
-				postprocessMessage(message, uri, messageFactory, request);
-				return message;
-			}
 		}
+	}
+
+	/**
+	 * Returns true if the soap envelope should be created.
+	 * @param resultResource
+	 * @return
+	 * @throws IOException 
+	 */
+	protected boolean shouldCreateSoapEnvelope(Resource resultResource) throws IOException {
+		return alwaysCreateEnvelope || (!neverCreateEnvelope && !getXmlUtil().isSoap(xmlUtil.loadDocument(resultResource)));
 	}
 
 	/**
@@ -124,5 +138,21 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 
 	public void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
+	}
+
+	public boolean isAlwaysCreateEnvelope() {
+		return alwaysCreateEnvelope;
+	}
+
+	public void setAlwaysCreateEnvelope(boolean alwaysCreateEnvelope) {
+		this.alwaysCreateEnvelope = alwaysCreateEnvelope;
+	}
+
+	public boolean isNeverCreateEnvelope() {
+		return neverCreateEnvelope;
+	}
+
+	public void setNeverCreateEnvelope(boolean neverCreateEnvelope) {
+		this.neverCreateEnvelope = neverCreateEnvelope;
 	}
 }

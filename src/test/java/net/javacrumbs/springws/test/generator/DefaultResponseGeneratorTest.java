@@ -19,6 +19,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -100,6 +101,33 @@ public class DefaultResponseGeneratorTest extends AbstractMessageTest{
 		
 		
 		verify(resourceLookup);
+	}
+	
+	@Test
+	public void testAlwaysCreateEnvelope() throws IOException
+	{
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		generator.setAlwaysCreateEnvelope(true);
+		assertTrue(generator.shouldCreateSoapEnvelope(new ClassPathResource("mock-responses/test/default-response.xml")));
+	}
+	@Test
+	public void testNeverCreateEnvelope() throws IOException
+	{
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		generator.setNeverCreateEnvelope(true);
+		assertFalse(generator.shouldCreateSoapEnvelope(new ClassPathResource("mock-responses/test/default-response-payload.xml")));
+	}
+	@Test
+	public void testDetectCreateEnvelope1() throws IOException
+	{
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		assertTrue(generator.shouldCreateSoapEnvelope(new ClassPathResource("mock-responses/test/default-response-payload.xml")));
+	}
+	@Test
+	public void testDetectCreateEnvelope2() throws IOException
+	{
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		assertFalse(generator.shouldCreateSoapEnvelope(new ClassPathResource("mock-responses/test/default-response.xml")));
 	}
 	
 }

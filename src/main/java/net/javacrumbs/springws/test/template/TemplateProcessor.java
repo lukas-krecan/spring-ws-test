@@ -27,6 +27,11 @@ import org.springframework.ws.WebServiceMessage;
  *
  */
 public interface TemplateProcessor {
+	public static final TemplateProcessor DUMMY_TEMPLATE_PROCESSOR = new TemplateProcessor() {
+		public Resource processTemplate(Resource resource, URI uri, WebServiceMessage message) throws IOException {
+			return resource;
+		}
+	};
 	/**
 	 * Processes the resource as template. Returns resource with processed data. If the processor is not applicable 
 	 * returns original resource or its copy.

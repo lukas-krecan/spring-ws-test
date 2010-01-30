@@ -97,27 +97,44 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		return true;
 	}
 
+	/**
+	 * Processes response using interceptors.
+	 * @param messageContext
+	 * @throws IOException
+	 */
 	protected void handleResponse(MessageContext messageContext) throws IOException {
+		if (!interceptors.isEmpty())
+		{
+			boolean hasFault = hasFault(messageContext);
+			for (EndpointInterceptor interceptor:interceptors)
+			{
+				try {
+					if (!hasFault)
+					{
+						if (!interceptor.handleResponse(messageContext, null)) return;
+					}
+					else
+					{
+						if (!interceptor.handleFault(messageContext, null)) return;
+					}
+				} catch (Exception e) {
+					throw new IOException("Unexpected exception",e);
+				}
+			}
+		}
+	}
+	/**
+	 * Returns true if the message has fault.
+	 * @param messageContext
+	 * @return
+	 */
+	protected boolean hasFault(MessageContext messageContext) {
 		boolean hasFault = false;
         WebServiceMessage response = messageContext.getResponse();
         if (response instanceof FaultAwareWebServiceMessage) {
             hasFault = ((FaultAwareWebServiceMessage) response).hasFault();
         }
-		for (EndpointInterceptor interceptor:interceptors)
-		{
-			try {
-				if (!hasFault)
-				{
-					if (!interceptor.handleResponse(messageContext, null)) return;
-				}
-				else
-				{
-					if (!interceptor.handleFault(messageContext, null)) return;
-				}
-			} catch (Exception e) {
-				throw new IOException("Unexpected exception",e);
-			}
-		}
+		return hasFault;
 	}
 
 	/**
