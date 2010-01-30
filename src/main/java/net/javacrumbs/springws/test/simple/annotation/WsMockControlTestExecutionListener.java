@@ -41,12 +41,27 @@ public class WsMockControlTestExecutionListener extends AbstractTestExecutionLis
 		
 		if (!beanFactory.containsBean(MOCK_CONTROL_BEAN_NAME))
 		{
-			beanFactory.registerSingleton(MOCK_CONTROL_BEAN_NAME, new ThreadLocalWsMockControlFactoryBean());
-			WsMockControlMockWebServiceMessageSender messageSender = new WsMockControlMockWebServiceMessageSender();
-			beanFactory.registerSingleton(MESSAGE_SENDER_BEAN_NAME, messageSender);
+			beanFactory.registerSingleton(MOCK_CONTROL_BEAN_NAME, createWsMockControlFactoryBean());
+			beanFactory.registerSingleton(MESSAGE_SENDER_BEAN_NAME, createMessageSender());
 			new MockMessageSenderInjector().postProcessBeanFactory(beanFactory);
 		}
 
+	}
+
+	/**
+	 * Creates message sender that will be used for mocking "real" message senders.
+	 * @return
+	 */
+	protected WebServiceMessageSender createMessageSender() {
+		return new WsMockControlMockWebServiceMessageSender();
+	}
+
+	/**
+	 * Creates factory bean that constructs WsMockControls. Can be instance of FactoryBean.
+	 * @return
+	 */
+	protected Object createWsMockControlFactoryBean() {
+		return new ThreadLocalWsMockControlFactoryBean();
 	}
 	
 	@Override
