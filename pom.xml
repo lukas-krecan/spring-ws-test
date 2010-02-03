@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.javacrumbs</groupId>
 	<artifactId>spring-ws-test</artifactId>
@@ -7,20 +8,33 @@
 	<name>spring-ws-test</name>
 	<url>http://javacrumbs.net/spring-ws-test/</url>
 	<description>
-		Spring WS Test is a tool to simplify Spring WS client functional testing.	
+		Spring WS Test is a tool to simplify Spring WS client
+		functional testing.	
 	</description>
 
+	<developers>
+		<developer>
+			<id>lukas</id>
+			<name>Lukas Krecan</name>
+			<url>http://blog.krecan.net</url>
+		</developer>
+
+	</developers>
+
 	<scm>
-		<connection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</connection>
-		<developerConnection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</developerConnection>
-		<url>https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk</url>
+		<connection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
+		</connection>
+		<developerConnection>scm:svn:https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
+		</developerConnection>
+		<url>https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test/trunk
+		</url>
 	</scm>
-	
+
 	<issueManagement>
-    	<system>JIRA</system>
-    	<url>http://mvnindex.org/jira/browse/SWST</url>
-  	</issueManagement>
-	
+		<system>JIRA</system>
+		<url>http://mvnindex.org/jira/browse/SWST</url>
+	</issueManagement>
+
 
 
 	<distributionManagement>
@@ -31,19 +45,23 @@
 			</url>
 		</site>
 		<repository>
-			<id>repository</id>
-			<name>Mvnindex file system</name>
-			<url>
-				scp://mvnindex.org:/var/www/vhosts/javacrumbs.net/httpdocs/spring-ws-test-files/
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/
 			</url>
 		</repository>
 
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<properties>
 		<currentVersion>0.10</currentVersion>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
@@ -114,31 +132,32 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>com.google.code.maven-license-plugin-->
-<!--				</groupId>-->
-<!--				<artifactId>maven-license-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<header>src/etc/header.txt</header>-->
-<!--				    <excludes>-->
-<!--	                    <exclude>src/test/resources/**</exclude>-->
-<!--	                    <exclude>LICENSE.txt</exclude>-->
-<!--	                </excludes>-->
-<!--				</configuration>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<goals>-->
-<!--							<goal>check</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
+			<!--			<plugin>-->
+			<!--				<groupId>com.google.code.maven-license-plugin-->
+			<!--				</groupId>-->
+			<!--				<artifactId>maven-license-plugin</artifactId>-->
+			<!--				<configuration>-->
+			<!--					<header>src/etc/header.txt</header>-->
+			<!--				    <excludes>-->
+			<!--	                    <exclude>src/test/resources/**</exclude>-->
+			<!--	                    <exclude>LICENSE.txt</exclude>-->
+			<!--	                </excludes>-->
+			<!--				</configuration>-->
+			<!--				<executions>-->
+			<!--					<execution>-->
+			<!--						<goals>-->
+			<!--							<goal>check</goal>-->
+			<!--						</goals>-->
+			<!--					</execution>-->
+			<!--				</executions>-->
+			<!--			</plugin>-->
 			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>2.0.1</version>
 				<configuration>
-		          <templateFile>${basedir}/src/site/template/default-site.vm</templateFile>
-		        </configuration>
+					<templateFile>${basedir}/src/site/template/default-site.vm
+					</templateFile>
+				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -182,17 +201,52 @@
 			<url>LICENSE.txt</url>
 		</license>
 	</licenses>
-<!--	<pluginRepositories>-->
-<!--		<pluginRepository>-->
-<!--		    <id>mc-release</id>-->
-<!--		    <name>Local Maven repository of releases</name>-->
-<!--		    <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>-->
-<!--		    <snapshots>-->
-<!--		        <enabled>false</enabled>-->
-<!--		    </snapshots>-->
-<!--		    <releases>-->
-<!--		        <enabled>true</enabled>-->
-<!--		    </releases>-->
-<!--		</pluginRepository>-->
-<!--	</pluginRepositories>-->
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<configuration>
+							<keyname>572516F4</keyname>
+						</configuration>
+						<version>1.0-alpha-4</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<!--	<pluginRepositories>-->
+	<!--		<pluginRepository>-->
+	<!--		    <id>mc-release</id>-->
+	<!--		    <name>Local Maven repository of releases</name>-->
+	<!--
+		<url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
+	-->
+	<!--		    <snapshots>-->
+	<!--		        <enabled>false</enabled>-->
+	<!--		    </snapshots>-->
+	<!--		    <releases>-->
+	<!--		        <enabled>true</enabled>-->
+	<!--		    </releases>-->
+	<!--		</pluginRepository>-->
+	<!--	</pluginRepositories>-->
 </project>
