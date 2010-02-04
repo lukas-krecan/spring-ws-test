@@ -33,51 +33,109 @@
 ~~
 Unit test support
 
-  In case you want to test only your code and not Spring configuration, it is possible to use our unit test support. Since one example tells more then 1000 words, here you are
+  There are two types of unit test support. The first one looks like this
   
 ---
-public class AirlineWsClientTest {
 
+@RunWith(SpringJUnit4ClassRunner.class)
+//load your standard config
+@ContextConfiguration(locations={"classpath:spring/beans.xml"})
+//Add the listener
+@TestExecutionListeners({WsMockControlTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
+public class AirlineWsClient4Test {
+	private static final long TICKET_ID = 123456L;
+	private static final Calendar DEPARTURE_TIME = Calendar.getInstance();
+	private static final String FLIGHT_NUMBER = "OK1234";
+	
+	@Autowired
+	private AirlineWsClient client;
+	
+	//inject mock control
+	@Autowired
+	private WsMockControl mockControl;
+	
+	private Passenger[] createPassengers() {
+		return new Passenger[]{new Passenger("Joe","Smith"), new Passenger("John","Doe")};
+	}
+	
+	@Test
+	public void testCall()
+	{
+		Passenger[] passengers = createPassengers();
+		
+	
+		//teach mock what to do 
+		mockControl.validateSchema("xsd/messages.xsd", "xsd/types.xsd")
+					.expectRequest("mock-xml/www.csa.cz/BookFlightRequest/OK1234-request.xml")
+					.returnResponse("mock-xml/www.csa.cz/BookFlightRequest/OK1234-response.xml")
+					.createMock();
+
+		long ticketId = client.bookFlight(FLIGHT_NUMBER, passengers, DEPARTURE_TIME);
+		assertEquals(TICKET_ID, ticketId);
+		
+		//verify all the calls
+		mockControl.verify();
+	}
+	
+}
+---
+  Here you load your standard spring configuration. By specifying WsMockControlTestExecutionListener TestExecutionListener you ensure that Spring WS test hooks into your web service templates and exposes
+  WsMockControl. Then you can program the mock and run the test.
+
+* Direct test
+
+  In case you want to test only your code and not Spring configuration, it is possible to use Spring free configuration.
+  
+---
+public class AirlineWsClient3Test {
+	private static final long TICKET_ID = 123456L;
+	private static final Calendar DEPARTURE_TIME = Calendar.getInstance();
+	private static final String FLIGHT_NUMBER = "OK1234";
+	
 	private AirlineWsClient client;
 	private WebServiceTemplate webServiceTemplate;
 	
+
+	private Passenger[] createPassengers() {
+		return new Passenger[]{new Passenger("Joe","Smith"), new Passenger("John","Doe")};
+	}
 	
 	@Test
-	public void testGetFligts()
+	public void testCall()
 	{
+		Passenger[] passengers = createPassengers();
 		
 		//create control
 		WsMockControl mockControl = new WsMockControl();
 		//teach mock what to do and create it
-		WebServiceMessageSender mockMessageSender = mockControl.expectRequest("PRG-DUB-request.xml").returnResponse("PRG-DUB-response.xml").createMock();
+		WebServiceMessageSender mockMessageSender = mockControl
+					.validateSchema("xsd/messages.xsd", "xsd/types.xsd")
+					.expectRequest("mock-xml/www.csa.cz/BookFlightRequest/OK1234-request.xml")
+					.returnResponse("mock-xml/www.csa.cz/BookFlightRequest/OK1234-response.xml")
+					.createMock();
 		webServiceTemplate.setMessageSender(mockMessageSender);
 		
-		//do the test
-		List<Flight> flights = client.getFlights("PRG","DUB");
-		assertNotNull(flights);
-		assertEquals(1, flights.size());
-		assertEquals("PRG",flights.get(0).getFrom().getCode());
-		assertEquals("DUB",flights.get(0).getTo().getCode());
+		long ticketId = client.bookFlight(FLIGHT_NUMBER, passengers, DEPARTURE_TIME);
+		assertEquals(TICKET_ID, ticketId);
 		
-		//verify that everything was called at least once
 		mockControl.verify();
 	}
-
+	
 	@Before
 	public void setUp() throws Exception
 	{
-		//Configure WebServiceTemplate
-		XMLUnit.setIgnoreWhitespace(true);
 		client = new AirlineWsClient();
+	
+		
 		webServiceTemplate = new WebServiceTemplate();
-		webServiceTemplate.setDefaultUri("http://localhost");
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setContextPath("net.javacrumbs.airline.aggregator.jaxb");
 		marshaller.afterPropertiesSet();
 		webServiceTemplate.setMarshaller(marshaller);
 		webServiceTemplate.setUnmarshaller(marshaller);
-		client.setWebServiceTemplate(webServiceTemplate);
+		client.setTemplate(webServiceTemplate);
 	}
+	
 }
 ---
 
