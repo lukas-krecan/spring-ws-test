@@ -296,7 +296,15 @@ public class WsMockControlTest extends AbstractMessageTest{
 		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) control.createMock();
 		assertEquals(1, sender.getInterceptors().size());
 		assertEquals(PayloadLoggingInterceptor.class, sender.getInterceptors().get(0).getClass());
+	}
 
+	@Test
+	public void testSetAttributeInContext()
+	{
+		String value = "value" + System.currentTimeMillis();
+		String name = "Test attribute";
+		new WsMockControl().setTestContextAttribute(name, value).throwException(new RuntimeException());
+		assertEquals(value, WsTestContextHolder.getTestContext().getAttribute(name));
 	}
 
 }

@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.springws.test.simple.annotation;
 
+import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.util.MockMessageSenderInjector;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -67,5 +68,6 @@ public class WsMockControlTestExecutionListener extends AbstractTestExecutionLis
 	@Override
 	public void afterTestMethod(TestContext testContext) throws Exception {
 		ThreadLocalWsMockControlFactoryBean.clean();
+		WsTestContextHolder.getTestContext().clear();
 	}
 }

@@ -25,6 +25,8 @@ import java.util.Map;
 import net.javacrumbs.springws.test.MockWebServiceMessageSender;
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.context.WsTestContext;
+import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
@@ -381,6 +383,17 @@ public class WsMockControl {
 
 	public WsMockControl addInterceptor(EndpointInterceptor interceptor) {
 		interceptors .add(interceptor);
+		return this;
+	}
+
+	/**
+	 * Simplifies setting of context attribute. See {@link WsTestContext} for more details.
+	 * @param name
+	 * @param value
+	 * @return
+	 */
+	public WsMockControl setTestContextAttribute(String name, String value) {
+		WsTestContextHolder.getTestContext().setAttribute(name, value);
 		return this;
 	}
 
