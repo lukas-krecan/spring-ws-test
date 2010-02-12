@@ -31,17 +31,16 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
 ~~
-Reference
 
-* Architecture
+Architecture
 
-** MockWebServiceMessageSender
+* MockWebServiceMessageSender
 
    MockWebServiceMessageSender is the entry-point to Spring WS Test. If you use this sender instead of standard 
    {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}WebServiceMessageSender}}
    all requests will be processed by the library. 
 
-** RequestProcessor
+* RequestProcessor
 
    Request processor is a basic building block of the library. There are two basic types of ReqestProcessors - request validators and response generators. 
    This division is logical only. Both groups implement the same interface. When a request processor is called with a request, there are three 
@@ -54,13 +53,13 @@ Reference
    [[1]] an exception - if an exception is thrown, processing is terminated and the same exception is re-thrown from the message sender. Validators throw 
                         WsTestException if the validation does not succeed. 
 
-* Configuration
+Configuration
  
    Some parts of the library are complex. The complexity is not arbitrary, it's caused by the number of configuration settings. To make your life easier, most common configuration options
    are encapsulated in a custom tag library. For majority of scenarios provided custom tag library should suffice. 
    The rest can use standard configuration which provides more flexibility.
    
-** Schema based configuration
+* Schema based configuration
 
 ---
 <?xml version="1.0" encoding="UTF-8"?>
@@ -102,11 +101,11 @@ Reference
    
    * schemas element contains whitespace separated list of schemas, that are used for request validation. This element is optional.
   
-* Basic components
+Basic components
 
   In this part list of basic components and their configuration options will be described.
   
-** ExpressionResolver
+* ExpressionResolver
 
    Resolves expressions. It's used in various parts of the library. Default implementation is XPathExpressionResolver. In order to use
    XPathExpression resolver, it's necessary to configure namespace prefixes.
@@ -122,7 +121,7 @@ Reference
 </bean>
 ---
   
-** ResourceLookup
+* ResourceLookup
    
    Resource lookup looks up a resource based on the request, uri and context attributes. It has two basic implementation.
    
@@ -136,7 +135,7 @@ Reference
    Both implementations also use a TemplateProcessor which processes a template. By default XsltTemplateProcessor is used, so 
    a XSLT template can be used in all resources.  
    
-** DefaultResponseGenerator
+* DefaultResponseGenerator
 
    Generates mock response based on provided resource lookup. If the resource is not found, returns null. It's possible
    to include SOAP elements to the response but it's also possible to specify only payload. In this case SOAP envelope will be 
@@ -158,7 +157,7 @@ Reference
 </bean>	
 ---
    
-** XmlCompareRequestValidator
+* XmlCompareRequestValidator
 
   It's similar to the default request generator, the difference is that instead of generating responses it validates the request. You can use XSLT templates here as well. 
   You can also specify special placeholder <<<${IGNORE}>>> for values that should be ignored. It is also possible to define only payload in the
@@ -178,7 +177,7 @@ Reference
 </bean>		
 ---
 
-** XPathRequestValidator
+* XPathRequestValidator
   
   It is also possible to validate request using XPath. For example you can use following configuration.
   
@@ -195,13 +194,13 @@ Reference
 
    Validator configured in this way will throw an exception if service class is not "economy" or "business".
    
-** WebServiceTransportExceptionGenerator
+* WebServiceTransportExceptionGenerator
 
    Similar to XPathRequestValidator is WebServiceTransportExceptionGenerator. The only difference is the exception thrown. 
    <<<WebServiceTransportException>>> is throw so this class can be used to simulate connection problems.    
 
 
-* Test context
+Test context
 
   Test context is useful, when you need to use some specific configuration. For example you want to set expected departure time and use it in the response.
  
@@ -222,7 +221,7 @@ WsTestContextHolder.getTestContext().setAttribute("departureTime", "2009-07-14")
   It's a good idea to clear the test context at the tearDown() method.
    
 
-* XPath evaluation
+XPath evaluation
 
   In this part we will describe possibilities of the XPath evaluation.
 
@@ -268,7 +267,7 @@ WsTestContextHolder.getTestContext().setAttribute("testName", "test136");
 |concat($context.testName,'-response.xml')                                                         | test136-response.xml                             |
 *--------------------------------------------------------------------------------------------------+--------------------------------------------------+
       
-* Test context
+Test context
   
   Test context can be used for more fine grained test configuration.
   
@@ -310,12 +309,12 @@ concat($context.testName,'-response.xml')
 	</xsl:template>
 </xsl:stylesheet>
 --- 
-* Template processors
+Template processors
   
   Sometimes it useful to specify both requests and responses using templates. This way it's possible to use one file for 
   multiple tests. By default XSLT template processor is used. 
 
-** XSLT template
+* XSLT template
 
   XSLT template uses the request as input. It's also possible to use context variables. A template can look like the following example. Please note how context variable 
   is used for the departure time and value from the request for service class.
@@ -351,7 +350,7 @@ concat($context.testName,'-response.xml')
 </xsl:stylesheet>
 ---
 
-** FreeMarker template
+* FreeMarker template
 
   It's also possible to use a FreeMarker template. In this case you have to set "templateProcessor" attribute of "resource-config" element to "FreeMarker". 
   Alternatively, it's possible to set templateProcessor property on resource lookup bean, if you are not using simplified configuration. A FreeMarker template could
@@ -384,7 +383,7 @@ concat($context.testName,'-response.xml')
 </GetFlightsResponse>
 ---
 
-* Default order when autowiring is used
+Default order when autowiring is used
 
   When <<<RequestProcessor>>> autowiring is used, they are by default invoked in the following order.
   
@@ -402,7 +401,7 @@ concat($context.testName,'-response.xml')
 |DefaultResponseGenerator                   |50     |
 *-------------------------------------------+-------:
 
-* Logging
+Logging
   
    Spring WS Test log some information using commons-logging. For example, if you need to troubleshoot your test and you are using log4j, you
    can add following line into your <<<log4j.properties>>>

@@ -76,15 +76,10 @@ public class LimitingRequestProcessorWrapper implements RequestProcessor, Limiti
 	public void verify() throws WsTestException{
 		if (numberOfProcessedRequests<minNumberOfProcessedRequests)
 		{
-			throw new WsTestException(generateErrorMessage());
+			throw new WsTestException(requestProcessorDescription + ": has not been called enough times, expected at least "+minNumberOfProcessedRequests+" calls, has been "+numberOfProcessedRequests+".");
 		}
 	}
 
-
-
-	private String generateErrorMessage() {
-		return requestProcessorDescription + ": Unexpected call, expected from "+minNumberOfProcessedRequests+" to "+maxNumberOfProcessedRequests+" calls, was "+numberOfProcessedRequests+".";
-	}
 
 
 	public RequestProcessor getWrappedRequestProcessor() {

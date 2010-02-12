@@ -48,7 +48,7 @@ public class LimitingRequestProcessorWrapperTest extends AbstractValidatorTest{
 			wrapper.verify();
 			fail("WsTestException expected");
 		} catch (WsTestException e) {
-			assertEquals("Test processor: Unexpected call, expected from 1 to 1 calls, was 0.",e.getMessage());
+			assertEquals("Test processor: has not been called enough times, expected at least 1 calls, has been 0.",e.getMessage());
 		}
 		
 		//first call
@@ -87,7 +87,7 @@ public class LimitingRequestProcessorWrapperTest extends AbstractValidatorTest{
 			wrapper.verify();
 			fail("WsTestException expected");
 		} catch (WsTestException e) {
-			assertEquals("Test processor2: Unexpected call, expected from 2 to 2 calls, was 1.",e.getMessage());
+			assertEquals("Test processor2: has not been called enough times, expected at least 2 calls, has been 1.",e.getMessage());
 		}
 		
 		//second call
