@@ -41,7 +41,7 @@ Maven dependency
 <dependency>
 	<groupId>net.javacrumbs</groupId>
 	<artifactId>spring-ws-test</artifactId>
-	<version>0.10</version>
+	<version>${currentVersion}</version>
 </dependency>
 
 ---

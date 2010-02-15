@@ -14,7 +14,7 @@
 ~~ limitations under the License.
 ~~
    ------
-   Quick start
+   Functional tests
    ------
 ~~
 ~~ Copyright 2006 the original author or authors.
@@ -31,11 +31,13 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
 ~~
-Quick start
+Functional tests
 
-* Sample request
-
-  In this tutorial we will the use following request as an example.
+  In this tutorial we will cover support for functional tests. By a functional test we mean a test, that is not executed by
+  a Java code but by hand, by a tool like Selenium or by some other tool. In such cases, it's not possible to use our 
+  {{{unit-test-support.html}unit test}} support. We need something more similar to a mock server.
+   
+   So let's say that we have our code finished and it generates the following request.  
   
 ---
 <?xml version="1.0" encoding="UTF-8"?>
@@ -53,6 +55,8 @@ Quick start
 	</SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ---
+
+   We need to configure the application so the request is validated and a mock response is returned.
 
 * Mock response structure
   
@@ -109,48 +113,9 @@ Quick start
     
 * Test
 
-    When you have the configuration and mock response, you can start writing the test. Just load you WS client Spring configuration together with "dummy-message-sender.xml"
-    and write your test. For example:
-    
----
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:spring/beans.xml","classpath:spring/dummy-message-sender.xml"})
-public class AirlineAggregatorTest {
+    When you have the configuration and mock response, you can start writing the test. 
+    The only thing you need to do is to load "dummy-message-sender.xml" together with the rest of your Spring configuration files.
 
-	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-	@Autowired
-	private AirlineAggregator aggregator;
-	
-	public AirlineAggregatorTest()
-	{
-		XMLUnit.setIgnoreWhitespace(true);
-	}
-	
-	@After
-	public void tearDown()
-	{
-		WsTestContextHolder.getTestContext().clear();
-	}
-	
-	@Test
-	public void testGetFligts()
-	{
-		Flight[] flights = aggregator.getFlights("PRG", "DUB", Calendar.getInstance(), ServiceClass.ECONOMY);
-		assertNotNull(flights);
-		assertEquals(2, flights.length);
-		
-		assertEquals("PRG", flights[0].getFrom().getCode());
-		assertEquals("EI647", flights[0].getNumber());
-
-		assertEquals("PRG", flights[1].getFrom().getCode());
-		assertEquals("OK0650", flights[1].getNumber());
-		
-	}
-}
----    
-
-  As you can see, nothing special here.
-  
 * Validation
   
   If you want to validate your request you can either define schemas or it is also possible to compare request with predefined templates.

@@ -67,8 +67,7 @@ public class AirlineWsClient4Test {
 		//teach mock what to do 
 		mockControl.validateSchema("xsd/messages.xsd", "xsd/types.xsd")
 					.expectRequest("mock-xml/www.csa.cz/BookFlightRequest/OK1234-request.xml")
-					.returnResponse("mock-xml/www.csa.cz/BookFlightRequest/OK1234-response.xml")
-					.createMock();
+					.returnResponse("mock-xml/www.csa.cz/BookFlightRequest/OK1234-response.xml");
 
 		long ticketId = client.bookFlight(FLIGHT_NUMBER, passengers, DEPARTURE_TIME);
 		assertEquals(TICKET_ID, ticketId);
