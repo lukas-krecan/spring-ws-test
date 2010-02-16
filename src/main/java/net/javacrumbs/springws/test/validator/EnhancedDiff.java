@@ -56,6 +56,10 @@ final class EnhancedDiff extends Diff {
 		{
 			String prefix = value.substring(0, prefixLength);
 			String nsUri = node.lookupNamespaceURI(prefix);
+			if (nsUri==null)//prefix not resolved, let's use prefix instead
+			{
+				nsUri = prefix;
+			}
 			return nsUri+value.substring(prefixLength);
 		}
 		else

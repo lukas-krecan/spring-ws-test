@@ -43,40 +43,50 @@ public class XmlCompareRequestValidatorTest extends AbstractValidatorTest {
 		assertTrue(validator.isSoap(controlDocument));
 		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(getValidMessage()));
 	}
+	
+	public void compareDocuments(String control, String test) throws IOException
+	{
+		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource(control));
+		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage(test)));
+	}
 	@Test
 	public void testValidTest2() throws IOException
 	{
-		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/control-message-test2.xml"));
-		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/valid-message-test2.xml")));
+		compareDocuments("xml/control-message-test2.xml","xml/valid-message-test2.xml");
 	}
 	@Test
 	public void testValidTestDifferentNsPrefixes() throws IOException
 	{
-		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/namespace-message1.xml"));
-		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/namespace-message2.xml")));
+		compareDocuments("xml/namespace-message1.xml","xml/namespace-message2.xml");
 	}
 	@Test
 	public void testValidTestDifferentNsPrefixesNoPrefix() throws IOException
 	{
-		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/namespace-message1.xml"));
-		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/namespace-message4-no-prefix.xml")));
+		compareDocuments("xml/namespace-message1.xml","xml/namespace-message4-no-prefix.xml");
+	}
+	@Test(expected=WsTestException.class)
+	public void testValidTestDifferentNsPrefixesNoPrefixNoDefaultNamespace() throws IOException
+	{
+		compareDocuments("xml/namespace-message1.xml","xml/namespace-message6-no-prefix-no-default-namespace.xml");
 	}
 	@Test(expected=WsTestException.class)
 	public void testValidTestDifferentNsPrefixesNotResolved() throws IOException
 	{
-		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/namespace-message1.xml"));
-		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/namespace-message3-ns-not-resolved.xml")));
+		compareDocuments("xml/namespace-message1.xml","xml/namespace-message3-ns-not-resolved.xml");
+	}
+	@Test(expected=WsTestException.class)
+	public void testValidTestDifferentNsPrefixesNotResolvedinBothFiles() throws IOException
+	{
+		compareDocuments("xml/namespace-message5-ns-not-resolved.xml","xml/namespace-message3-ns-not-resolved.xml");
 	}
 	@Test
 	public void testValidDifferent() throws IOException
 	{
-		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/control-message-test.xml"));
-		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/valid-message2.xml")));
+		compareDocuments("xml/control-message-test.xml","xml/valid-message2.xml");
 	}
 	@Test(expected=WsTestException.class)
 	public void testInvalid() throws Exception
 	{
-		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/control-message-test.xml"));
-		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(getInvalidMessage()));
+		compareDocuments("xml/control-message-test.xml","xml/invalid-message.xml");
 	}
 }
