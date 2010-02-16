@@ -11,6 +11,7 @@ import org.w3c.dom.Node;
  * @author Lukas Krecan
  *
  */
+//TODO try to use difference listener
 final class EnhancedDiff extends Diff {
 	EnhancedDiff(Document controlDoc, Document testDoc) {
 		super(controlDoc, testDoc);
@@ -20,7 +21,7 @@ final class EnhancedDiff extends Diff {
 		if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue())) {
 			return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
 		} 
-		else if (isNsPrefixedAttribute(difference)) 
+		else if (isDifferenceOnlyInAttributeValuePrefix(difference)) 
 		{
 			return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
 		}
@@ -31,7 +32,7 @@ final class EnhancedDiff extends Diff {
 
 	}
 
-	boolean isNsPrefixedAttribute(Difference difference) {
+	boolean isDifferenceOnlyInAttributeValuePrefix(Difference difference) {
 		Node testNode = difference.getTestNodeDetail().getNode();
 		String testNodeValue = testNode.getNodeValue();
 		
@@ -41,7 +42,6 @@ final class EnhancedDiff extends Diff {
 		if (isAttr(testNode) && isAttr(controlNode) && (hasNsPrefix(testNodeValue) || hasNsPrefix(controlNodeValue)))
 		{
 			String testValueNsResolved = resolveNamespaces(testNode, testNodeValue);
-			
 			String controlValueNsResolved = resolveNamespaces(controlNode, controlNodeValue);
 			
 			return testValueNsResolved.equals(controlValueNsResolved);
@@ -50,6 +50,12 @@ final class EnhancedDiff extends Diff {
 		return false;
 	}
 
+	/**
+	 * Replaces namespace prefixes with their URLs.
+	 * @param node
+	 * @param value
+	 * @return
+	 */
 	private String resolveNamespaces(Node node, String value) {
 		int prefixLength = value.indexOf(':');
 		if (prefixLength>=0)
