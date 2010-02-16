@@ -20,7 +20,6 @@ package net.javacrumbs.springws.test.validator;
 import net.javacrumbs.springws.test.WsTestException;
 
 import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.springframework.core.Ordered;
 import org.w3c.dom.Document;
@@ -40,25 +39,6 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 	
 	private boolean ignoreWhitespace = true; 
 	
-	/**
-	 * Diff that ignores "${IGNORE}" placeholder
-	 * @author Lukas Krecan
-	 *
-	 */
-	private static final class IgnoringDiff extends Diff {
-		private IgnoringDiff(Document controlDoc, Document testDoc) {
-			super(controlDoc, testDoc);
-		}
-
-		public int differenceFound(Difference difference) {
-			if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue())) {
-				return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
-			} else {
-				return super.differenceFound(difference);
-			}
-		}
-	}
-
 	/**
 	 * Compares documents. If they are different throws {@link WsTestException}.
 	 * @param controlDocument
@@ -83,7 +63,7 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 		{
 			XMLUnit.setIgnoreWhitespace(ignoreWhitespace);
 		}
-		return new IgnoringDiff(controlDocument, messageDocument);
+		return new EnhancedDiff(controlDocument, messageDocument);
 	}
 
 

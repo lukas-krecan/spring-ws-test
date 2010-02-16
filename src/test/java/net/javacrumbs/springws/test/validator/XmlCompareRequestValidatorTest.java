@@ -50,6 +50,24 @@ public class XmlCompareRequestValidatorTest extends AbstractValidatorTest {
 		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/valid-message-test2.xml")));
 	}
 	@Test
+	public void testValidTestDifferentNsPrefixes() throws IOException
+	{
+		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/namespace-message1.xml"));
+		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/namespace-message2.xml")));
+	}
+	@Test
+	public void testValidTestDifferentNsPrefixesNoPrefix() throws IOException
+	{
+		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/namespace-message1.xml"));
+		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/namespace-message4-no-prefix.xml")));
+	}
+	@Test(expected=WsTestException.class)
+	public void testValidTestDifferentNsPrefixesNotResolved() throws IOException
+	{
+		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/namespace-message1.xml"));
+		validator.compareDocuments(controlDocument, getXmlUtil().loadDocument(createMessage("xml/namespace-message3-ns-not-resolved.xml")));
+	}
+	@Test
 	public void testValidDifferent() throws IOException
 	{
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/control-message-test.xml"));
