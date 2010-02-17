@@ -75,9 +75,9 @@ public class XsltTemplateProcessor implements TemplateProcessor {
 	protected Resource transform(Resource resource, WebServiceMessage message) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		getXmlUtil().transform(new ResourceSource(resource), getXmlUtil().getEnvelopeSource(message), new StreamResult(baos));
-		if (logger.isTraceEnabled())
+		if (logger.isDebugEnabled())
 		{
-			logger.trace("Transformation result:\n"+new String(baos.toByteArray(),"UTF-8"));
+			logger.debug("Transformation result:\n"+new String(baos.toByteArray(),"UTF-8"));
 		}
 		return new ByteArrayResource(baos.toByteArray());
 	}

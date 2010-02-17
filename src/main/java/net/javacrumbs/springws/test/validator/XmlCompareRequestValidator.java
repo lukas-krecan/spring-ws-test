@@ -46,9 +46,9 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 	 */
 	@Override
 	protected void compareDocuments(Document controlDocument, Document messageDocument) {
-		if (logger.isTraceEnabled())
+		if (logger.isDebugEnabled())
 		{
-			logger.trace("Comparing \""+serializeDocument(controlDocument)+" \"\n with \n\""+serializeDocument(messageDocument)+"\"");
+			logger.debug("Comparing \""+serializeDocument(controlDocument)+" \"\n with \n\""+serializeDocument(messageDocument)+"\"");
 		}
 		Diff diff = createDiff(controlDocument, messageDocument);
 		if (!diff.similar()) {

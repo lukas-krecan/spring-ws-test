@@ -407,7 +407,7 @@ Logging
    can add following line into your <<<log4j.properties>>>
    
 ---
-log4j.logger.net.javacrumbs=TRACE
+log4j.logger.net.javacrumbs=DEBUG
 --- 
 
 
