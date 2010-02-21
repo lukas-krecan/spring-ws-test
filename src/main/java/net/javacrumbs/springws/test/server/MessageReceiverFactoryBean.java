@@ -16,7 +16,6 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet;
  * @author Lukas Krecan
  * 
  */
-//TODO make real singleton
 class MessageReceiverFactoryBean extends AbstractFactoryBean implements ApplicationContextAware {
 
 	private DefaultStrategiesHelper defaultStrategiesHelper;
