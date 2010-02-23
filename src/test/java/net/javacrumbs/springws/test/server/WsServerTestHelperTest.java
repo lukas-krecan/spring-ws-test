@@ -68,7 +68,7 @@ public class WsServerTestHelperTest {
 		assertNotNull(message);
 		assertNotNull(message.getResponse().getPayloadSource());
 		
-		wsServerTestHelper.compareResponse("mock-responses/test/default-response.xml", message);
+		wsServerTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
 	}
 	@Test
 	public void testSendMessageAndCompareResponseFail() throws Exception
@@ -83,7 +83,7 @@ public class WsServerTestHelperTest {
 		
 		try
 		{
-			wsServerTestHelper.compareResponse("mock-responses/test/different-response.xml", message);
+			wsServerTestHelper.compareMessage("mock-responses/test/different-response.xml", message.getResponse());
 			fail("Exception expected");
 		}
 		catch(WsTestException e)
