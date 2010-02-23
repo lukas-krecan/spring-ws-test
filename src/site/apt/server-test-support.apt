@@ -48,6 +48,7 @@ public class EndpointTest {
 	@Test
 	public void testCallWs() throws Exception
 	{
+		//simulates request comming to MessageDispatcherServlet
 		MessageContext message = helper.receiveMessage("request.xml");
 		helper.compareMessage("expected-response.xml", message.getResponse());
 	}
