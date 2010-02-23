@@ -15,7 +15,7 @@
         </property>
     </bean>
     
-    <bean id="testEndpoint" class="net.javacrumbs.springws.test.server.DummyEndpoint"/>
+    <bean id="testEndpoint" class="net.javacrumbs.springws.test.helper.DummyEndpoint"/>
 	
 
 </beans>

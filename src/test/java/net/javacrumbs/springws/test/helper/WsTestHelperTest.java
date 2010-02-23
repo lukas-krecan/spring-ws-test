@@ -1,4 +1,4 @@
-package net.javacrumbs.springws.test.server;
+package net.javacrumbs.springws.test.helper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.helper.WsTestHelper;
 
 import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -16,19 +17,19 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.MessageDispatcher;
 import org.springframework.ws.transport.WebServiceMessageReceiver;
 
-public class WsServerTestHelperTest {
+public class WsTestHelperTest {
 
 	@Test
 	public void testGetWebServiceMessageReceiver() throws Exception
 	{
-		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
+		WsTestHelper wsServerTestHelper = new WsTestHelper();
 		wsServerTestHelper.afterPropertiesSet();
 		assertTrue(wsServerTestHelper.getWebServiceMessageReceiver() instanceof WebServiceMessageReceiver);
 	}
 	@Test
 	public void testGetWebServiceMessageReceiverSet() throws Exception
 	{
-		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
+		WsTestHelper wsServerTestHelper = new WsTestHelper();
 		MessageDispatcher dispatcher = new MessageDispatcher();
 		wsServerTestHelper.setWebServiceMessageReceiver(dispatcher);
 		wsServerTestHelper.afterPropertiesSet();
@@ -38,7 +39,7 @@ public class WsServerTestHelperTest {
 	public void testGetWebServiceMessageReceiverFromApplicationContext() throws Exception
 	{
 		
-		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
+		WsTestHelper wsServerTestHelper = new WsTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
 		wsServerTestHelper.setApplicationContext(applicationContext);
 		wsServerTestHelper.afterPropertiesSet();
@@ -50,7 +51,7 @@ public class WsServerTestHelperTest {
 	public void testGetWebServiceMessageReceiverFromApplicationContextTwoDispatchers() throws Exception
 	{
 		
-		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
+		WsTestHelper wsServerTestHelper = new WsTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/two-dispatchers.xml");
 		wsServerTestHelper.setApplicationContext(applicationContext);
 		wsServerTestHelper.afterPropertiesSet();
@@ -60,7 +61,7 @@ public class WsServerTestHelperTest {
 	@Test
 	public void testSendMessageAndCompareResponse() throws Exception
 	{
-		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
+		WsTestHelper wsServerTestHelper = new WsTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
 		wsServerTestHelper.setApplicationContext(applicationContext);
 		wsServerTestHelper.afterPropertiesSet();
@@ -73,7 +74,7 @@ public class WsServerTestHelperTest {
 	@Test
 	public void testSendMessageAndCompareResponseFail() throws Exception
 	{
-		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
+		WsTestHelper wsServerTestHelper = new WsTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
 		wsServerTestHelper.setApplicationContext(applicationContext);
 		wsServerTestHelper.afterPropertiesSet();

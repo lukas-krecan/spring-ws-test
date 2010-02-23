@@ -1,4 +1,4 @@
-package net.javacrumbs.springws.test.server;
+package net.javacrumbs.springws.test.helper;
 
 import javax.xml.transform.Source;
 

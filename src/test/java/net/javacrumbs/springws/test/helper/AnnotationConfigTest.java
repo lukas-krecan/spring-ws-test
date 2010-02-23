@@ -1,6 +1,8 @@
-package net.javacrumbs.springws.test.server;
+package net.javacrumbs.springws.test.helper;
 
 import static org.junit.Assert.*;
+
+import net.javacrumbs.springws.test.helper.WsTestHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,11 +12,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ws.context.MessageContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:context/server/dispatcher.xml", WsServerTestHelper.DEFAULT_CONFIG_PATH})
+@ContextConfiguration(locations={"classpath:context/server/dispatcher.xml", WsTestHelper.DEFAULT_CONFIG_PATH})
 public class AnnotationConfigTest {
 
 	@Autowired
-	private WsServerTestHelper helper;
+	private WsTestHelper helper;
 	
 	@Test
 	public void testCallWs() throws Exception

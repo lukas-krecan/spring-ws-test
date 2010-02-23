@@ -1,4 +1,4 @@
-package net.javacrumbs.springws.test.server;
+package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
 import java.util.Map;
@@ -33,9 +33,9 @@ import org.springframework.ws.transport.http.HttpTransportException;
  * @author Lukas Krecan
  *
  */
-public class WsServerTestHelper implements ApplicationContextAware, InitializingBean, ResourceLoaderAware{
+public class WsTestHelper implements ApplicationContextAware, InitializingBean, ResourceLoaderAware{
 
-	public static final String DEFAULT_CONFIG_PATH = "classpath:net.javacrumbs.springws.test.server/default-helper-config.xml";
+	public static final String DEFAULT_CONFIG_PATH = "classpath:net.javacrumbs.springws.test.helper/default-helper-config.xml";
 	
 	private ApplicationContext applicationContext;
 	
