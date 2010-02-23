@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import net.javacrumbs.springws.test.WsTestException;
 
 import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.MessageDispatcher;
 import org.springframework.ws.transport.WebServiceMessageReceiver;
@@ -56,14 +58,37 @@ public class WsServerTestHelperTest {
 	}
 	
 	@Test
-	public void testSendMessage() throws Exception
+	public void testSendMessageAndCompareResponse() throws Exception
 	{
 		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
 		wsServerTestHelper.setApplicationContext(applicationContext);
 		wsServerTestHelper.afterPropertiesSet();
-		MessageContext message = wsServerTestHelper.receiveMessage(new ClassPathResource("xml/valid-message.xml"));
+		MessageContext message = wsServerTestHelper.receiveMessage("xml/valid-message.xml");
 		assertNotNull(message);
-		assertNotNull(message.getResponse());
+		assertNotNull(message.getResponse().getPayloadSource());
+		
+		wsServerTestHelper.compareResponse("mock-responses/test/default-response.xml", message);
+	}
+	@Test
+	public void testSendMessageAndCompareResponseFail() throws Exception
+	{
+		WsServerTestHelper wsServerTestHelper = new WsServerTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsServerTestHelper.setApplicationContext(applicationContext);
+		wsServerTestHelper.afterPropertiesSet();
+		MessageContext message = wsServerTestHelper.receiveMessage("xml/valid-message.xml");
+		assertNotNull(message);
+		assertNotNull(message.getResponse().getPayloadSource());
+		
+		try
+		{
+			wsServerTestHelper.compareResponse("mock-responses/test/different-response.xml", message);
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			//ok
+		}
 	}
 }

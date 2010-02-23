@@ -106,7 +106,7 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 	 */
 	protected abstract void compareDocuments(Document controlDocument, Document messageDocument);
 	
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet(){
 		Assert.notNull(controlResourceLookup, "ControlResourceLookup has to be set");		
 	}
 
