@@ -39,7 +39,11 @@ Server test support
 ---
 @RunWith(SpringJUnit4ClassRunner.class)
 //your endpoint configuration + Default helper config
-@ContextConfiguration(locations={"classpath:context/server/dispatcher.xml", WsTestHelper.DEFAULT_CONFIG_PATH})
+@ContextConfiguration(locations={
+	"classpath:applicationContext.xml",
+	"file:src/main/webapp/WEB-INF/spring-ws-servlet.xml", 
+	WsTestHelper.DEFAULT_CONFIG_PATH
+	})
 public class EndpointTest {
 
 	@Autowired
@@ -48,8 +52,9 @@ public class EndpointTest {
 	@Test
 	public void testCallWs() throws Exception
 	{
-		//simulates request comming to MessageDispatcherServlet
+		//simulates request coming to MessageDispatcherServlet
 		MessageContext message = helper.receiveMessage("request.xml");
+		//compare response with control response
 		helper.compareMessage("expected-response.xml", message.getResponse());
 	}
 }
