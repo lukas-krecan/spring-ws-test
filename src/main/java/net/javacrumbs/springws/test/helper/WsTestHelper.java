@@ -1,7 +1,6 @@
 package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
-import java.util.Map;
 
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
@@ -9,6 +8,8 @@ import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -19,13 +20,13 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.context.DefaultMessageContext;
 import org.springframework.ws.context.MessageContext;
-import org.springframework.ws.soap.SoapMessageFactory;
-import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.support.DefaultStrategiesHelper;
 import org.springframework.ws.transport.WebServiceMessageReceiver;
 import org.springframework.ws.transport.http.HttpTransportException;
+import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 /**
  * Helper class to help you with server (Endpoint tests). You can throw a message to your server configuration 
@@ -35,6 +36,10 @@ import org.springframework.ws.transport.http.HttpTransportException;
  */
 public class WsTestHelper implements ApplicationContextAware, InitializingBean, ResourceLoaderAware{
 
+	private static final String DEFAULT_MESSAGE_FACTORY_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_FACTORY_BEAN_NAME;
+
+	private static final String DEFAULT_MESSAGE_RECEIVER_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_RECEIVER_BEAN_NAME;
+
 	public static final String DEFAULT_CONFIG_PATH = "classpath:net.javacrumbs.springws.test.helper/default-helper-config.xml";
 	
 	private ApplicationContext applicationContext;
@@ -42,13 +47,15 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
     private static final String DEFAULT_STRATEGIES_PATH = "MessageDispatcherServlet.properties";
        
     
-    private SoapMessageFactory messageFactory;
+    private WebServiceMessageFactory messageFactory;
     
     private WebServiceMessageReceiver webServiceMessageReceiver;   
     
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
+	
+	private static final Log LOG = LogFactory.getLog(WsTestHelper.class);
 
 	
 	/**
@@ -139,12 +146,12 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	}
 
 
-	public SoapMessageFactory getMessageFactory() {
+	public WebServiceMessageFactory getMessageFactory() {
 		return messageFactory;
 	}
 
 
-	public void setMessageFactory(SoapMessageFactory messageFactory) {
+	public void setMessageFactory(WebServiceMessageFactory messageFactory) {
 		this.messageFactory = messageFactory;
 	}
 
@@ -158,34 +165,38 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	protected void initializeMessageFactory() throws Exception {
 		if (messageFactory==null)
 		{
-			SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory();
-			messageFactory.afterPropertiesSet();
-			this.messageFactory = messageFactory;
+			if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_FACTORY_BEAN_NAME))
+			{
+				messageFactory = (WebServiceMessageFactory)applicationContext.getBean(DEFAULT_MESSAGE_FACTORY_BEAN_NAME, WebServiceMessageFactory.class);
+			}
+			else
+			{
+				LOG.debug("No WebServiceMessageFactory found, using default");
+				messageFactory = (WebServiceMessageFactory) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageFactory.class, applicationContext);
+			}
 		}
 	}
 
 
-	@SuppressWarnings("unchecked")
 	protected void initializeWebServiceMessageReceiver() {
 		if (webServiceMessageReceiver==null)
 		{
-			//should be MessageDispatcherServlet.class but it would require servlet-api in the classpath. So we use HttpTransportException instead.
-			DefaultStrategiesHelper defaultStrategiesHelper = new DefaultStrategiesHelper(new ClassPathResource(DEFAULT_STRATEGIES_PATH, HttpTransportException.class));
-			if (applicationContext!=null)
+			if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME))
 			{
-				Map messageReceivers = applicationContext.getBeansOfType(WebServiceMessageReceiver.class);
-				if (messageReceivers.size()==1)
-				{
-					webServiceMessageReceiver = (WebServiceMessageReceiver) messageReceivers.values().iterator().next();
-					return;
-				}
-				if (messageReceivers.size()>1)
-				{
-					throw new NoSuchBeanDefinitionException("expected single matching bean but found " + messageReceivers.size() + ": " + messageReceivers.keySet());
-				}
+				webServiceMessageReceiver = (WebServiceMessageReceiver) applicationContext.getBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME, WebServiceMessageReceiver.class);
 			}
-			webServiceMessageReceiver = (WebServiceMessageReceiver) defaultStrategiesHelper.getDefaultStrategy(WebServiceMessageReceiver.class, applicationContext);
+			else
+			{
+				LOG.debug("No WebServiceMessageReceiver found, using default");
+				webServiceMessageReceiver = (WebServiceMessageReceiver) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageReceiver.class, applicationContext);		
+			}
 		}
+	}
+
+
+	private DefaultStrategiesHelper getDefaultStrategiesHelper() {
+		//should be MessageDispatcherServlet.class but it would require servlet-api in the classpath. So we use HttpTransportException instead.
+		return new DefaultStrategiesHelper(new ClassPathResource(DEFAULT_STRATEGIES_PATH, HttpTransportException.class));
 	}
 
 

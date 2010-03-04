@@ -5,7 +5,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 		
-	<bean id="messageDispatcher" class="org.springframework.ws.server.MessageDispatcher"/>
+	<bean id="messageReceiver" class="org.springframework.ws.server.MessageDispatcher"/>
+	
+	<bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
 	
 	<bean class="org.springframework.ws.server.endpoint.mapping.PayloadRootQNameEndpointMapping">
         <property name="mappings">
