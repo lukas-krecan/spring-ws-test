@@ -54,7 +54,7 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 	
-	private static final Log LOG = LogFactory.getLog(WsTestHelper.class);
+	private final Log logger = LogFactory.getLog(getClass());
 
 	
 	/**
@@ -170,7 +170,7 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 			}
 			else
 			{
-				LOG.debug("No WebServiceMessageFactory found, using default");
+				logger.debug("No WebServiceMessageFactory found, using default");
 				messageFactory = (WebServiceMessageFactory) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageFactory.class, applicationContext);
 			}
 		}
@@ -186,7 +186,7 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 			}
 			else
 			{
-				LOG.debug("No WebServiceMessageReceiver found, using default");
+				logger.debug("No WebServiceMessageReceiver found, using default");
 				webServiceMessageReceiver = (WebServiceMessageReceiver) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageReceiver.class, applicationContext);		
 			}
 		}
