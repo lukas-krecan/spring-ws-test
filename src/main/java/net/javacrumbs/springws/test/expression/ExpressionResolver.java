@@ -40,6 +40,7 @@ public interface ExpressionResolver {
 	 * @param uri
 	 * @param document
 	 * @return
+	 * @throws ExpressionResolverException if expression resolving failed
 	 */
-	public abstract String resolveExpression(String expression, URI uri, Document document);
+	public abstract String resolveExpression(String expression, URI uri, Document document) throws ExpressionResolverException;
 }

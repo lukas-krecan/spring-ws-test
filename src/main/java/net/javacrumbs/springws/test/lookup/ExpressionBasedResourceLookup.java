@@ -18,6 +18,8 @@ package net.javacrumbs.springws.test.lookup;
 import java.io.IOException;
 import java.net.URI;
 
+import net.javacrumbs.springws.test.expression.ExpressionResolverException;
+
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.w3c.dom.Document;
@@ -52,11 +54,18 @@ public class ExpressionBasedResourceLookup extends AbstractResourceLookup {
 		if (resourceExpressions != null) {
 			Document document = loadDocument(message);
 			for (String resourceExpression: resourceExpressions) {
-				Resource resultResource = findResourceForExpression(resourceExpression, uri, document);
-				if (resultResource!=null)
+				try
 				{
-					logger.debug("Found resource "+resultResource);
-					return processResource(uri, message, resultResource);
+					Resource resultResource = findResourceForExpression(resourceExpression, uri, document);
+					if (resultResource!=null)
+					{
+						logger.debug("Found resource "+resultResource);
+						return processResource(uri, message, resultResource);
+					}
+				}
+				catch(ExpressionResolverException e)
+				{
+					logger.warn("Resolution of expression \""+resourceExpression+"\" failed.",e);
 				}
 			}
 		}

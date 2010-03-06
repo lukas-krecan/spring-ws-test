@@ -30,6 +30,7 @@ import java.net.URI;
 
 import net.javacrumbs.springws.test.AbstractMessageTest;
 import net.javacrumbs.springws.test.expression.ExpressionResolver;
+import net.javacrumbs.springws.test.expression.ExpressionResolverException;
 
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -97,6 +98,24 @@ public class ExpressionBasedResourceLookupTest extends AbstractMessageTest{
 		ExpressionResolver resolve = createMock(ExpressionResolver.class);
 		expect(resolve.resolveExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath");
 		expect(resolve.resolveExpression(eq("expr2"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath2");
+		resourceLookup.setExpressionResolver(resolve);
+		
+		replay(resolve);
+		
+		assertNull(resourceLookup.lookupResource(null, request));
+		verify(resolve);
+	}
+	@Test
+	public void testException() throws IOException
+	{
+		WebServiceMessage request = createMessage("xml/valid-message.xml");
+		
+		ExpressionBasedResourceLookup resourceLookup = new ExpressionBasedResourceLookup();
+		resourceLookup.setResourceExpressions(new String[]{"expr1","expr2"});
+		
+		ExpressionResolver resolve = createMock(ExpressionResolver.class);
+		expect(resolve.resolveExpression(eq("expr1"), (URI)isNull(), (Document)anyObject())).andReturn("wrongPath");
+		expect(resolve.resolveExpression(eq("expr2"), (URI)isNull(), (Document)anyObject())).andThrow(new ExpressionResolverException("Test exception."));
 		resourceLookup.setExpressionResolver(resolve);
 		
 		replay(resolve);

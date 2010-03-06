@@ -26,15 +26,20 @@ import java.util.Map;
 import net.javacrumbs.springws.test.AbstractMessageTest;
 
 import org.junit.Test;
-import org.springframework.xml.xpath.XPathException;
 import org.w3c.dom.Document;
 
 public class XPathExpressionResolverTest extends AbstractMessageTest{
 
-	@Test(expected=XPathException.class)
+	@Test(expected=ExpressionResolverException.class)
 	public void testException() throws Exception
 	{
 		String xpath = "XXXconcat(local-name(//soapenv:Body/*[1]),'-response.xml')";
+		resolveXPath(xpath);
+	}
+	@Test(expected=ExpressionResolverException.class)
+	public void testException2() throws Exception
+	{
+		String xpath = "concat('mock-responses/documentservice/',local-name(//hrs:searchDocumentsByExpression),'-response', $context.type, '.xml')";
 		resolveXPath(xpath);
 	}
 	@Test

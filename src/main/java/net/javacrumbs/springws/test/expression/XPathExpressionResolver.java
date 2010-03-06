@@ -26,7 +26,6 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.xml.namespace.SimpleNamespaceContext;
-import org.springframework.xml.xpath.XPathException;
 import org.w3c.dom.Document;
 
 /**
@@ -61,7 +60,7 @@ public class XPathExpressionResolver implements ExpressionResolver{
 			logger.debug("Expression \"" + expression + "\" resolved to \"" + result+"\"");
 			return result;
 		} catch (XPathExpressionException e) {
-			throw new XPathException("Could not evaluate XPath expression " + expression + ":" + e.getMessage(), e);
+			throw new ExpressionResolverException("Could not evaluate XPath expression \"" + expression + "\" : \"" + e.getMessage()+"\"", e);
 		}
 	}
 
