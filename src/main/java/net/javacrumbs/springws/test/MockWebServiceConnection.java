@@ -166,7 +166,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	 * @return
 	 */
 	protected WebServiceMessage handleResponseNotFound(WebServiceMessageFactory messageFactory) {
-		throw new NoResponseGeneratorSpecifiedException("No response found for request. Please, log category \"net.javacrumbs.springws.test\" on DEBUG level to find out the reasons. ");
+		throw new NoResponseGeneratorSpecifiedException("No response found for request. Please, log category \"net.javacrumbs.springws.test.lookup\" on DEBUG level to find out the reasons. ");
 	}
 	
 
