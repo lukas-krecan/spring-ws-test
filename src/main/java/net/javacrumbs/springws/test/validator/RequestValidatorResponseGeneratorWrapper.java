@@ -28,7 +28,7 @@ import org.springframework.ws.WebServiceMessageFactory;
  * @author Lukas Krecan
  *
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public class RequestValidatorResponseGeneratorWrapper implements RequestProcessor {
 	private final RequestValidator wrappedValidator;
 	
