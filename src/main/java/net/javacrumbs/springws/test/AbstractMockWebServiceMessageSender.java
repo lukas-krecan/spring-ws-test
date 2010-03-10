@@ -25,14 +25,19 @@ import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.transport.WebServiceConnection;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
+/**
+ * Web message sender that instead of sending request using HTTP sends data to  {@link MockWebServiceConnection}.
+ * @author Lukas Krecan
+ *
+ */
 public abstract class AbstractMockWebServiceMessageSender implements WebServiceMessageSender{
 
 	private List<EndpointInterceptor> interceptors = Collections.emptyList();
 
-	public AbstractMockWebServiceMessageSender() {
-		super();
-	}
-
+	
+	/**
+	 * Creates {@link MockWebServiceConnection}.
+	 */
 	public WebServiceConnection createConnection(URI uri) throws IOException {
 		MockWebServiceConnection connection = new MockWebServiceConnection(uri);
 		connection.setRequestProcessors(getRequestProcessors());
@@ -40,8 +45,15 @@ public abstract class AbstractMockWebServiceMessageSender implements WebServiceM
 		return connection;
 	}
 
+	/**
+	 * Returns list of request processors. To be overriden.
+	 * @return
+	 */
 	protected abstract List<RequestProcessor> getRequestProcessors();
 
+	/**
+	 * Supports all URIs.
+	 */
 	public boolean supports(URI uri) {
 		return true;
 	}
@@ -50,6 +62,10 @@ public abstract class AbstractMockWebServiceMessageSender implements WebServiceM
 		return Collections.unmodifiableList(interceptors);
 	}
 
+	/**
+	 * Sets list of interceptors to be applied on request. 
+	 * @param interceptors
+	 */
 	public void setInterceptors(List<? extends EndpointInterceptor> interceptors) {
 		this.interceptors = new ArrayList<EndpointInterceptor>(interceptors);
 	}
