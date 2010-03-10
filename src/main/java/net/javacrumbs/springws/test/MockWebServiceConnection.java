@@ -72,7 +72,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	 */
 	public WebServiceMessage receive(WebServiceMessageFactory messageFactory) throws IOException {
 		DefaultMessageContext messageContext = new DefaultMessageContext(request, messageFactory);
-		boolean callRequestProcessors = handeRequest(messageContext);
+		boolean callRequestProcessors = handleRequest(messageContext);
 		if (callRequestProcessors)
 		{
 			WebServiceMessage response = generateResponse(messageFactory);
@@ -82,7 +82,13 @@ public class MockWebServiceConnection implements WebServiceConnection {
 		return messageContext.getResponse();
 	}
 
-	protected boolean handeRequest(MessageContext messageContext) throws IOException {
+	/**
+	 * Iterates over all interceptors. If one of them returns false, false is returned. True is returned otherwise.
+	 * @param messageContext
+	 * @return
+	 * @throws IOException
+	 */
+	protected boolean handleRequest(MessageContext messageContext) throws IOException {
 		for (EndpointInterceptor interceptor:interceptors)
 		{
 			try {
