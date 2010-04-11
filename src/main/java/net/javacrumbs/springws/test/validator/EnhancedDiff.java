@@ -11,13 +11,17 @@ import org.w3c.dom.Node;
  * @author Lukas Krecan
  *
  */
-//TODO try to use difference listener
 final class EnhancedDiff extends Diff {
 	EnhancedDiff(Document controlDoc, Document testDoc) {
 		super(controlDoc, testDoc);
 	}
 
 	public int differenceFound(Difference difference) {
+		//ignore dissimilarities
+		if (difference.isRecoverable())
+		{
+			return RETURN_ACCEPT_DIFFERENCE;
+		}
 		if ("${IGNORE}".equals(difference.getControlNodeDetail().getValue())) {
 			return RETURN_IGNORE_DIFFERENCE_NODES_SIMILAR;
 		} 

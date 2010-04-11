@@ -15,7 +15,9 @@
  */
 package net.javacrumbs.springws.test.validator;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -84,9 +86,17 @@ public class XmlCompareRequestValidatorTest extends AbstractValidatorTest {
 	{
 		compareDocuments("xml/control-message-test.xml","xml/valid-message2.xml");
 	}
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testInvalid() throws Exception
 	{
-		compareDocuments("xml/control-message-test.xml","xml/invalid-message.xml");
+		try
+		{		
+			compareDocuments("xml/control-message-test.xml","xml/invalid-message.xml");
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertFalse(e.getMessage().contains("[not identical]"));
+		}
 	}
 }
