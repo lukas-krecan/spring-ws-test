@@ -66,8 +66,8 @@ public class AirlineWsClient4Test {
 	
 		//teach mock what to do 
 		mockControl.validateSchema("xsd/messages.xsd", "xsd/types.xsd")
-					.expectRequest("mock-xml/www.csa.cz/BookFlightRequest/OK1234-request.xml")
-					.returnResponse("mock-xml/www.csa.cz/BookFlightRequest/OK1234-response.xml");
+			.expectRequest("mock-xml/www.csa.cz/BookFlightRequest/OK1234-request.xml")
+			.returnResponse("mock-xml/www.csa.cz/BookFlightRequest/OK1234-response.xml");
 
 		long ticketId = client.bookFlight(FLIGHT_NUMBER, passengers, DEPARTURE_TIME);
 		assertEquals(TICKET_ID, ticketId);
@@ -78,8 +78,8 @@ public class AirlineWsClient4Test {
 	
 }
 ---
-  Here you load your standard spring configuration. By specifying WsMockControlTestExecutionListener TestExecutionListener you ensure that Spring WS test hooks into your web service templates and exposes
-  WsMockControl. Then you can program the mock and run the test.
+  Normal Spring configuration is loaded. All the magic is done by WsMockControlTestExecutionListener. This TestExecutionListener ensures that Spring WS test hooks into your web service templates and exposes
+  WsMockControl. Then it is possible program the mock and run the test.
 
 * Direct test
 
