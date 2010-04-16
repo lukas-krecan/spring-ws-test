@@ -31,22 +31,28 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
 ~~
-Simplify your WS client tests
+Simplify your WS tests
   
   Do you need to test you web-service client layer? Do you wan to run your end-to-end test without having to set-up a mock server? 
+  Do you want to simplify your server side tests?  
   Spring WS Test is here to help you.
   
+    
   Spring WS Test project simplifies functional testing of {{{http://static.springsource.org/spring-ws/sites/1.5/}Spring WS}} client applications. 
-  It allows you to write functional test that can run in one JVM, that can use JUnit or TestNG, that are simple to set-up and configure. Yet this
+  It allows you to write functional tests that can run in one JVM, that can use JUnit or TestNG, that are simple to set-up and configure. Yet this
   type of tests is quite powerful and you can test most of your configuration and component integration.    
 
   This project can be used mainly in the following scenarios:
   
-  * Tests of Spring configuration. Unit tests are nice and useful but we also need to test the configuration. Spring WS Test gives you the possibility to test most of the configuration without having to depend on external systems running.
+  * Tests of Spring configuration. Unit tests are nice and useful but we also need to test the configuration. Spring WS Test gives you the possibility to test most of the configuration without having to depend on any external systems running.
  
   * Test Driven Development. You can define an application in terms of requests sent and reactions on responses received. Spring WS Test makes it much easier.
  
   * ...
+    
+    
+  
+  <<If you are looking for server side testing, please go {{{server-test-support.html}here}}.>> Following sections are about WS client tests.
     
 * How to start?
 
