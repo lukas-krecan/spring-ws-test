@@ -99,24 +99,6 @@ a:link.selfref, a:visited.selfref {
  color: #555 !important;
  }
 
-#legend li.externalLink {
-  background: url(../images/external-classic.png) left top no-repeat;
-  padding-left: 18px;
-}
-a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:active, a.externalLink:hover {
-  background: url(../images/external-classic.png) right center no-repeat;
-  padding-right: 18px;
-}
-
-#legend li.newWindow {
-  background: url(../images/newwindow-classic.png) left top no-repeat;
-  padding-left: 18px;
-}
-a.newWindow, a.newWindow:link, a.newWindow:visited, a.newWindow:active, a.newWindow:hover {
-  background: url(../images/newwindow-classic.png) right center no-repeat;
-  padding-right: 18px;
-}
-
 h2, h3 {
  margin-top: 1em;
  margin-bottom: 0;
