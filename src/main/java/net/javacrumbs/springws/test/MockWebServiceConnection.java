@@ -68,7 +68,7 @@ public class MockWebServiceConnection implements WebServiceConnection {
 	}
 
 	/**
-	 * Generates mock response
+	 * Calls all interceptors and {@link RequestProcessor}s. Returns first generated response or first thrown exception.  
 	 */
 	public WebServiceMessage receive(WebServiceMessageFactory messageFactory) throws IOException {
 		DefaultMessageContext messageContext = new DefaultMessageContext(request, messageFactory);

@@ -22,7 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 
 /**
- * Searches for resources and loads it.
+ * Searches for resources and loads it. If the resource is a template, it might be processed when looked-up. 
  * 
  * @author Lukas Krecan
  * 

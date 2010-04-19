@@ -92,6 +92,7 @@ public class AirlineWsClient4Test {
 		mockControl.expectRequest("expected-request.xml")
 					.returnResponse("response-to-be-returned.xml");
 
+		//call WS client code
 		long ticketId = client.bookFlight(input,params,here);
 		assertEquals(123456L, ticketId);
 		
