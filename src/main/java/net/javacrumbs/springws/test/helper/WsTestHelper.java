@@ -28,8 +28,7 @@ import org.springframework.ws.transport.http.HttpTransportException;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 /**
- * Helper class to help you with server (Endpoint tests). You can throw a message to your server configuration 
- * and compare the response received.
+ * Helper class to help with server (Endpoint tests). It can be used to simulate WS requests and to compare responses.
  * @author Lukas Krecan
  *
  */

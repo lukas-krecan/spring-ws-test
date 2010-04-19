@@ -33,7 +33,7 @@
 ~~
 Server test support
 
-  Spring WS Test provides you a helper class to simplify such tests. If you want to test your server-side Web Service configuration, 
+  Spring WS Test provides you a helper class to simplify server side tests. If you want to test your server-side Web Service configuration, 
   you can do something like this:
   
 ---
