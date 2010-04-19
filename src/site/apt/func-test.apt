@@ -65,10 +65,10 @@ Functional tests
   is in <<<src/test/resources>>>. Default directory name where mock responses are looked for is "mock-xml/<payloadRootName>". 
   For example, if your WS message payload root element is called "GetFlightsRequest", resources from "mock-xml/GetFlightsRequest" are used.
   
-  If you do not specify otherwise "response.xml" file is used as template for generating response.
+  "response.xml" file is used as template for generating response, if not specified otherwise.
   
-  Of course, only one mock response per service is not sufficient. You usually need to define more response files. To be able to do this, 
-  you have to define a way how to decide which file will be used. By default XPath discriminators are used. For example, if you define "//ns:from;//ns:to"
+  Of course, only one mock response per service is not sufficient. It is usually needed to define more response files. To be able to do this, 
+  it has to be defined a way how to decide which file will be used. By default XPath discriminators are used. For example, if  "//ns:from;//ns:to" is used
   as discriminators for given service and our sample request is used, content of "mock-xml/GetFlightsRequest/PRG-DUB-response.xml" will be returned as a mock 
   response. If this file is not found "mock-xml/GetFlightsRequest/PRG-response.xml" will be used and if even that file is not found, default response will 
   be returned.

@@ -36,7 +36,7 @@ Architecture
 
 * MockWebServiceMessageSender
 
-   MockWebServiceMessageSender is the entry-point to Spring WS Test. If you use this sender instead of standard 
+   MockWebServiceMessageSender is the entry-point to Spring WS Test. If it is used instead of standard 
    {{{http://static.springsource.org/spring-ws/sites/1.5/apidocs/org/springframework/ws/transport/WebServiceMessageSender.html}WebServiceMessageSender}}
    all requests will be processed by the library. 
 
@@ -92,7 +92,7 @@ Configuration
    
    * <<autoinjectMock>> - if set to <<<true>>> <<<MockWebServiceMessageSender>>> is injected into all WebServiceTemplates found in the ApplicationContext. Default is <<<true>>>.
    
-   * <<pathPrefix>> tells us, in which directory will be the mock responses and control request stored. Default value is "mock-xml".
+   * <<pathPrefix>> defines in which directory will be the mock responses and control request stored. Default value is "mock-xml".
    
    * <<prependUri>> - if set to true, hostname from service uri is prepended before name of the file. For example path "mock-xml/www.aerlingus.com/GetFlightsRequest/PRG-DUB-response.xml"
    will be used. Default value is <<<false>>>.
