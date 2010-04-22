@@ -87,6 +87,11 @@ public class XmlCompareRequestValidatorTest extends AbstractValidatorTest {
 		compareDocuments("xml/control-message-test.xml","xml/valid-message2.xml");
 	}
 	@Test
+	public void testValidBug37() throws IOException
+	{
+		validator.compareDocuments(getXmlUtil().loadDocument(new ClassPathResource("xml/request1.xml")), getXmlUtil().loadDocument(new ClassPathResource("xml/request2.xml")));
+	}
+	@Test
 	public void testInvalid() throws Exception
 	{
 		try
