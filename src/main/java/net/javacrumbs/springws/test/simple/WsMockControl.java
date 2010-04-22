@@ -392,7 +392,7 @@ public class WsMockControl {
 	 * @param value
 	 * @return
 	 */
-	public WsMockControl setTestContextAttribute(String name, String value) {
+	public WsMockControl setTestContextAttribute(String name, Object value) {
 		WsTestContextHolder.getTestContext().setAttribute(name, value);
 		return this;
 	}
