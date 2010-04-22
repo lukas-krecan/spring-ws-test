@@ -214,7 +214,7 @@
 						<configuration>
 							<keyname>572516F4</keyname>
 						</configuration>
-						<version>1.0-alpha-4</version>
+						<version>1.0</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
