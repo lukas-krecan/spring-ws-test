@@ -38,6 +38,10 @@ final class EnhancedDiff extends Diff {
 
 	boolean isDifferenceOnlyInAttributeValuePrefix(Difference difference) {
 		Node testNode = difference.getTestNodeDetail().getNode();
+		if (testNode==null)
+		{
+			return false;
+		}
 		String testNodeValue = testNode.getNodeValue();
 		
 		Node controlNode = difference.getControlNodeDetail().getNode();
