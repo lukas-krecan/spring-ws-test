@@ -3,7 +3,7 @@
 	<groupId>net.javacrumbs</groupId>
 	<artifactId>spring-ws-test</artifactId>
 	<packaging>jar</packaging>
-	<version>0.13-SNAPSHOT</version>
+	<version>0.12-SNAPSHOT</version>
 	<name>spring-ws-test</name>
 	<url>http://javacrumbs.net/spring-ws-test/</url>
 	<description>
