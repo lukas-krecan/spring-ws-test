@@ -250,7 +250,7 @@ public void testSchema()
 	}
 ---
 
-FreeMarker template could look like this
+   FreeMarker template could look like this
 
 ---
 <plus xmlns="http://javacrumbs.net/calc">
@@ -259,7 +259,7 @@ FreeMarker template could look like this
 </plus>
 ---
 
-It can be also used in XSLT this way
+   It can be also used in XSLT this way
 
 ---
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
@@ -274,8 +274,10 @@ It can be also used in XSLT this way
 </xsl:stylesheet>
 ---   
 
+
 ** Multiple Calls
   
+
    It's also possible to test multiple calls of a WS in one test. The most straightforward approach is this
    
 ---
@@ -308,6 +310,23 @@ public void testMultipleTemplate()
 	mockControl.verify();
 }
 ---
+
+   You can also define multiple expected requests, it's just necessary to define them in correct order
+
+---
+@Test
+public void testStrange()
+{
+	mockControl
+		.expectRequest("request-ignore.xml").returnResponse("response2.xml")
+		.expectRequest("request1.xml").returnResponse("response1.xml");
+	
+	assertEquals(5, calc.plus(2, 3));
+	assertEquals(3, calc.plus(1, 2));
+	
+	mockControl.verify();
+}
+---  
 	
    
    
