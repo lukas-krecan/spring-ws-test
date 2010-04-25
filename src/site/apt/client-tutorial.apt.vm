@@ -40,7 +40,7 @@ Client Test Tutorial
 	
 * Tested application 
 
-	 Its XSD look like this
+	XSD of the service is simple
 	
 ---
 <?xml version="1.0" encoding="UTF-8"?>
@@ -66,7 +66,7 @@ Client Test Tutorial
 </schema>
 --- 
 
-   There is one "operation" called <<<plus>>> allowing us to add two numbers. The result is returned in the <<<result>>> element. 
+   There is one "operation" called <<<plus>>> allowing to add two numbers. The result is returned in the <<<result>>> element. 
 
    Spring configuration (client-config.xml) is simple as well.
    
@@ -112,7 +112,7 @@ public class Calc {
 
 * The Test
   
-  Now when the tested code is clear, we can focus on the test itself. Let's start with first simple test
+  Now when the tested code is clear, we can focus on the test itself. Let's start with the easiest one
   
 ** Response Generation
 
@@ -144,7 +144,7 @@ public class CalcTest {
 ---   
 
    The code starts with {{{http://static.springsource.org/spring/docs/2.5.x/reference/testing.html#testcontext-ctx-management}standard Spring JUnit support}}.
-   The TestExecutionListener configuration is the important bit. In addition to standard Spring listeners, WsMockControlTestExecutionListener.class is used. The listener does all the magic
+   The TestExecutionListener configuration section is the important bit. In addition to standard Spring listeners, WsMockControlTestExecutionListener.class is used. The listener does all the magic
    - it makes WsMockControl bean available, alters WsTemplate so no server is called and in general, it makes sure that everything works.
    
    Once we have WsMockControl, we can write the test. First of all, it's necessary to define which response should be returned from the web service call.

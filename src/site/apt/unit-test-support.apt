@@ -14,7 +14,7 @@
 ~~ limitations under the License.
 ~~
    ------
-   Unit test support
+   Advanced Client Unit Testing
    ------
 ~~
 ~~ Copyright 2006 the original author or authors.
@@ -31,59 +31,12 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
 ~~
-Unit test support
-
-  There are two types of unit test support. The first one looks like this
+Advanced Client Unit Testing
   
----
-
-@RunWith(SpringJUnit4ClassRunner.class)
-//load your standard config
-@ContextConfiguration(locations={"classpath:spring/beans.xml"})
-//Add the listener
-@TestExecutionListeners({WsMockControlTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
-public class AirlineWsClient4Test {
-	private static final long TICKET_ID = 123456L;
-	private static final Calendar DEPARTURE_TIME = Calendar.getInstance();
-	private static final String FLIGHT_NUMBER = "OK1234";
-	
-	@Autowired
-	private AirlineWsClient client;
-	
-	//inject mock control
-	@Autowired
-	private WsMockControl mockControl;
-	
-	private Passenger[] createPassengers() {
-		return new Passenger[]{new Passenger("Joe","Smith"), new Passenger("John","Doe")};
-	}
-	
-	@Test
-	public void testCall()
-	{
-		Passenger[] passengers = createPassengers();
-		
-	
-		//teach mock what to do 
-		mockControl.validateSchema("xsd/messages.xsd", "xsd/types.xsd")
-			.expectRequest("mock-xml/www.csa.cz/BookFlightRequest/OK1234-request.xml")
-			.returnResponse("mock-xml/www.csa.cz/BookFlightRequest/OK1234-response.xml");
-
-		long ticketId = client.bookFlight(FLIGHT_NUMBER, passengers, DEPARTURE_TIME);
-		assertEquals(TICKET_ID, ticketId);
-		
-		//verify all the calls
-		mockControl.verify();
-	}
-	
-}
----
-  Normal Spring configuration is loaded. All the magic is done by WsMockControlTestExecutionListener. This TestExecutionListener ensures that Spring WS test hooks into your web service templates and exposes
-  WsMockControl. Then it is possible program the mock and run the test.
 
 * Direct test
 
-  In case you want to test only your code and not Spring configuration, it is possible to use Spring free configuration.
+  In case you want to test only your code and not Spring configuration, it is possible to use Spring-free configuration.
   
 ---
 public class AirlineWsClient3Test {
