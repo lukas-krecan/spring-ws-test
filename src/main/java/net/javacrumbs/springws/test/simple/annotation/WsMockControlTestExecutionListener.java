@@ -21,7 +21,11 @@ import net.javacrumbs.springws.test.util.MockMessageSenderInjector;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.transport.WebServiceMessageSender;
 
@@ -33,6 +37,12 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  */
 public class WsMockControlTestExecutionListener extends AbstractTestExecutionListener {
 
+	public static final Class<? extends TestExecutionListener>[] DEFAULT_LISTENERS = new Class[]{
+			WsMockControlTestExecutionListener.class, 
+			DependencyInjectionTestExecutionListener.class,
+		    DirtiesContextTestExecutionListener.class,
+		    TransactionalTestExecutionListener.class};
+	
 	private static final String MESSAGE_SENDER_BEAN_NAME = "net.javacrumbs.springws.test.simple.annotation.WsMockControlMockWebServiceMessageSender";
 	private static final String MOCK_CONTROL_BEAN_NAME = "net.javacrumbs.springws.test.simple.annotation.WsMockControl";
 
