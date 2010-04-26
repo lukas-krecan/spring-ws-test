@@ -47,7 +47,7 @@ Client Test Tutorial
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://javacrumbs.net/calc"
 	xmlns:tns="http://javacrumbs.net/calc" elementFormDefault="qualified">
 
-	<element name="plus">
+	<element name="plusRequest">
 		<complexType>
 			<sequence>
 				<element name="a" type="int" />
@@ -56,7 +56,7 @@ Client Test Tutorial
 		</complexType>
 	</element>
 
-	<element name="result">
+	<element name="plusResponse">
 		<complexType>
 			<sequence>
 				<element name="result" type="int" />
@@ -102,10 +102,10 @@ public class Calc {
 	
 	public int plus(int a, int b)
 	{
-		Plus request = new Plus();
+		PlusRequest request = new PlusRequest();
 		request.setA(a);
 		request.setB(b);
-		Result result = (Result) wsTemplate.marshalSendAndReceive(request);
+		PlusResponse result = (PlusResponse) wsTemplate.marshalSendAndReceive(request);
 		return result.getResult();
 	}
 }
@@ -204,10 +204,10 @@ public void testSchema()
    It's possible to ignore some parts of the request when comparing it to generated value.
    
 ---
-<plus xmlns="http://javacrumbs.net/calc">
+<plusRequest xmlns="http://javacrumbs.net/calc">
   <a>${IGNORE}</a>
   <b>${IGNORE}</b>
-</plus>
+</plusRequest>
 ---
 
    This "template" can be reused for all possible tests. Values of elements <<<a>>> and <<<b>>> are ignored.
@@ -221,9 +221,9 @@ public void testSchema()
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
         <xsl:template match="/">
-			<result xmlns="http://javacrumbs.net/calc" xmlns:c="http://javacrumbs.net/calc">
+			<plusResponse xmlns="http://javacrumbs.net/calc" xmlns:c="http://javacrumbs.net/calc">
 			  <result><xsl:value-of select="//c:a + //c:b"/></result>
-			</result>
+			</plusResponse>
 		</xsl:template>
 </xsl:stylesheet>
 ---
@@ -258,10 +258,11 @@ public void testSchema()
    FreeMarker template can look like this
 
 ---
-<plus xmlns="http://javacrumbs.net/calc">
+<!-- Freemarker template -->
+<plusRequest xmlns="http://javacrumbs.net/calc">
   <a>${a}</a>
   <b>${b}</b>
-</plus>
+</plusRequest>
 ---
 
    It can be also used in XSLT this way
@@ -271,10 +272,10 @@ public void testSchema()
         <xsl:param name="a"/>
         <xsl:param name="b"/>
         <xsl:template match="/">
-			<plus xmlns="http://javacrumbs.net/calc">
+			<plusRequest xmlns="http://javacrumbs.net/calc">
 			  <a><xsl:value-of select="$a"/></a>
 			  <b><xsl:value-of select="$b"/></b>
-			</plus>
+			</plusRequest>
 		</xsl:template>
 </xsl:stylesheet>
 ---   
