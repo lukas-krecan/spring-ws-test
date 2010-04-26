@@ -284,7 +284,7 @@ public void testSchema()
 @Test
 public void testMultiple()
 {
-	mockControl.expectRequest("request-ignore.xml")
+	mockControl.expectRequest("request-ignore.xml").atLeastOnce()
 		.returnResponse("response2.xml")
 		.returnResponse("response3.xml");
 	
@@ -296,7 +296,7 @@ public void testMultiple()
 ---
    
    
-   but it's possible to define number of calls for each response
+   It's also possible to define number of calls for each response
    
 ---
 @Test
@@ -318,9 +318,11 @@ public void testMultipleTemplate()
 public void testStrange()
 {
 	mockControl
+	    .expectRequest("request1.xml").returnResponse("response1.xml")
 		.expectRequest("request-ignore.xml").returnResponse("response2.xml")
 		.expectRequest("request1.xml").returnResponse("response1.xml");
 	
+	assertEquals(3, calc.plus(1, 2));
 	assertEquals(5, calc.plus(2, 3));
 	assertEquals(3, calc.plus(1, 2));
 	
@@ -328,8 +330,17 @@ public void testStrange()
 }
 ---  
 	
+** Internals
+
+   Unit test support is based on <<<RequestProcessor>>>s as the rest of the framework. A <<<RequestProcessor>>> can either validate request, 
+   generate response, do nothing or throw an exception. By calling expectRequest, returnResponse, validateSchema and others a new RequestProcessor 
+   is created. All request processors used by WsMockControl are implementations of <<<LimitingRequestProcessor>>>. It means that not only they do 
+   what they are meant to do but they also keep track of number of calls they have processed. Moreover a <<<LimitingRequestProcessor>>> has minimum 
+   and maximum number of calls it can process. If less calls were processed an exception is thrown when WsMockControl.verify() was called. All calls 
+   over maximum limit are ignored.         
    
-   
+   By calling <<<atLeastOnce()>>>, <<<times()>>>, ... it is possible to set lower an upper limit on the RequestProcessor inserted last. 
+
           
 
 
