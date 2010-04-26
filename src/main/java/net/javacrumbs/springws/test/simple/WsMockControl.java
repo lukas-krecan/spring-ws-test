@@ -310,6 +310,10 @@ public class WsMockControl {
 		return this;
 	}
 
+	/**
+	 * Returns list of request processors.
+	 * @return
+	 */
 	public List<LimitingRequestProcessor> getRequestProcessors() {
 		return new ArrayList<LimitingRequestProcessor>(requestProcessors);
 	}
