@@ -316,7 +316,7 @@ public class WsMockControl {
 
 	/**
 	 * Sets number of calls for the last {@link RequestProcessor}. If given
-	 * processor was called les the min times, verify will throw
+	 * processor was called less the min times, verify will throw
 	 * {@link WsTestException}, if it was called for more then max times, the
 	 * {@link RequestProcessor} will do nothing and return null. See
 	 * {@link LimitingRequestProcessor} for more details.
@@ -382,7 +382,7 @@ public class WsMockControl {
 	}
 
 	public WsMockControl addInterceptor(EndpointInterceptor interceptor) {
-		interceptors .add(interceptor);
+		interceptors.add(interceptor);
 		return this;
 	}
 

@@ -339,7 +339,7 @@ public void testStrange()
    and maximum number of calls it can process. If less calls were processed an exception is thrown when WsMockControl.verify() was called. All calls 
    over maximum limit are ignored.         
    
-   By calling <<<atLeastOnce()>>>, <<<times()>>>, ... it is possible to set lower an upper limit on the RequestProcessor inserted last. 
+   By calling <<<atLeastOnce()>>>, <<<times()>>>, ... it is possible to set lower an upper limit on the RequestProcessor inserted last. Default value is one call.
 
           
 
