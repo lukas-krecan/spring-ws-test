@@ -293,7 +293,7 @@ public class WsMockControl {
 	 * Expects given uri. If other URI is used, {@link WsTestException} is
 	 * thrown.
 	 * 
-	 * @param string
+	 * @param expectedUri
 	 * @return
 	 */
 	public WsMockControl expectUri(final URI expectedUri) {
