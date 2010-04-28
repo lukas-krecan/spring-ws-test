@@ -68,6 +68,19 @@ public class WsTestHelperTest {
 		wsServerTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
 	}
 	@Test
+	public void testSendPayloadMessageAndCompareResponse() throws Exception
+	{
+		WsTestHelper wsServerTestHelper = new WsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsServerTestHelper.setApplicationContext(applicationContext);
+		wsServerTestHelper.afterPropertiesSet();
+		MessageContext message = wsServerTestHelper.receiveMessage("xml/valid-message-payload.xml");
+		assertNotNull(message);
+		assertNotNull(message.getResponse().getPayloadSource());
+		
+		wsServerTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
+	}
+	@Test
 	public void testSendMessageAndCompareResponseFail() throws Exception
 	{
 		WsTestHelper wsServerTestHelper = new WsTestHelper();
