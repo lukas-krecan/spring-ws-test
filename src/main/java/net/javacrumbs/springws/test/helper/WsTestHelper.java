@@ -85,6 +85,7 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 * @return
 	 * @throws Exception
 	 */
+	//TODO rename
 	public MessageContext receiveMessage(String requestPath) throws Exception {
 		return receiveMessage(resourceLoader.getResource(requestPath));
 	}
