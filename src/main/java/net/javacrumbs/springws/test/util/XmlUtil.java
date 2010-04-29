@@ -55,8 +55,5 @@ public interface XmlUtil {
 
 	public abstract String serializeDocument(Document document);
 
-	@Deprecated
 	public abstract boolean isSoap(Document document);
-
-	public abstract boolean isEnvelope(Document document);
 }

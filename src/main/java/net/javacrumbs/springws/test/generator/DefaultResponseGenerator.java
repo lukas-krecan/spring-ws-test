@@ -94,7 +94,7 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 	 * @throws IOException 
 	 */
 	protected boolean shouldCreateSoapEnvelope(Resource resultResource) throws IOException {
-		return alwaysCreateEnvelope || (!neverCreateEnvelope && !getXmlUtil().isEnvelope(xmlUtil.loadDocument(resultResource)));
+		return alwaysCreateEnvelope || (!neverCreateEnvelope && !getXmlUtil().isSoap(xmlUtil.loadDocument(resultResource)));
 	}
 
 	/**

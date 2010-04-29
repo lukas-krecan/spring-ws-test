@@ -16,22 +16,22 @@ public class DefaultXmlUtilTest extends AbstractMessageTest{
 	@Test
 	public void testPayload() throws IOException
 	{
-		assertFalse(xmlUtil.isEnvelope(loadDocument("xml/request1.xml")));
+		assertFalse(xmlUtil.isSoap(loadDocument("xml/request1.xml")));
 	}
 	@Test
 	public void testEnvelope() throws IOException
 	{
-		assertTrue(xmlUtil.isEnvelope(loadDocument("xml/valid-message.xml")));
+		assertTrue(xmlUtil.isSoap(loadDocument("xml/valid-message.xml")));
 	}
 	@Test
 	public void testEnvelope12() throws IOException
 	{
-		assertTrue(xmlUtil.isEnvelope(loadDocument("xml/valid-message-soap12.xml")));
+		assertTrue(xmlUtil.isSoap(loadDocument("xml/valid-message-soap12.xml")));
 	}
 	@Test
 	public void testFault() throws IOException
 	{
-		assertFalse(xmlUtil.isEnvelope(loadDocument("xml/response-error.xml")));
+		assertFalse(xmlUtil.isSoap(loadDocument("xml/response-error.xml")));
 	}
 	
 }
