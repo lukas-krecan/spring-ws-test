@@ -36,7 +36,7 @@ Client Test Tutorial
    This page provides a step-by-step tutorial of WS client testing. In the tutorial we will test a simple calculator web service. The source code of
    the sample application is downloadable {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/simple-client-test/tags/simple-client-test-${currentVersion}/simple-client-test/}from SVN repository}}.
    
-   It's possible to download it using following command <<<svn co https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/simple-client-test/tags/simple-client-test-0.12/simple-client-test/ simple-client-test>>>
+   It's possible to download it using following command <<<svn co https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/simple-client-test/tags/simple-client-test-${currentVersion}/simple-client-test/ simple-client-test>>>
 	
 * Tested application 
 

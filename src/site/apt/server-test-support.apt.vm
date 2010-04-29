@@ -1,0 +1,114 @@
+~~
+~~ Copyright 2009-2010 the original author or authors.
+~~
+~~ Licensed under the Apache License, Version 2.0 (the "License");
+~~ you may not use this file except in compliance with the License.
+~~ You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+~~
+   ------
+   Server test support
+   ------
+~~
+~~ Copyright 2006 the original author or authors.
+~~
+~~ Licensed under the Apache License, Version 2.0 (the "License");
+~~ you may not use this file except in compliance with the License.
+~~ You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+~~
+Server test support
+
+  Spring WS Test provides you a helper class to simplify server side tests. 
+  
+  Code shown here is taken from server test sample application, which can be viewed 
+  {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/simple-server-test/tags/simple-server-test-${currentVersion}/simple-server-test/}in SVN repository}}.
+   
+   It's possible to download it using following command <<<svn co https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/simple-server-test/tags/simple-server-test-${currentVersion}/simple-server-test/ simple-server-test>>>
+  
+* Simple test  
+  
+  If you want to test your server-side Web Service configuration, you can do something like this:
+  
+---
+@RunWith(SpringJUnit4ClassRunner.class)
+
+//your endpoint configuration + Default helper config
+@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/spring-ws-servlet.xml",
+      WsTestHelper.DEFAULT_CONFIG_PATH
+})
+public class EndpointTest {
+
+      @Autowired
+      private WsTestHelper helper;
+ 
+      @Test
+      public void testSimple() throws Exception
+      {
+              //simulates request coming to MessageDispatcherServlet
+              MessageContext message = helper.receiveMessage("request1.xml");
+              //compare response with control response
+              helper.compareMessage("response1.xml", message.getResponse());
+      }
+}
+---
+
+  This test loads <<<request1.xml>>> and simulates that its content came as a SOAP request. Tested application processes the request and returns a
+  response. The response can be compared with expected value. In the example above the response is compared to <<<response1.xml>>>.
+  
+  Both request and response can be defined as payload only. If the message does not contain SOAP envelope, the message is automatically wrapped to one.
+
+  Please note, that you do not have to start servlet engine. The test can run as normal unit test. Web.xml is ignored, if you have multiple servers to test, 
+  it's possible to write multiple test classes each of them using configuration for given servlet.  
+  
+* Templates
+  
+  It is possible to use templates for both request and response. One possible example can look like this.
+  
+---
+@Test
+public void testResponseTemplate() throws Exception {
+	WsTestContextHolder.getTestContext().setAttribute("a", 1);
+	WsTestContextHolder.getTestContext().setAttribute("b", 2);
+	WsTestContextHolder.getTestContext().setAttribute("result", 3);
+	// simulates request coming to MessageDispatcherServlet
+	MessageContext message = helper.receiveMessage("request-context-xslt.xml");
+	// compare response with control response
+	helper.compareMessage("response-context-xslt.xml", message.getResponse());
+	WsTestContextHolder.getTestContext().clear();
+}
+---   
+
+   Corresponding template (request-context-xslt.xml):
+   
+---
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+	<xsl:param name="a" />
+	<xsl:param name="b" />
+	<xsl:template match="/">
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			<soapenv:Header />
+			<soapenv:Body>
+				<plusRequest xmlns="http://javacrumbs.net/calc">
+					<a><xsl:value-of select="$a" /></a>
+					<b><xsl:value-of select="$b" /></b>
+				</plusRequest>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	</xsl:template>
+</xsl:stylesheet>
+---
