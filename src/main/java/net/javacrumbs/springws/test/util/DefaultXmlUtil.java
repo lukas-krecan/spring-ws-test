@@ -17,7 +17,9 @@ package net.javacrumbs.springws.test.util;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,26 +30,44 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import net.javacrumbs.springws.test.context.WsTestContextHolder;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.SoapMessage;
+import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.springframework.xml.transform.ResourceSource;
 import org.springframework.xml.transform.StringResult;
 import org.w3c.dom.Document;
 
 public class DefaultXmlUtil implements XmlUtil {
 
+	private static final Log logger = LogFactory.getLog(DefaultXmlUtil.class);
+	
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 	
-
 	private static final XmlUtil INSTANCE = new DefaultXmlUtil();
 	
 	private static final String SOAP11_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
 	private static final String SOAP12_NAMESPACE = "http://www.w3.org/2003/05/soap-envelope";
 	private static final Set<String> SOAP_NAMESPACES =  new HashSet<String>(Arrays.asList(SOAP11_NAMESPACE, SOAP12_NAMESPACE));
+	
+	private static final SimpleNamespaceContext SOAP_NAMESPACE_CONTEXT = new SimpleNamespaceContext();
+	
+	static
+	{
+		Map<String, String> bindings = new HashMap<String, String>();
+		bindings.put("soap11", SOAP11_NAMESPACE);
+		bindings.put("soap12", SOAP12_NAMESPACE);
+		SOAP_NAMESPACE_CONTEXT.setBindings(bindings);
+	}
 	
 
 	public static final XmlUtil getInstance()
@@ -147,5 +167,24 @@ public class DefaultXmlUtil implements XmlUtil {
 
 	public boolean isSoap(Document document) {
 		return SOAP_NAMESPACES.contains(document.getFirstChild().getNamespaceURI());
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean isEnvelope(Document document) {
+		XPathFactory factory = XPathFactory.newInstance();
+		XPath xpath = factory.newXPath();
+		xpath.setNamespaceContext(SOAP_NAMESPACE_CONTEXT);
+		try {
+			for (Iterator iterator = SOAP_NAMESPACE_CONTEXT.getBoundPrefixes(); iterator.hasNext();) {
+				String prefix = (String) iterator.next();
+				if ((Boolean)xpath.evaluate("/"+prefix+":Envelope", document, XPathConstants.BOOLEAN))
+				{
+					return true;
+				}
+			}
+		} catch (XPathExpressionException e) {
+			logger.warn(e);
+		}
+		return false;
 	}
 }

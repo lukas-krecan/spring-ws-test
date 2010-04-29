@@ -1,8 +1,6 @@
 package net.javacrumbs.springws.test.helper;
 
-import static org.junit.Assert.*;
-
-import net.javacrumbs.springws.test.helper.WsTestHelper;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

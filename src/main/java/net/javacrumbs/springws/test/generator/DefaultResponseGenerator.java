@@ -56,7 +56,7 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 
 	private boolean neverCreateEnvelope = false; 
 
-	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
+	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
 		if (resultResource == null) {
 			logger.debug("Resource not found, returning null.");
@@ -67,15 +67,23 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 				WebServiceMessage message = messageFactory.createWebServiceMessage();
 				getXmlUtil().transform(new StreamSource(resultResource.getInputStream()), message.getPayloadResult());
 				postprocessMessage(message, uri, messageFactory, request);
+				logMessage(message);
 				return message;	
-				
 			}
 			else
 			{
 				WebServiceMessage message = messageFactory.createWebServiceMessage(createInputStream(resultResource));
 				postprocessMessage(message, uri, messageFactory, request);
+				logMessage(message);
 				return message;
 			}
+		}
+	}
+
+	private void logMessage(WebServiceMessage message) {
+		if (logger.isTraceEnabled())
+		{
+			logger.trace("Loaded message "+getXmlUtil().serializeDocument(message));
 		}
 	}
 
@@ -86,7 +94,7 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 	 * @throws IOException 
 	 */
 	protected boolean shouldCreateSoapEnvelope(Resource resultResource) throws IOException {
-		return alwaysCreateEnvelope || (!neverCreateEnvelope && !getXmlUtil().isSoap(xmlUtil.loadDocument(resultResource)));
+		return alwaysCreateEnvelope || (!neverCreateEnvelope && !getXmlUtil().isEnvelope(xmlUtil.loadDocument(resultResource)));
 	}
 
 	/**

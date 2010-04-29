@@ -70,7 +70,7 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 		resourceLookup.setTemplateProcessor(templateProcessor);
 		generator.setResourceLookup(resourceLookup);
 	
-		WebServiceMessage message = generator.processRequest(null, messageFactory, null);		
+		WebServiceMessage message = generator.processRequest(null, messageFactory, messageFactory.createWebServiceMessage());		
 		
 		MessageContext context = createMessageContext(message);
 		getWebServiceMessageReceiver().receive(context);		

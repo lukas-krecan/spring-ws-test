@@ -65,7 +65,7 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 		if (controlResource!=null)
 		{
 			Document controlDocument = loadDocument(controlResource);
-			if (isSoap(controlDocument))
+			if (isEnvelope(controlDocument))
 			{
 				Document messageDocument = loadDocument(message);
 				compareDocuments(controlDocument, messageDocument);
@@ -150,8 +150,14 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 		this.failIfControlResourceNotFound = failIfControlResourceNotFound;
 	}
 
-	public boolean isSoap(Document document) {
+	@Deprecated
+	public boolean isSoap(Document document)
+	{
 		return xmlUtil.isSoap(document);
+	}
+	
+	protected boolean isEnvelope(Document document) {
+		return xmlUtil.isEnvelope(document);
 	}
 
 }

@@ -41,6 +41,12 @@ public interface XmlUtil {
 
 	public abstract Document loadDocument(WebServiceMessage message);
 
+	/**
+	 * Returns envelope source.
+	 * @param message
+	 * @return
+	 * @throws UnsupportedOperationException if message is not SoapMessage
+	 */
 	public abstract Source getEnvelopeSource(WebServiceMessage message);
 
 	public abstract String serializeDocument(Source source);
@@ -49,6 +55,8 @@ public interface XmlUtil {
 
 	public abstract String serializeDocument(Document document);
 
+	@Deprecated
 	public abstract boolean isSoap(Document document);
 
+	public abstract boolean isEnvelope(Document document);
 }
