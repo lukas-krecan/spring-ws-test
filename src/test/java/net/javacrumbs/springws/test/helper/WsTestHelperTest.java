@@ -6,15 +6,18 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.MessageDispatcher;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageReceiver;
+import org.w3c.dom.Document;
 
 public class WsTestHelperTest {
 
@@ -101,4 +104,18 @@ public class WsTestHelperTest {
 			//ok
 		}
 	}
+	@Test
+	public void testLoadMessage() throws Exception
+	{
+		WsTestHelper wsTestHelper = new WsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+		
+		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
+		assertNotNull(message);
+		Document document = DefaultXmlUtil.getInstance().loadDocument(message.getPayloadSource());
+		assertNotNull(document);
+	}
+	
 }

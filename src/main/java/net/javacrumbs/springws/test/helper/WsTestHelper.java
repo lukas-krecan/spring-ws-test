@@ -63,14 +63,10 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 * @return
 	 * @throws Exception
 	 */
+	//TODO rename
 	public MessageContext receiveMessage(Resource request) throws Exception {
 
-		DefaultResponseGenerator generator = new DefaultResponseGenerator();
-		SimpleResourceLookup resourceLookup = new SimpleResourceLookup(request);
-		resourceLookup.setTemplateProcessor(templateProcessor);
-		generator.setResourceLookup(resourceLookup);
-	
-		WebServiceMessage message = generator.processRequest(null, messageFactory, messageFactory.createWebServiceMessage());		
+		WebServiceMessage message = loadMessage(request);		
 		
 		MessageContext context = createMessageContext(message);
 		getWebServiceMessageReceiver().receive(context);		
@@ -88,6 +84,33 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	//TODO rename
 	public MessageContext receiveMessage(String requestPath) throws Exception {
 		return receiveMessage(resourceLoader.getResource(requestPath));
+	}
+	
+
+	/**
+	 * Loads message from given resource. Does template processing.
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 */
+	public WebServiceMessage loadMessage(Resource resource) throws IOException {
+		DefaultResponseGenerator generator = new DefaultResponseGenerator();
+		SimpleResourceLookup resourceLookup = new SimpleResourceLookup(resource);
+		resourceLookup.setTemplateProcessor(templateProcessor);
+		generator.setResourceLookup(resourceLookup);
+	
+		WebServiceMessage message = generator.processRequest(null, messageFactory, messageFactory.createWebServiceMessage());
+		return message;
+	}
+	
+	/**
+	 * Loads message from given resource. Does template processing.
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 */
+	public WebServiceMessage loadMessage(String resourcePath) throws IOException {
+		return loadMessage(resourceLoader.getResource(resourcePath));
 	}
 	
 	/**
