@@ -66,7 +66,7 @@ public class SchemaRequestValidator implements InitializingBean, RequestProcesso
     	validateRequest(uri, request);
     	return null;
     }
-    //TODO remove uri attribute and rename, mabe make public
+    //TODO remove uri attribute and rename, maybe make public
 	protected void validateRequest(URI uri, WebServiceMessage message) throws IOException{
 		 Source requestSource = message.getPayloadSource();
          if (requestSource != null) {
