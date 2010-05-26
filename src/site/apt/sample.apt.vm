@@ -33,7 +33,9 @@
 ~~
 Sample Application
 
-    This page describes how to download and run the sample application. Prerequisites are Maven 2 and Java 5 JDK.
+    This page describes how to download and run the sample application. This sample application is quite complex, for simpler 
+    samples please consult either {{{server-test-support.html}server side support}}  or {{{client-tutorial.html}client tutorial}} pages.
+    Prerequisites are Maven 2 and Java 5 JDK.
     
   [[1]] Checkout the source code "svn co https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test-sample/tags/spring-ws-test-sample-${currentVersion} spring-ws-test-sample"
 
