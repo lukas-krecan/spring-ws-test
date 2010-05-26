@@ -112,6 +112,19 @@ public void testResponseTemplate() throws Exception {
 	</xsl:template>
 </xsl:stylesheet>
 ---
+* XSD validation
+
+   It's also possible to validate the response using XML schema. 
+   
+---
+@Test
+public void testValidateResponse() throws Exception {
+	// simulates request coming to MessageDispatcherServlet
+	MessageContext message = helper.receiveMessage("request1.xml");
+	//validate response
+	helper.validateMessage(message.getResponse(), "xsd/calc.xsd");
+}
+---
 
 * Alternative configuration
 
