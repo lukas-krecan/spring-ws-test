@@ -7,6 +7,7 @@ import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
+import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.apache.commons.logging.Log;
@@ -156,6 +157,34 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 		requestValidator.setControlResourceLookup(controlResourceLookup);
 		return requestValidator;
 	}
+
+	/**
+	 * Validates if the message corresponds to given XSD.
+	 * @param message
+	 */
+	public void validateMessage(WebServiceMessage message, Resource schema, Resource... schemas) throws IOException{
+		SchemaRequestValidator validator = new SchemaRequestValidator();
+		Resource[] joinedSchemas = new Resource[schemas.length+1];
+		joinedSchemas[0] = schema;
+		System.arraycopy(schemas, 0, joinedSchemas, 1, schemas.length);
+		validator.setSchemas(joinedSchemas);
+		validator.afterPropertiesSet();
+		
+		validator.processRequest(null, messageFactory, message);
+	}
+	
+	/**
+	 * Validates if the message corresponds to given XSDs.
+	 * @param message
+	 */
+	public void validateMessage(WebServiceMessage message, String schemaPath, String... schemaPaths) throws IOException{
+		Resource[] schemas = new Resource[schemaPaths.length];
+		for (int i = 0; i < schemas.length; i++) {
+			schemas[i] = resourceLoader.getResource(schemaPaths[i]);
+		}
+		validateMessage(message, resourceLoader.getResource(schemaPath), schemas);
+	}
+
 	
 	public WebServiceMessageReceiver getWebServiceMessageReceiver() {
 		return webServiceMessageReceiver;
@@ -249,10 +278,6 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
 		this.templateProcessor = templateProcessor;
 	}
-
-
-
-
 
 
 

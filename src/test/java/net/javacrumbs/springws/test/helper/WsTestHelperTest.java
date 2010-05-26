@@ -118,4 +118,61 @@ public class WsTestHelperTest {
 		assertNotNull(document);
 	}
 	
+	@Test(expected=WsTestException.class)
+	public void testValidateResponseFail() throws Exception
+	{
+		WsTestHelper wsTestHelper = new WsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+		
+		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
+		wsTestHelper.validateMessage(message, "xml/schema.xsd");
+	}
+	@Test
+	public void testValidateResponseOk() throws Exception
+	{
+		WsTestHelper wsTestHelper = new WsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+		
+		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
+		wsTestHelper.validateMessage(message, "xml/schema.xsd");
+	}
+	@Test(expected=WsTestException.class)
+	public void testValidateResponseMultipleSchemesFail() throws Exception
+	{
+		WsTestHelper wsTestHelper = new WsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+		
+		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
+		wsTestHelper.validateMessage(message, "xml/calc.xsd", "xml/schema.xsd");
+	}
+	@Test(expected=WsTestException.class)
+	public void testValidateResponseMultipleSchemesFail2() throws Exception
+	{
+		WsTestHelper wsTestHelper = new WsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+		
+		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
+		wsTestHelper.validateMessage(message, "xml/schema.xsd", "xml/calc.xsd");
+	}
+	@Test
+	public void testValidateResponseMultipleSchemesOk() throws Exception
+	{
+		WsTestHelper wsTestHelper = new WsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+		
+		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
+		wsTestHelper.validateMessage(message, "xml/calc.xsd", "xml/schema.xsd");
+		wsTestHelper.validateMessage(message, "xml/schema.xsd", "xml/calc.xsd");
+	}
+	
 }
