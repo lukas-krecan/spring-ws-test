@@ -112,3 +112,45 @@ public void testResponseTemplate() throws Exception {
 	</xsl:template>
 </xsl:stylesheet>
 ---
+
+* Alternative configuration
+
+   It is possible to change the default WsTestHelper configuration. It's just necessary to write standard Spring configuration
+   file and use it instead of <<<WsTestHelper.DEFAULT_CONFIG_PATH>>>. Here is an example of using FreeMarker templating engine.
+   
+---
+@RunWith(SpringJUnit4ClassRunner.class)
+// your endpoint configuration + alternative helper config
+@ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring-ws-servlet.xml",
+		"classpath:spring/alternative-helper-config.xml" })
+public class AlternativeEndpointTest {
+
+	@Autowired
+	private WsTestHelper helper;
+
+	@Test
+	public void testSimple() throws Exception {
+		// simulates request coming to MessageDispatcherServlet
+		MessageContext message = helper.receiveMessage("request1.xml");
+		// compare response with control response
+		helper.compareMessage("response1.xml", message.getResponse());
+	}
+}
+---
+   
+   The corresponding configuration file (<<<alternative-helper-config.xml>>>) looks like this.
+   
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean class="net.javacrumbs.springws.test.helper.WsTestHelper">
+		<property name="templateProcessor">
+			<bean class="net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor"/>
+		</property>
+	</bean>
+
+</beans>
+---   
