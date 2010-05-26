@@ -46,6 +46,7 @@ import org.xml.sax.SAXParseException;
  * @author Lukas Krecan
  *
  */
+//TODO rename
 public class SchemaRequestValidator implements InitializingBean, RequestProcessor, Ordered{
 
     private XmlValidator validator;
