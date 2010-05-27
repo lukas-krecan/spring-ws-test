@@ -137,7 +137,9 @@ public class MessageValidator {
 		return this;
 	}
 	
-
+	/**
+	 * Assert that message is SOAP fault.
+	 */
 	public MessageValidator assertSoapFault() {
 		if (!isSoapFault())
 		{
@@ -181,6 +183,11 @@ public class MessageValidator {
 
 	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
 		this.templateProcessor = templateProcessor;
+	}
+	
+	public MessageValidator useTemplateProcessor(TemplateProcessor templateProcessor) {
+		setTemplateProcessor(templateProcessor);
+		return this;
 	}
 
 	public WebServiceMessage getMessage() {
