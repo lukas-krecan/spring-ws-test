@@ -137,7 +137,9 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 * @param resource
 	 * @param message
 	 * @throws IOException
+	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
 	 */
+	@Deprecated
 	public void compareMessage(Resource resource, WebServiceMessage message) throws IOException {
 		createMessageValidator(message).compare(resource);
 	}
@@ -145,10 +147,12 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 
 	/**
 	 * Compares message with the resource.
+	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
 	 * @param resourcePath
 	 * @param message
 	 * @throws IOException
 	 */
+	@Deprecated 
 	public void compareMessage(String resourcePath, WebServiceMessage message) throws IOException {
 		compareMessage(resourceLoader.getResource(resourcePath), message);		
 	}
@@ -156,7 +160,9 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	/**
 	 * Validates if the message corresponds to given XSD.
 	 * @param message
+	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
 	 */
+	@Deprecated
 	public void validateMessage(WebServiceMessage message, Resource schema, Resource... schemas) throws IOException{
 		createMessageValidator(message).validate(schema, schemas);
 	}
@@ -164,7 +170,9 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	/**
 	 * Validates if the message corresponds to given XSDs.
 	 * @param message
+	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
 	 */
+	@Deprecated
 	public void validateMessage(WebServiceMessage message, String schemaPath, String... schemaPaths) throws IOException{
 		createMessageValidator(message).validate(schemaPath, schemaPaths);
 	}

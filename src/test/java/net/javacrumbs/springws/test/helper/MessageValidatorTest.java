@@ -72,8 +72,7 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 	public void testAssertThatFail() throws Exception
 	{
 		WebServiceMessage message = createMessage("xml/valid-message.xml");
-		Map<String, String> nsMap = Collections.singletonMap("ns", "http://www.example.org/schema");
-		new MessageValidator(message).useNamespaceMapping(nsMap).assertXPath("//ns:number=1");
+		new MessageValidator(message).addNamespaceMapping("ns", "http://www.example.org/schema").assertXPath("//ns:number=1");
 	}
 	
 	@Test

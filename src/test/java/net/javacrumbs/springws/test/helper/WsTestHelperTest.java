@@ -57,6 +57,7 @@ public class WsTestHelperTest {
 		assertEquals(applicationContext.getBean("messageFactory"),wsServerTestHelper.getMessageFactory());
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendMessageAndCompareResponse() throws Exception
 	{
@@ -70,6 +71,7 @@ public class WsTestHelperTest {
 		
 		wsServerTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
 	}
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendPayloadMessageAndCompareResponse() throws Exception
 	{
@@ -83,6 +85,7 @@ public class WsTestHelperTest {
 		
 		wsServerTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
 	}
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendMessageAndCompareResponseFail() throws Exception
 	{
@@ -118,6 +121,7 @@ public class WsTestHelperTest {
 		assertNotNull(document);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test(expected=WsTestException.class)
 	public void testValidateResponseFail() throws Exception
 	{
@@ -129,6 +133,7 @@ public class WsTestHelperTest {
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/schema.xsd");
 	}
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testValidateResponseOk() throws Exception
 	{
@@ -140,6 +145,7 @@ public class WsTestHelperTest {
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/schema.xsd");
 	}
+	@SuppressWarnings("deprecation")
 	@Test(expected=WsTestException.class)
 	public void testValidateResponseMultipleSchemesFail() throws Exception
 	{
@@ -151,6 +157,7 @@ public class WsTestHelperTest {
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/calc.xsd", "xml/schema.xsd");
 	}
+	@SuppressWarnings("deprecation")
 	@Test(expected=WsTestException.class)
 	public void testValidateResponseMultipleSchemesFail2() throws Exception
 	{
@@ -162,6 +169,7 @@ public class WsTestHelperTest {
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/schema.xsd", "xml/calc.xsd");
 	}
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testValidateResponseMultipleSchemesOk() throws Exception
 	{

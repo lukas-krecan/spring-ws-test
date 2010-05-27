@@ -1,7 +1,7 @@
 package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.RequestProcessor;
@@ -28,7 +28,7 @@ public class MessageValidator {
 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 
-	private Map<String, String> namespaceMapping = Collections.emptyMap();
+	private Map<String, String> namespaceMapping = new HashMap<String, String>();
 	
 	public MessageValidator(WebServiceMessage message) {
 		this.message = message;
@@ -100,7 +100,19 @@ public class MessageValidator {
 	 * @return
 	 */
 	public MessageValidator useNamespaceMapping(Map<String, String> namespaceMapping) {
-		this.namespaceMapping  = namespaceMapping;
+		this.namespaceMapping  = new HashMap<String, String>(namespaceMapping);
+		return this;
+	}
+	
+	/**
+	 * Adds mapping between prefix and namespace.
+	 * @param prefix
+	 * @param namespace
+	 * @return
+	 */
+	public MessageValidator addNamespaceMapping(String prefix, String namespace)
+	{
+		this.namespaceMapping.put(prefix, namespace);
 		return this;
 	}
 	
