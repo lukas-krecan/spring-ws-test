@@ -49,5 +49,3 @@ Maven dependency
 Download  
   
   {{{http://repo1.maven.org/maven2/net/javacrumbs/spring-ws-test/${currentVersion}/spring-ws-test-${currentVersion}.jar}Download}}
-
-  {{{https://java-crumbs.svn.sourceforge.net/svnroot/java-crumbs/spring-ws-test-sample/tags/spring-ws-test-sample-${currentVersion}}Sample application}} (SVN repository)
