@@ -46,7 +46,7 @@ public class ExpressionAssertRequestValidator implements RequestProcessor {
 			throws IOException {
 		if (FALSE.equals(expressionResolver.resolveExpression(assertExpression, uri, xmlUtil.loadDocument(request))))
 		{
-			throw new WsTestException("Expression \""+assertExpression+"\" is not valid");
+			throw new WsTestException("Expression \""+assertExpression+"\" evaluated to false.");
 		}
 		return null;
 	}

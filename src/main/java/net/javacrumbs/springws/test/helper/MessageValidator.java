@@ -1,18 +1,23 @@
 package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
+import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.ws.FaultAwareWebServiceMessage;
 import org.springframework.ws.WebServiceMessage;
 
 public class MessageValidator {
@@ -22,6 +27,8 @@ public class MessageValidator {
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
+
+	private Map<String, String> namespaceMapping = Collections.emptyMap();
 	
 	public MessageValidator(WebServiceMessage message) {
 		this.message = message;
@@ -37,9 +44,13 @@ public class MessageValidator {
 		try {
 			requestValidator.processRequest(null, null, message);
 		} catch (IOException e) {
-			throw new WsTestException("Error when comapring messages", e);
+			processIOException(e);
 		}
 		return this;
+	}
+
+	protected void processIOException(IOException e) {
+		throw new WsTestException("Error when comapring messages", e);
 	}
 		
 	/**
@@ -59,7 +70,7 @@ public class MessageValidator {
 	 * Validates if the message corresponds to given XSD.
 	 * @param message
 	 */
-	public void validate(Resource schema, Resource... schemas) throws IOException{
+	public MessageValidator validate(Resource schema, Resource... schemas) throws IOException{
 		SchemaRequestValidator validator = new SchemaRequestValidator();
 		Resource[] joinedSchemas = new Resource[schemas.length+1];
 		joinedSchemas[0] = schema;
@@ -68,18 +79,87 @@ public class MessageValidator {
 		validator.afterPropertiesSet();
 		
 		validator.processRequest(null, null, message);
+		return this;
 	}
 	
 	/**
 	 * Validates if the message corresponds to given XSDs.
 	 * @param message
 	 */
-	public void validate(String schemaPath, String... schemaPaths) throws IOException{
+	public MessageValidator validate(String schemaPath, String... schemaPaths) throws IOException{
 		Resource[] schemas = new Resource[schemaPaths.length];
 		for (int i = 0; i < schemas.length; i++) {
 			schemas[i] = resourceLoader.getResource(schemaPaths[i]);
 		}
-		validate(resourceLoader.getResource(schemaPath), schemas);
+		return validate(resourceLoader.getResource(schemaPath), schemas);
+	}
+	
+	/**
+	 * Sets namespace mapping for all XPath validations like {@link #assertXPath(String)}
+	 * @param namespaceMapping
+	 * @return
+	 */
+	public MessageValidator useNamespaceMapping(Map<String, String> namespaceMapping) {
+		this.namespaceMapping  = namespaceMapping;
+		return this;
+	}
+	
+	/**
+	 * Asserts XPath expression. If the expression is not evaluated to true, throws {@link WsTestException}.
+	 * It is possible to set namespace mapping using {@link #useNamespaceMapping(Map)}.
+	 * @param xpath
+	 * @return
+	 */
+	public MessageValidator assertXPath(String xpath) {
+		ExpressionAssertRequestValidator validator = new ExpressionAssertRequestValidator();
+		validator.setAssertExpression(xpath);
+		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
+		expressionResolver.setNamespaceMap(namespaceMapping);
+		validator.setExpressionResolver(expressionResolver);
+		try {
+			validator.processRequest(null, null, message);
+		} catch (IOException e) {
+			processIOException(e);
+		}
+		return this;
+	}
+	
+
+	/**
+	 * Asserts that message is not SOAP fault.
+	 * @return
+	 */
+	public MessageValidator assertNotSoapFault() {
+		if (isSoapFault())
+		{
+			throw new WsTestException("Message is SOAP fault");
+		}
+		return this;
+	}
+	
+
+	public MessageValidator assertSoapFault() {
+		if (!isSoapFault())
+		{
+			throw new WsTestException("Message is not SOAP fault");
+		}
+		return this;
+	}
+
+	/**
+	 * Returns true if message is SOAP fault.
+	 * @return
+	 */
+	protected boolean isSoapFault() {
+		if (message instanceof FaultAwareWebServiceMessage)
+		{
+			FaultAwareWebServiceMessage faMessage = (FaultAwareWebServiceMessage)message;
+			if (faMessage.hasFault()) 
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 
@@ -107,6 +187,5 @@ public class MessageValidator {
 		return message;
 	}
 
-	
 
 }

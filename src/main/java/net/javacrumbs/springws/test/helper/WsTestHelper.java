@@ -2,13 +2,10 @@ package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
 
-import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
 import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
-import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
-import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -124,14 +121,25 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	}
 	
 	/**
+	 * Creates a message validator. Applies configuration taken from {@link WsTestHelper} configuration.
+	 * @param message
+	 * @return
+	 */
+	public MessageValidator createMessageValidator(WebServiceMessage message)
+	{
+		MessageValidator messageValidator = new MessageValidator(message);
+		messageValidator.setResourceLoader(resourceLoader);
+		messageValidator.setTemplateProcessor(templateProcessor);
+		return messageValidator;
+	}
+	/**
 	 * Compares message with the resource. 
 	 * @param resource
 	 * @param message
 	 * @throws IOException
 	 */
 	public void compareMessage(Resource resource, WebServiceMessage message) throws IOException {
-		RequestProcessor requestValidator = createRequestComparator(resource);
-		requestValidator.processRequest(null, messageFactory, message);
+		createMessageValidator(message).compare(resource);
 	}
 
 
@@ -146,31 +154,11 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	}
 
 	/**
-	 * Creates {@link RequestProcessor} that will compare the response with the controlResource 
-	 * @param controlResource
-	 * @return
-	 */
-	protected RequestProcessor createRequestComparator(Resource controlResource) {
-		XmlCompareRequestValidator requestValidator = new XmlCompareRequestValidator();
-		SimpleResourceLookup controlResourceLookup = new SimpleResourceLookup(controlResource);
-		controlResourceLookup.setTemplateProcessor(templateProcessor);
-		requestValidator.setControlResourceLookup(controlResourceLookup);
-		return requestValidator;
-	}
-
-	/**
 	 * Validates if the message corresponds to given XSD.
 	 * @param message
 	 */
 	public void validateMessage(WebServiceMessage message, Resource schema, Resource... schemas) throws IOException{
-		SchemaRequestValidator validator = new SchemaRequestValidator();
-		Resource[] joinedSchemas = new Resource[schemas.length+1];
-		joinedSchemas[0] = schema;
-		System.arraycopy(schemas, 0, joinedSchemas, 1, schemas.length);
-		validator.setSchemas(joinedSchemas);
-		validator.afterPropertiesSet();
-		
-		validator.processRequest(null, messageFactory, message);
+		createMessageValidator(message).validate(schema, schemas);
 	}
 	
 	/**
@@ -178,11 +166,7 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 * @param message
 	 */
 	public void validateMessage(WebServiceMessage message, String schemaPath, String... schemaPaths) throws IOException{
-		Resource[] schemas = new Resource[schemaPaths.length];
-		for (int i = 0; i < schemas.length; i++) {
-			schemas[i] = resourceLoader.getResource(schemaPaths[i]);
-		}
-		validateMessage(message, resourceLoader.getResource(schemaPath), schemas);
+		createMessageValidator(message).validate(schemaPath, schemaPaths);
 	}
 
 	
