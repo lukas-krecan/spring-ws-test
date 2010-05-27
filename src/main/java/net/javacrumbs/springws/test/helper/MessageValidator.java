@@ -20,6 +20,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.FaultAwareWebServiceMessage;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.validation.XmlValidator;
+import org.springframework.xml.validation.XmlValidatorFactory;
 
 public class MessageValidator {
 
@@ -98,7 +99,7 @@ public class MessageValidator {
 	}
 	
 	/**
-	 * Validates message using generic {@link XmlValidator}
+	 * Validates message using generic {@link XmlValidator}. See {@link XmlValidatorFactory} for more details.
 	 * @param validator
 	 */
 	public MessageValidator validate(XmlValidator xmlValidator) {

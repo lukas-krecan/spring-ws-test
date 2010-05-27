@@ -46,6 +46,8 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.transport.WebServiceMessageSender;
+import org.springframework.xml.validation.XmlValidator;
+import org.springframework.xml.validation.XmlValidatorFactory;
 
 /**
  * Utility class for easy unit-test mock preparation. Usually used in this way
@@ -165,6 +167,8 @@ public class WsMockControl {
 		return this;
 	}
 	
+	
+	
 	/**
 	 * Validate requests using given schemas.
 	 * @param xsdPaths
@@ -176,6 +180,24 @@ public class WsMockControl {
 			resources[i] = resourceLoader.getResource(xsdPaths[i]);
 		}
 		return validateSchema(resources);
+	}
+	
+	
+	/**
+	 * Validates request using generic {@link XmlValidator}. See {@link XmlValidatorFactory} for detailed info. 
+	 * @param xmlValidator
+	 * @return
+	 */
+	public WsMockControl validate(XmlValidator xmlValidator) {
+		SchemaRequestValidator validator = new SchemaRequestValidator();
+		validator.setValidator(xmlValidator);
+		try {
+			validator.afterPropertiesSet();
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Can not create validator.",e); 
+		}
+		addRequestProcessor(validator);
+		return this;
 	}
 
 	/**
@@ -400,7 +422,5 @@ public class WsMockControl {
 		WsTestContextHolder.getTestContext().setAttribute(name, value);
 		return this;
 	}
-
-
 
 }

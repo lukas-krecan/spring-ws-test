@@ -22,6 +22,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -50,6 +51,7 @@ import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor;
 import org.springframework.xml.transform.StringResult;
+import org.springframework.xml.validation.XmlValidator;
 import org.xml.sax.SAXException;
 
 
@@ -281,6 +283,21 @@ public class WsMockControlTest extends AbstractMessageTest{
 		SchemaRequestValidator validator = (SchemaRequestValidator) extractRequestProcessor(sender, 0);
 		assertArrayEquals(new Resource[]{new ClassPathResource(schema)}, validator.getSchemas());
 		assertNotNull(validator.getValidator());
+	}
+	@Test
+	public void testValidateGeneric() throws IOException
+	{
+		XmlValidator xmlValidator = createMock(XmlValidator.class);
+		replay(xmlValidator);
+		
+		WsMockControl control = new WsMockControl().validate(xmlValidator);
+		MockWebServiceMessageSender sender = (MockWebServiceMessageSender) control.createMock();
+		assertEquals(1, sender.getRequestProcessors().size());
+		
+		SchemaRequestValidator validator = (SchemaRequestValidator) extractRequestProcessor(sender, 0);
+		assertSame(xmlValidator, validator.getValidator());
+		
+		verify(xmlValidator);
 	}
 	@Test
 	public void testIgnoreWhitespace()
