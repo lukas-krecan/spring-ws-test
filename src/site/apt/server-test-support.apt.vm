@@ -53,17 +53,16 @@ Server test support
 })
 public class EndpointTest {
 
-      @Autowired
-      private WsTestHelper helper;
+    @Autowired
+    private WsTestHelper helper;
  
-      @Test
-      public void testSimple() throws Exception
-      {
-              //simulates request coming to MessageDispatcherServlet
-              MessageContext message = helper.receiveMessage("request1.xml");
-              //compare response with control response
-              helper.compareMessage("response1.xml", message.getResponse());
-      }
+	@Test
+	public void testSimple() throws Exception {
+		// simulates request coming to MessageDispatcherServlet
+		MessageContext message = helper.receiveMessage("request1.xml");
+		// compare response with control response
+		helper.createMessageValidator(message.getResponse()).assertNotSoapFault().compare("response1.xml");
+	}
 }
 ---
 
@@ -112,18 +111,19 @@ public void testResponseTemplate() throws Exception {
 	</xsl:template>
 </xsl:stylesheet>
 ---
-* XSD validation
+* Response validation
 
-   It's also possible to validate the response using XML schema. 
+   It's also possible to use more sophisticated validation assertions  
    
 ---
-@Test
-public void testValidateResponse() throws Exception {
-	// simulates request coming to MessageDispatcherServlet
-	MessageContext message = helper.receiveMessage("request1.xml");
-	//validate response
-	helper.validateMessage(message.getResponse(), "xsd/calc.xsd");
-}
+	@Test
+	public void testAssertXPath() throws Exception {
+		// simulates request coming to MessageDispatcherServlet
+		MessageContext message = helper.receiveMessage("request1.xml");
+		//validate response
+		helper.createMessageValidator(message.getResponse()).assertNotSoapFault().validate("xsd/calc.xsd")
+			.addNamespaceMapping("ns", "http://javacrumbs.net/calc").assertXPath("//ns:result=3");
+	}
 ---
 
 * Alternative configuration
@@ -146,7 +146,7 @@ public class AlternativeEndpointTest {
 		// simulates request coming to MessageDispatcherServlet
 		MessageContext message = helper.receiveMessage("request1.xml");
 		// compare response with control response
-		helper.compareMessage("response1.xml", message.getResponse());
+		helper.createMessageValidator(message.getResponse()).compare("response1.xml");
 	}
 }
 ---
