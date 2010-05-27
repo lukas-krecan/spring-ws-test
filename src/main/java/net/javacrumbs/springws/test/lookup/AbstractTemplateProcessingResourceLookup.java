@@ -54,7 +54,7 @@ public abstract class AbstractTemplateProcessingResourceLookup implements Resour
 	 * @throws IOException
 	 */
 	protected Resource processResource(URI uri, WebServiceMessage message, Resource resource) throws IOException {
-		return getTemplateProcessor().processTemplate(resource, uri, message);
+		return getTemplateProcessor().processTemplate(resource, message);
 	}
 
 	public XmlUtil getXmlUtil() {

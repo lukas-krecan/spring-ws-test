@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -84,7 +83,7 @@ public class FreeMarkerTemplateProcessor implements TemplateProcessor, Initializ
 		}
 	}
 
-	public Resource processTemplate(Resource resource, URI uri, WebServiceMessage message) throws IOException {
+	public Resource processTemplate(Resource resource, WebServiceMessage message) throws IOException {
 		try {
 			Configuration configuration = configurationFactory.createConfiguration();
 			Map<String, Object> properties = new HashMap<String, Object>();

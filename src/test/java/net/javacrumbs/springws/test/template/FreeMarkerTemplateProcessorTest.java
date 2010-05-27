@@ -49,7 +49,7 @@ public class FreeMarkerTemplateProcessorTest extends AbstractMessageTest {
 		WsTestContextHolder.getTestContext().setAttribute("number", 2);
 		WebServiceMessage request = createMessage("xml/valid-message2.xml");
 		ClassPathResource template = new ClassPathResource("mock-responses/test/freemarker-response.xml");
-		Resource resource = processor.processTemplate(template, null, request);
+		Resource resource = processor.processTemplate(template, request);
 		
 		
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/resolved-different-response.xml"));
@@ -64,7 +64,7 @@ public class FreeMarkerTemplateProcessorTest extends AbstractMessageTest {
 	{
 		WebServiceMessage request = createMessage("xml/valid-message2.xml");
 		ClassPathResource template = new ClassPathResource("xml/control-message-payload-test.xml");
-		Resource resource = processor.processTemplate(template, null, request);
+		Resource resource = processor.processTemplate(template, request);
 		
 		
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/control-message-payload-test.xml"));

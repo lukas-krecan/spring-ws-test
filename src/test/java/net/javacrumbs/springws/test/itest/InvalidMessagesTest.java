@@ -28,6 +28,8 @@ import net.javacrumbs.springws.test.validator.AbstractValidatorTest;
 
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.xml.transform.StringResult;
 
@@ -43,7 +45,12 @@ public class InvalidMessagesTest extends AbstractValidatorTest{
 		DefaultResponseGenerator responseGenerator = new DefaultResponseGenerator();
 		responseGenerator.setNeverCreateEnvelope(true);
 		SimpleResourceLookup resourceLookup = new SimpleResourceLookup(new ClassPathResource("mock-responses/test/default-response-invalid.xml"));
-		resourceLookup.setTemplateProcessor(TemplateProcessor.DUMMY_TEMPLATE_PROCESSOR);
+		resourceLookup.setTemplateProcessor(new TemplateProcessor() {
+			@Override
+			public Resource processTemplate(Resource resource, WebServiceMessage message) throws IOException {
+				return resource;
+			}
+		});
 		responseGenerator.setResourceLookup(resourceLookup);
 		messageSender.setRequestProcessors(Arrays.asList(responseGenerator));
 		webServiceTemplate.setMessageSender(messageSender);

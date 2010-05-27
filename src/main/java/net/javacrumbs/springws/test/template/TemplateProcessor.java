@@ -16,7 +16,6 @@
 package net.javacrumbs.springws.test.template;
 
 import java.io.IOException;
-import java.net.URI;
 
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
@@ -27,11 +26,6 @@ import org.springframework.ws.WebServiceMessage;
  *
  */
 public interface TemplateProcessor {
-	public static final TemplateProcessor DUMMY_TEMPLATE_PROCESSOR = new TemplateProcessor() {
-		public Resource processTemplate(Resource resource, URI uri, WebServiceMessage message) throws IOException {
-			return resource;
-		}
-	};
 	/**
 	 * Processes the resource as template. Returns resource with processed data. If the processor is not applicable 
 	 * returns original resource or its copy.
@@ -41,6 +35,5 @@ public interface TemplateProcessor {
 	 * @return
 	 * @throws IOException 
 	 */
-	//TODO remove uri
-	public Resource processTemplate(Resource resource, URI uri, WebServiceMessage message) throws IOException;
+	public Resource processTemplate(Resource resource, WebServiceMessage message) throws IOException;
 }

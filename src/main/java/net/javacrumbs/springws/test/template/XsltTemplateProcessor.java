@@ -17,7 +17,6 @@ package net.javacrumbs.springws.test.template;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
@@ -47,7 +46,7 @@ public class XsltTemplateProcessor implements TemplateProcessor {
 	
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
-	public Resource processTemplate(Resource resource, URI uri, WebServiceMessage message) throws IOException {
+	public Resource processTemplate(Resource resource, WebServiceMessage message) throws IOException {
 		if (resource!=null)
 		{
 			if (isTemplate(resource))

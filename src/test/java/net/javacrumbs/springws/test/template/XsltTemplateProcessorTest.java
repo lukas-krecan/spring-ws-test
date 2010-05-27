@@ -38,7 +38,7 @@ public class XsltTemplateProcessorTest extends AbstractMessageTest {
 		WsTestContextHolder.getTestContext().setAttribute("number", 2);
 		WebServiceMessage request = createMessage("xml/valid-message2.xml");
 		ClassPathResource template = new ClassPathResource("mock-responses/test/different-response.xml");
-		Resource resource = processor.processTemplate(template, null, request);
+		Resource resource = processor.processTemplate(template, request);
 		
 		
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/resolved-different-response.xml"));
@@ -54,7 +54,7 @@ public class XsltTemplateProcessorTest extends AbstractMessageTest {
 		WsTestContextHolder.getTestContext().setAttribute("a", 1);
 		WsTestContextHolder.getTestContext().setAttribute("b", 2);
 		ClassPathResource template = new ClassPathResource("xml/request-context-xslt.xml");
-		Resource resource = processor.processTemplate(template, null, messageFactory.createWebServiceMessage());
+		Resource resource = processor.processTemplate(template,  messageFactory.createWebServiceMessage());
 		
 		
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/request1.xml"));
@@ -70,7 +70,7 @@ public class XsltTemplateProcessorTest extends AbstractMessageTest {
 		WsTestContextHolder.getTestContext().setAttribute("a", 1);
 		WsTestContextHolder.getTestContext().setAttribute("b", 2);
 		ClassPathResource template = new ClassPathResource("xml/request-context-xslt.xml");
-		Resource resource = processor.processTemplate(template, null, null);
+		Resource resource = processor.processTemplate(template, null);
 		
 		
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/request1.xml"));
@@ -97,7 +97,7 @@ public class XsltTemplateProcessorTest extends AbstractMessageTest {
 	public void testNormalXml() throws IOException
 	{
 		WebServiceMessage request = createMessage("xml/valid-message.xml");
-		Resource resource = processor.processTemplate(new ClassPathResource("mock-responses/test/default-response.xml"), null, request);
+		Resource resource = processor.processTemplate(new ClassPathResource("mock-responses/test/default-response.xml"), request);
 		
 		
 		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("mock-responses/test/default-response.xml"));
