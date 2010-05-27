@@ -32,7 +32,7 @@ public interface ResourceLookup {
 	 * Looks for appropriate resource.
 	 * 
 	 * @param uri
-	 * @param message Message to be used as input for the template.
+	 * @param message Message to be used as input for the template or as a source of data for lookup.
 	 * @return null if not found.
 	 * @throws IOException 
 	 */
