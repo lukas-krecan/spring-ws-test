@@ -169,6 +169,10 @@ public class SchemaRequestValidator implements InitializingBean, RequestProcesso
 	public XmlValidator getValidator() {
 		return validator;
 	}
+	
+	public void setValidator(XmlValidator validator) {
+		this.validator = validator;
+	}
 
 	public int getOrder() {
 		return order;
@@ -177,5 +181,6 @@ public class SchemaRequestValidator implements InitializingBean, RequestProcesso
 	public void setOrder(int order) {
 		this.order = order;
 	}
+
 
 }

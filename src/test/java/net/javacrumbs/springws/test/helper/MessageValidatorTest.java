@@ -4,11 +4,17 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.xml.transform.Source;
+
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.validator.AbstractValidatorTest;
 
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
+import org.springframework.xml.validation.XmlValidator;
+import org.xml.sax.SAXParseException;
+
+import static org.easymock.EasyMock.*;
 
 
 public class MessageValidatorTest extends AbstractValidatorTest{
@@ -39,6 +45,30 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 	{
 		WebServiceMessage message = createMessage("xml/invalid-message.xml");
 		new MessageValidator(message).validate("xml/schema.xsd");
+	}
+	@Test
+	public void testValidateGenericOk() throws IOException
+	{
+		XmlValidator validator = createMock(XmlValidator.class);
+		expect(validator.validate((Source)anyObject())).andReturn(new SAXParseException[0]);
+		replay(validator);
+		
+		WebServiceMessage message = createMessage("xml/invalid-message.xml");
+		new MessageValidator(message).validate(validator);
+		
+		verify(validator);
+	}
+	@Test(expected=WsTestException.class)
+	public void testValidateGenericFail() throws IOException
+	{
+		XmlValidator validator = createMock(XmlValidator.class);
+		expect(validator.validate((Source)anyObject())).andReturn(new SAXParseException[]{new SAXParseException("Test message", null)});
+		replay(validator);
+		
+		WebServiceMessage message = createMessage("xml/invalid-message.xml");
+		new MessageValidator(message).validate(validator);
+		
+		verify(validator);
 	}
 
 	@Test(expected=WsTestException.class)

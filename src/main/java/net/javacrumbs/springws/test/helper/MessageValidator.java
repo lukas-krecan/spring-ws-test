@@ -19,6 +19,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.FaultAwareWebServiceMessage;
 import org.springframework.ws.WebServiceMessage;
+import org.springframework.xml.validation.XmlValidator;
 
 public class MessageValidator {
 
@@ -82,6 +83,8 @@ public class MessageValidator {
 		return this;
 	}
 	
+	
+	
 	/**
 	 * Validates if the message corresponds to given XSDs.
 	 * @param message
@@ -92,6 +95,22 @@ public class MessageValidator {
 			schemas[i] = resourceLoader.getResource(schemaPaths[i]);
 		}
 		return validate(resourceLoader.getResource(schemaPath), schemas);
+	}
+	
+	/**
+	 * Validates message using generic {@link XmlValidator}
+	 * @param validator
+	 */
+	public MessageValidator validate(XmlValidator xmlValidator) {
+		SchemaRequestValidator validator = new SchemaRequestValidator();
+		validator.setValidator(xmlValidator);
+		try {
+			validator.afterPropertiesSet();
+			validator.processRequest(null, null, message);
+		} catch (IOException e) {
+			processIOException(e);
+		}
+		return this;
 	}
 	
 	/**
@@ -205,6 +224,8 @@ public class MessageValidator {
 	public WebServiceMessage getMessage() {
 		return message;
 	}
+
+
 
 
 }
