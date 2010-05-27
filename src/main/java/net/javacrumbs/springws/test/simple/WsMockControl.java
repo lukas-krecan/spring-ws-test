@@ -265,18 +265,18 @@ public class WsMockControl {
 	}
 
 	/**
-	 * From now use FreeMarker for templates.
+	 * From now on use FreeMarker for templates.
 	 * @return
 	 */
 	public WsMockControl useFreeMarkerTemplateProcessor() {
 		FreeMarkerTemplateProcessor freemarkerTemplateProcessor = new FreeMarkerTemplateProcessor();
-		freemarkerTemplateProcessor.setResourceLoader(new DefaultResourceLoader());
+		freemarkerTemplateProcessor.setResourceLoader(resourceLoader);
 		freemarkerTemplateProcessor.afterPropertiesSet();
 		return useTemplateProcessor(freemarkerTemplateProcessor);
 	}
 	
 	/**
-	 * From now use XSLT for templates.
+	 * From now on use XSLT for templates.
 	 * @return
 	 */
 	public WsMockControl useXsltTemplateProcessor() {

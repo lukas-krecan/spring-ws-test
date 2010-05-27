@@ -8,6 +8,7 @@ import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
+import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
@@ -220,6 +221,25 @@ public class MessageValidator {
 	public MessageValidator useTemplateProcessor(TemplateProcessor templateProcessor) {
 		setTemplateProcessor(templateProcessor);
 		return this;
+	}
+	
+	/**
+	 * From now on use FreeMarker for templates.
+	 * @return
+	 */
+	public MessageValidator useFreeMarkerTemplateProcessor() {
+		FreeMarkerTemplateProcessor freemarkerTemplateProcessor = new FreeMarkerTemplateProcessor();
+		freemarkerTemplateProcessor.setResourceLoader(resourceLoader);
+		freemarkerTemplateProcessor.afterPropertiesSet();
+		return useTemplateProcessor(freemarkerTemplateProcessor);
+	}
+	
+	/**
+	 * From now on use XSLT for templates.
+	 * @return
+	 */
+	public MessageValidator useXsltTemplateProcessor() {
+		return useTemplateProcessor(new XsltTemplateProcessor());
 	}
 
 	public WebServiceMessage getMessage() {

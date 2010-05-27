@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+	<soapenv:Header />
+	<soapenv:Body>
+		<plusRequest xmlns="http://javacrumbs.net/calc"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://javacrumbs.net/calc ../../main/resources/xsd/calc.xsd ">
+			<a>1</a>
+			<b>2</b>
+		</plusRequest>
+	</soapenv:Body>
+</soapenv:Envelope>

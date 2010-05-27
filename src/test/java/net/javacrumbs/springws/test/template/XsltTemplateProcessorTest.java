@@ -64,6 +64,22 @@ public class XsltTemplateProcessorTest extends AbstractMessageTest {
 		
 		WsTestContextHolder.getTestContext().clear();
 	}
+	@Test
+	public void testTemplateWithNullMessage() throws IOException
+	{
+		WsTestContextHolder.getTestContext().setAttribute("a", 1);
+		WsTestContextHolder.getTestContext().setAttribute("b", 2);
+		ClassPathResource template = new ClassPathResource("xml/request-context-xslt.xml");
+		Resource resource = processor.processTemplate(template, null, null);
+		
+		
+		Document controlDocument = getXmlUtil().loadDocument(new ClassPathResource("xml/request1.xml"));
+		Document responseDocument = getXmlUtil().loadDocument(resource);
+		Diff diff = new Diff(controlDocument, responseDocument);
+		assertTrue(diff.toString(), diff.similar());
+		
+		WsTestContextHolder.getTestContext().clear();
+	}
 	
 	@Test
 	public void testIsTemplate() throws IOException

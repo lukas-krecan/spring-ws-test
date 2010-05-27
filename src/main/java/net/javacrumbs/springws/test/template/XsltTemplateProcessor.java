@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
@@ -74,7 +76,8 @@ public class XsltTemplateProcessor implements TemplateProcessor {
 
 	protected Resource transform(Resource resource, WebServiceMessage message) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		getXmlUtil().transform(new ResourceSource(resource), getXmlUtil().getEnvelopeSource(message), new StreamResult(baos));
+		Source envelopeSource = message!=null?getXmlUtil().getEnvelopeSource(message):new DOMSource();
+		getXmlUtil().transform(new ResourceSource(resource), envelopeSource, new StreamResult(baos));
 		if (logger.isDebugEnabled())
 		{
 			logger.debug("Transformation result:\n"+new String(baos.toByteArray(),"UTF-8"));

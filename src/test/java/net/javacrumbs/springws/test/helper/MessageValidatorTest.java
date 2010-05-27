@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.xml.transform.Source;
 
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.context.WsTestContextHolder;
+import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
 import net.javacrumbs.springws.test.validator.AbstractValidatorTest;
 
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.springframework.xml.validation.XmlValidator;
 import org.xml.sax.SAXParseException;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class MessageValidatorTest extends AbstractValidatorTest{
@@ -129,6 +132,19 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 	{
 		WebServiceMessage message = createMessage("xml/fault.xml");
 		new MessageValidator(message).assertSoapFault();
+	}
+	@Test
+	public void testUseFreeMarker() throws Exception
+	{
+		WsTestContextHolder.getTestContext().setAttribute("a", 1);
+		WsTestContextHolder.getTestContext().setAttribute("b", 2);
+		
+		WebServiceMessage message = createMessage("xml/request1-envelope.xml");
+		MessageValidator validator = new MessageValidator(message).useFreeMarkerTemplateProcessor();
+		assertEquals(FreeMarkerTemplateProcessor.class, validator.getTemplateProcessor().getClass());
+		validator.compare("xml/request-context.xml");
+		
+		WsTestContextHolder.getTestContext().clear();
 	}
 
 }

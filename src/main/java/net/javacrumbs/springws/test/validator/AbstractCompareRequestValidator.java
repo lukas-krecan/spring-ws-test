@@ -54,14 +54,14 @@ public abstract class AbstractCompareRequestValidator implements InitializingBea
 	}
 	
 	/**
-	 * Loads controleResource and compares it with the message. If controlResource is not SOAP message, only paylod is compared.
+	 * Loads controleResource and compares it with the message. If controlResource is not SOAP message, only payload is compared.
 	 * @param uri
 	 * @param message
 	 * @throws IOException
 	 */
 	protected void validateRequest(URI uri, WebServiceMessage message) throws IOException {
 	
-		Resource controlResource = controlResourceLookup.lookupResource(uri, message);
+		Resource controlResource = controlResourceLookup.lookupResource(uri, null);
 		if (controlResource!=null)
 		{
 			Document controlDocument = loadDocument(controlResource);

@@ -47,7 +47,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		final Document controlDoc = getXmlUtil().loadDocument(controlResource);
 
 		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
-		expect(resourceLookup.lookupResource(null, message)).andReturn(controlResource);
+		expect(resourceLookup.lookupResource(null, null)).andReturn(controlResource);
 	
 		AbstractCompareRequestValidator validator = new AbstractCompareRequestValidator(){
 			@Override
@@ -64,7 +64,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		
 		replay(resourceLookup);
 		
-		validator.validateRequest(null, message);
+		validator.processRequest(null, messageFactory, message);
 		
 		verify(resourceLookup);
 	}
@@ -79,7 +79,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		final Document controlDoc = getXmlUtil().loadDocument(controlResource);
 		
 		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
-		expect(resourceLookup.lookupResource(null, message)).andReturn(controlResource);
+		expect(resourceLookup.lookupResource(null, null)).andReturn(controlResource);
 		
 		AbstractCompareRequestValidator validator = new AbstractCompareRequestValidator(){
 			@Override
@@ -98,7 +98,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		
 		replay(resourceLookup);
 		
-		validator.validateRequest(null, message);
+		validator.processRequest(null, messageFactory, message);
 		
 		verify(resourceLookup);
 	}
@@ -109,7 +109,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		WebServiceMessage message = getValidMessage();
 		
 		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
-		expect(resourceLookup.lookupResource(null, message)).andReturn(null);
+		expect(resourceLookup.lookupResource(null, null)).andReturn(null);
 		
 		AbstractCompareRequestValidator validator = new AbstractCompareRequestValidator(){
 			@Override
@@ -123,7 +123,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		
 		replay(resourceLookup);
 		
-		validator.validateRequest(null, message);
+		validator.processRequest(null, messageFactory, message);
 		
 		verify(resourceLookup);
 	}
@@ -133,7 +133,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		WebServiceMessage message = getValidMessage();
 		
 		ResourceLookup resourceLookup = createMock(ResourceLookup.class);
-		expect(resourceLookup.lookupResource(null, message)).andReturn(null);
+		expect(resourceLookup.lookupResource(null, null)).andReturn(null);
 		
 		AbstractCompareRequestValidator validator = new AbstractCompareRequestValidator(){
 			@Override
@@ -148,7 +148,7 @@ public class AbstractCompareRequestValidatorTest extends AbstractValidatorTest{
 		
 		replay(resourceLookup);
 		
-		validator.validateRequest(null, message);
+		validator.processRequest(null, messageFactory, message);
 
 	}
 }
