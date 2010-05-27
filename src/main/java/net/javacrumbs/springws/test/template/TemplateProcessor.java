@@ -37,9 +37,10 @@ public interface TemplateProcessor {
 	 * returns original resource or its copy.
 	 * @param resource
 	 * @param uri
-	 * @param message
+	 * @param message Message to be used in template as input. Can be null
 	 * @return
 	 * @throws IOException 
 	 */
+	//TODO remove uri
 	public Resource processTemplate(Resource resource, URI uri, WebServiceMessage message) throws IOException;
 }
