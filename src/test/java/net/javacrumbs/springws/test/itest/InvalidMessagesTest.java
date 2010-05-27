@@ -37,6 +37,7 @@ import org.springframework.xml.transform.StringResult;
 public class InvalidMessagesTest extends AbstractValidatorTest{
 
 	@Test
+	@SuppressWarnings("unused")
 	public void testInvalidResponse() throws IOException
 	{
 		WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
