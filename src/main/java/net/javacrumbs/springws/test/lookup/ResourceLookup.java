@@ -27,6 +27,7 @@ import org.springframework.ws.WebServiceMessage;
  * @author Lukas Krecan
  * 
  */
+//TODO split template processing and resource lookup.
 public interface ResourceLookup {
 	/**
 	 * Looks for appropriate resource.
