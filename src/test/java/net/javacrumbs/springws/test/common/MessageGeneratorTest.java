@@ -10,6 +10,8 @@ import org.springframework.core.io.ClassPathResource;
 
 
 public class MessageGeneratorTest {
+	
+	
 	@Test
 	public void testAlwaysCreateEnvelope() throws IOException
 	{

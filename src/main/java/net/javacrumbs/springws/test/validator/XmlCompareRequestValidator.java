@@ -17,12 +17,24 @@ package net.javacrumbs.springws.test.validator;
 
 
 
-import net.javacrumbs.springws.test.WsTestException;
+import java.io.IOException;
+import java.net.URI;
 
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLUnit;
+import net.javacrumbs.springws.test.RequestProcessor;
+import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.common.DefaultMessageComparator;
+import net.javacrumbs.springws.test.common.MessageComparator;
+import net.javacrumbs.springws.test.lookup.ResourceLookup;
+import net.javacrumbs.springws.test.util.DefaultXmlUtil;
+import net.javacrumbs.springws.test.util.XmlUtil;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.Ordered;
-import org.w3c.dom.Document;
+import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.WebServiceMessageFactory;
 
 /**
  * Compares message with the control message.
@@ -30,40 +42,103 @@ import org.w3c.dom.Document;
  * @author Lukas Krecan
  * 
  */
-public class XmlCompareRequestValidator extends AbstractCompareRequestValidator implements Ordered
+public class XmlCompareRequestValidator implements Ordered, RequestProcessor
 {
 	
 	static final int DEFAULT_ORDER = 10;
 	
 	private int order = DEFAULT_ORDER;
 	
-	private boolean ignoreWhitespace = true; 
+	private ResourceLookup controlResourceLookup;
+
+	protected final Log logger = LogFactory.getLog(getClass());
+	
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
+	
+	private boolean failIfControlResourceNotFound;
+	
+	private MessageComparator messageComparator = new DefaultMessageComparator();
+
+	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) throws IOException {
+		validateRequest(uri, request);
+		return null;
+	}
 	
 	/**
-	 * Compares documents. If they are different throws {@link WsTestException}.
-	 * @param controlDocument
-	 * @param messageDocument
+	 * Loads controleResource and compares it with the message. If controlResource is not SOAP message, only payload is compared.
+	 * @param uri
+	 * @param message
+	 * @throws IOException
 	 */
-	@Override
-	protected void compareDocuments(Document controlDocument, Document messageDocument) {
-		if (logger.isDebugEnabled())
+	protected void validateRequest(URI uri, WebServiceMessage message) throws IOException {
+	
+		Resource controlResource = controlResourceLookup.lookupResource(uri, message);
+		if (controlResource!=null)
 		{
-			logger.debug("Comparing \""+serializeDocument(controlDocument)+" \"\n with \n\""+serializeDocument(messageDocument)+"\"");
+			compareMessage(message, controlResource);
 		}
-		Diff diff = createDiff(controlDocument, messageDocument);
-		if (!diff.similar()) {
-			logger.debug("Messages different, throwing exception");
-			throw new WsTestException("Message is different " + diff.toString());
+		else
+		{
+			onControlResourceNotFound(uri, message);
+		}
+	}
+
+	/**
+	 * Compares message with control resource.
+	 * @param message
+	 * @param controlResource
+	 * @throws IOException
+	 */
+	protected void compareMessage(WebServiceMessage message, Resource controlResource) throws IOException {
+		messageComparator.compareMessage(message, controlResource);
+	}
+
+
+	/**
+	 * Called if control resource was not found.
+	 * @param uri
+	 * @param message
+	 */
+	protected void onControlResourceNotFound(URI uri, WebServiceMessage message) {
+		if (failIfControlResourceNotFound)
+		{
+			throw new WsTestException("Control resource not found for "+uri+" and "+getXmlUtil().serializeDocument(message));
+		}
+		else
+		{
+			logger.warn("Can not find resource to validate with.");
 		}
 	}
 
 
-	protected Diff createDiff(Document controlDocument, Document messageDocument) {
-		if (ignoreWhitespace != XMLUnit.getIgnoreWhitespace())
-		{
-			XMLUnit.setIgnoreWhitespace(ignoreWhitespace);
-		}
-		return new EnhancedDiff(controlDocument, messageDocument);
+	public void afterPropertiesSet(){
+		Assert.notNull(controlResourceLookup, "ControlResourceLookup has to be set");		
+	}
+	
+
+	public ResourceLookup getControlResourceLookup() {
+		return controlResourceLookup;
+	}
+
+	public void setControlResourceLookup(ResourceLookup controlResourceLookup) {
+		this.controlResourceLookup = controlResourceLookup;
+	}
+
+	public XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
+		messageComparator.setXmlUtil(xmlUtil);
+	}
+
+	public boolean isFailIfControlResourceNotFound() {
+		return failIfControlResourceNotFound;
+	}
+
+	public void setFailIfControlResourceNotFound(boolean failIfControlResourceNotFound) {
+		this.failIfControlResourceNotFound = failIfControlResourceNotFound;
 	}
 
 
@@ -77,13 +152,22 @@ public class XmlCompareRequestValidator extends AbstractCompareRequestValidator 
 	}
 
 
-	public boolean isIgnoreWhitespace() {
-		return ignoreWhitespace;
-	}
-
-
 	public void setIgnoreWhitespace(boolean ignoreWhitespace) {
-		this.ignoreWhitespace = ignoreWhitespace;
+		messageComparator.setIgnoreWhitespace(ignoreWhitespace);
 	}
+	
+
+	public boolean isIgnoreWhitespace() {
+		return messageComparator.isIgnoreWhitespace();
+	}
+	
+	public MessageComparator getMessageComparator() {
+		return messageComparator;
+	}
+
+	public void setMessageComparator(DefaultMessageComparator messageComparator) {
+		this.messageComparator = messageComparator;
+	}
+
 
 }

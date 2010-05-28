@@ -1,4 +1,4 @@
-package net.javacrumbs.springws.test.validator;
+package net.javacrumbs.springws.test.common;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;

@@ -42,7 +42,6 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	
     private static final String DEFAULT_STRATEGIES_PATH = "MessageDispatcherServlet.properties";
        
-    
     private WebServiceMessageFactory messageFactory;
     
     private WebServiceMessageReceiver webServiceMessageReceiver;   
@@ -52,6 +51,8 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 	
 	private final Log logger = LogFactory.getLog(getClass());
+
+	private MessageGenerator generator = new MessageGenerator();
 
 	
 	/**
@@ -91,7 +92,6 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 * @throws IOException
 	 */
 	public WebServiceMessage loadMessage(Resource resource) throws IOException {
-		MessageGenerator generator = new MessageGenerator();
 		Resource processedResource = preprocessResource(resource);
 		WebServiceMessage message = generator.generateMessage(messageFactory, processedResource);
 		return message;
@@ -276,6 +276,18 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 
 	public void setTemplateProcessor(TemplateProcessor templateProcessor) {
 		this.templateProcessor = templateProcessor;
+	}
+
+
+
+	public MessageGenerator getGenerator() {
+		return generator;
+	}
+
+
+
+	public void setGenerator(MessageGenerator generator) {
+		this.generator = generator;
 	}
 
 

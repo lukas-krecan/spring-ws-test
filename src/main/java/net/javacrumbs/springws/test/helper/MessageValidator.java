@@ -4,16 +4,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.javacrumbs.springws.test.RequestProcessor;
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.common.DefaultMessageComparator;
+import net.javacrumbs.springws.test.common.MessageComparator;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
-import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
 import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
 import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
-import net.javacrumbs.springws.test.validator.XmlCompareRequestValidator;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -33,6 +32,8 @@ public class MessageValidator {
 
 	private Map<String, String> namespaceMapping = new HashMap<String, String>();
 	
+	private MessageComparator messageComparator = new DefaultMessageComparator();
+	
 	public MessageValidator(WebServiceMessage message) {
 		this.message = message;
 	}
@@ -41,11 +42,9 @@ public class MessageValidator {
 		return compare(getResource(controlResourcePath));
 	}
 
-
 	public MessageValidator compare(Resource controlResource) {
-		RequestProcessor requestValidator = createRequestComparator(controlResource);
 		try {
-			requestValidator.processRequest(null, null, message);
+			messageComparator.compareMessage(message, preprocessResource(controlResource));
 		} catch (IOException e) {
 			processIOException(e);
 		}
@@ -53,21 +52,9 @@ public class MessageValidator {
 	}
 
 	protected void processIOException(IOException e) {
-		throw new WsTestException("Error when comapring messages", e);
+		throw new WsTestException("Error when comparing messages", e);
 	}
 		
-	/**
-	 * Creates {@link RequestProcessor} that will compare the response with the controlResource 
-	 * @param controlResource
-	 * @return
-	 */
-	protected RequestProcessor createRequestComparator(Resource controlResource) {
-		XmlCompareRequestValidator requestValidator = new XmlCompareRequestValidator();
-		SimpleResourceLookup controlResourceLookup = new SimpleResourceLookup(controlResource);
-		controlResourceLookup.setTemplateProcessor(templateProcessor);
-		requestValidator.setControlResourceLookup(controlResourceLookup);
-		return requestValidator;
-	}
 	
 	/**
 	 * Validates if the message corresponds to given XSD.
@@ -170,6 +157,8 @@ public class MessageValidator {
 		return this;
 	}
 	
+	
+	
 	/**
 	 * Assert that message is SOAP fault.
 	 */
@@ -195,6 +184,16 @@ public class MessageValidator {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Does resource preprocessing. In default implementation just evaluates a template.
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 */
+	protected Resource preprocessResource(Resource resource) throws IOException {
+		return templateProcessor.processTemplate(resource, null);
 	}
 
 
@@ -244,6 +243,14 @@ public class MessageValidator {
 
 	public WebServiceMessage getMessage() {
 		return message;
+	}
+
+	public MessageComparator getMessageComparator() {
+		return messageComparator;
+	}
+
+	public void setMessageComparator(MessageComparator messageComparator) {
+		this.messageComparator = messageComparator;
 	}
 
 
