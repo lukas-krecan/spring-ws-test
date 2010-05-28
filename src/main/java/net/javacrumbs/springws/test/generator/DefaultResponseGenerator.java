@@ -16,15 +16,11 @@
 package net.javacrumbs.springws.test.generator;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
-import javax.xml.transform.stream.StreamSource;
-
 import net.javacrumbs.springws.test.RequestProcessor;
+import net.javacrumbs.springws.test.common.MessageGenerator;
 import net.javacrumbs.springws.test.lookup.ResourceLookup;
-import net.javacrumbs.springws.test.util.DefaultXmlUtil;
-import net.javacrumbs.springws.test.util.TransportInputStreamWrapper;
 import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
@@ -49,12 +45,8 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 	private ResourceLookup resourceLookup;
 	
 	private int order = DEFAULT_ORDER;
-	
-	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
-	
-	private boolean alwaysCreateEnvelope = false; 
-
-	private boolean neverCreateEnvelope = false; 
+			
+	private MessageGenerator messageGenerator = new MessageGenerator();
 
 	public WebServiceMessage processRequest(URI uri, WebServiceMessageFactory messageFactory, WebServiceMessage request) throws IOException {
 		Resource resultResource = getResultResource(uri, request);
@@ -62,52 +54,32 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 			logger.debug("Resource not found, returning null.");
 			return null;
 		} else {
-			if (shouldCreateSoapEnvelope(resultResource))
-			{
-				WebServiceMessage message = messageFactory.createWebServiceMessage();
-				getXmlUtil().transform(new StreamSource(resultResource.getInputStream()), message.getPayloadResult());
-				postprocessMessage(message, uri, messageFactory, request);
-				logMessage(message);
-				return message;	
-			}
-			else
-			{
-				WebServiceMessage message = messageFactory.createWebServiceMessage(createInputStream(resultResource));
-				postprocessMessage(message, uri, messageFactory, request);
-				logMessage(message);
-				return message;
-			}
+			WebServiceMessage message = generateMessage(messageFactory, resultResource);
+			postprocessMessage(message, uri, messageFactory, request);
+			return message;
 		}
 	}
 
-	private void logMessage(WebServiceMessage message) {
-		if (logger.isTraceEnabled())
-		{
-			logger.trace("Loaded message "+getXmlUtil().serializeDocument(message));
-		}
-	}
 
 	/**
-	 * Returns true if the soap envelope should be created.
-	 * @param resultResource
-	 * @return
-	 * @throws IOException 
-	 */
-	protected boolean shouldCreateSoapEnvelope(Resource resultResource) throws IOException {
-		return alwaysCreateEnvelope || (!neverCreateEnvelope && !getXmlUtil().isSoap(xmlUtil.loadDocument(resultResource)));
-	}
-
-	/**
-	 * Creates input stream from the resource.
+	 * Generates message from the resource.
+	 * @param messageFactory
 	 * @param resultResource
 	 * @return
 	 * @throws IOException
 	 */
-	protected InputStream createInputStream(final Resource resultResource) throws IOException {
-		return new TransportInputStreamWrapper(resultResource);
-		
+	protected WebServiceMessage generateMessage(WebServiceMessageFactory messageFactory, Resource resultResource) throws IOException {
+		return getMessageGenerator().generateMessage(messageFactory, resultResource);
 	}
 
+
+	/**
+	 * Can be overriden to postprocess generated message.
+	 * @param message
+	 * @param uri
+	 * @param messageFactory
+	 * @param request
+	 */
 	protected void postprocessMessage(WebServiceMessage message, URI uri, WebServiceMessageFactory messageFactory,	WebServiceMessage request) {
 		
 	}
@@ -141,26 +113,44 @@ public class DefaultResponseGenerator implements RequestProcessor, Ordered {
 	}
 
 	public XmlUtil getXmlUtil() {
-		return xmlUtil;
+		return getMessageGenerator().getXmlUtil();
 	}
 
 	public void setXmlUtil(XmlUtil xmlUtil) {
-		this.xmlUtil = xmlUtil;
+		getMessageGenerator().setXmlUtil(xmlUtil);
 	}
 
 	public boolean isAlwaysCreateEnvelope() {
-		return alwaysCreateEnvelope;
+		return getMessageGenerator().isAlwaysCreateEnvelope();
 	}
 
+	/**
+	 * If true SOAP envelope is always created.
+	 * @param alwaysCreateEnvelope
+	 */
 	public void setAlwaysCreateEnvelope(boolean alwaysCreateEnvelope) {
-		this.alwaysCreateEnvelope = alwaysCreateEnvelope;
+		this.getMessageGenerator().setAlwaysCreateEnvelope(alwaysCreateEnvelope);
 	}
 
 	public boolean isNeverCreateEnvelope() {
-		return neverCreateEnvelope;
+		return getMessageGenerator().isNeverCreateEnvelope();
 	}
 
+	/**
+	 * If true SOAP envelope is never created.
+	 * @param neverCreateEnvelope
+	 */
 	public void setNeverCreateEnvelope(boolean neverCreateEnvelope) {
-		this.neverCreateEnvelope = neverCreateEnvelope;
+		this.getMessageGenerator().setNeverCreateEnvelope(neverCreateEnvelope);
+	}
+
+
+	public MessageGenerator getMessageGenerator() {
+		return messageGenerator;
+	}
+
+
+	public void setMessageGenerator(MessageGenerator messageGenerator) {
+		this.messageGenerator = messageGenerator;
 	}
 }

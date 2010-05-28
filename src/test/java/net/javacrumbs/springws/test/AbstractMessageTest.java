@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 import net.javacrumbs.springws.test.util.TransportInputStreamWrapper;
 import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.After;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
@@ -52,6 +54,12 @@ public abstract class AbstractMessageTest {
 	public AbstractMessageTest() {
 		XMLUnit.setIgnoreWhitespace(true);
 		initializeMessageFactory();
+	}
+	
+	@After
+	public void tearDown()
+	{
+		WsTestContextHolder.getTestContext();
 	}
 
 	protected void initializeMessageFactory() {

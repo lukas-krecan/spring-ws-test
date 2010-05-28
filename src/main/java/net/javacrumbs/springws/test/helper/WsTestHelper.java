@@ -2,8 +2,7 @@ package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
 
-import net.javacrumbs.springws.test.generator.DefaultResponseGenerator;
-import net.javacrumbs.springws.test.lookup.SimpleResourceLookup;
+import net.javacrumbs.springws.test.common.MessageGenerator;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 
@@ -92,13 +91,21 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 * @throws IOException
 	 */
 	public WebServiceMessage loadMessage(Resource resource) throws IOException {
-		DefaultResponseGenerator generator = new DefaultResponseGenerator();
-		SimpleResourceLookup resourceLookup = new SimpleResourceLookup(resource);
-		resourceLookup.setTemplateProcessor(templateProcessor);
-		generator.setResourceLookup(resourceLookup);
-	
-		WebServiceMessage message = generator.processRequest(null, messageFactory, messageFactory.createWebServiceMessage());
+		MessageGenerator generator = new MessageGenerator();
+		Resource processedResource = preprocessResource(resource);
+		WebServiceMessage message = generator.generateMessage(messageFactory, processedResource);
 		return message;
+	}
+
+
+	/**
+	 * Does resource preprocessing. In default implementation just evaluates a template.
+	 * @param resource
+	 * @return
+	 * @throws IOException
+	 */
+	protected Resource preprocessResource(Resource resource) throws IOException {
+		return templateProcessor.processTemplate(resource, null);
 	}
 	
 	/**
