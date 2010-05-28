@@ -26,15 +26,6 @@ import org.w3c.dom.Document;
  */
 public interface ExpressionResolver {
 	/**
-	 * Returns the expression from input.
-	 */
-	public static final ExpressionResolver DUMMY_EXPRESSION_RESOLVER = new ExpressionResolver()
-	{
-		public String resolveExpression(String expression, URI uri, Document document) {
-			return expression;
-		}
-	};
-	/**
 	 * Evaluates an expression. 
 	 * @param expression
 	 * @param uri

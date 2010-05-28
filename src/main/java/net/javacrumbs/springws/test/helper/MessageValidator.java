@@ -7,12 +7,12 @@ import java.util.Map;
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.common.DefaultMessageComparator;
 import net.javacrumbs.springws.test.common.MessageComparator;
+import net.javacrumbs.springws.test.common.SchemaValidator;
 import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
 import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
 import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
-import net.javacrumbs.springws.test.validator.SchemaRequestValidator;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -33,6 +33,10 @@ public class MessageValidator {
 	private Map<String, String> namespaceMapping = new HashMap<String, String>();
 	
 	private MessageComparator messageComparator = new DefaultMessageComparator();
+	
+	private SchemaValidator schemaValidator = new SchemaValidator();
+
+	private String schemaLanguage = XmlValidatorFactory.SCHEMA_W3C_XML;
 	
 	public MessageValidator(WebServiceMessage message) {
 		this.message = message;
@@ -55,30 +59,11 @@ public class MessageValidator {
 		throw new WsTestException("Error when comparing messages", e);
 	}
 		
-	
-	/**
-	 * Validates if the message corresponds to given XSD.
-	 * @param message
-	 */
-	public MessageValidator validate(Resource schema, Resource... schemas) throws IOException{
-		SchemaRequestValidator validator = new SchemaRequestValidator();
-		Resource[] joinedSchemas = new Resource[schemas.length+1];
-		joinedSchemas[0] = schema;
-		System.arraycopy(schemas, 0, joinedSchemas, 1, schemas.length);
-		validator.setSchemas(joinedSchemas);
-		validator.afterPropertiesSet();
-		
-		validator.processRequest(null, null, message);
-		return this;
-	}
-	
-	
-	
 	/**
 	 * Validates if the message corresponds to given XSDs.
 	 * @param message
 	 */
-	public MessageValidator validate(String schemaPath, String... schemaPaths) throws IOException{
+	public MessageValidator validate(String schemaPath, String... schemaPaths) throws IOException {
 		Resource[] schemas = new Resource[schemaPaths.length];
 		for (int i = 0; i < schemas.length; i++) {
 			schemas[i] = resourceLoader.getResource(schemaPaths[i]);
@@ -87,15 +72,29 @@ public class MessageValidator {
 	}
 	
 	/**
+	 * Validates if the message corresponds to given XSD.
+	 * @param message
+	 */
+	public MessageValidator validate(Resource schema, Resource... schemas) throws IOException {
+		
+		Resource[] joinedSchemas = new Resource[schemas.length+1];
+		joinedSchemas[0] = schema;
+		System.arraycopy(schemas, 0, joinedSchemas, 1, schemas.length);
+		
+		validate(schemaValidator.createValidatorFromSchemas(joinedSchemas, schemaLanguage ));
+		return this;
+	}
+	
+	
+	
+	
+	/**
 	 * Validates message using generic {@link XmlValidator}. See {@link XmlValidatorFactory} for more details.
 	 * @param validator
 	 */
 	public MessageValidator validate(XmlValidator xmlValidator) {
-		SchemaRequestValidator validator = new SchemaRequestValidator();
-		validator.setValidator(xmlValidator);
 		try {
-			validator.afterPropertiesSet();
-			validator.processRequest(null, null, message);
+			schemaValidator.validate(message, xmlValidator);		
 		} catch (IOException e) {
 			processIOException(e);
 		}
@@ -251,6 +250,36 @@ public class MessageValidator {
 
 	public void setMessageComparator(MessageComparator messageComparator) {
 		this.messageComparator = messageComparator;
+	}
+
+	public MessageValidator useMessageComparator(MessageComparator messageComparator) {
+		setMessageComparator(messageComparator);
+		return this;
+	}
+
+	public SchemaValidator getSchemaValidator() {
+		return schemaValidator;
+	}
+
+	public void setSchemaValidator(SchemaValidator schemaValidator) {
+		this.schemaValidator = schemaValidator;
+	}
+
+	public MessageValidator useSchemaValidator(SchemaValidator schemaValidator) {
+		setSchemaValidator(schemaValidator);
+		return this;
+	}
+
+	public String getSchemaLanguage() {
+		return schemaLanguage;
+	}
+
+	public void setSchemaLanguage(String schemaLanguage) {
+		this.schemaLanguage = schemaLanguage;
+	}
+	public MessageValidator useSchemaLanguage(String schemaLanguage) {
+		setSchemaLanguage(schemaLanguage);
+		return this;		
 	}
 
 

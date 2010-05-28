@@ -17,12 +17,9 @@ package net.javacrumbs.springws.test.validator;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
-
-import javax.xml.transform.Source;
 
 import net.javacrumbs.springws.test.RequestProcessor;
-import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.common.SchemaValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +28,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.support.interceptor.AbstractValidatingInterceptor;
@@ -39,7 +35,6 @@ import org.springframework.xml.validation.XmlValidator;
 import org.springframework.xml.validation.XmlValidatorFactory;
 import org.springframework.xml.xsd.XsdSchema;
 import org.springframework.xml.xsd.XsdSchemaCollection;
-import org.xml.sax.SAXParseException;
 
 /**
  * Validates message using provided schema(s). Similar to the {@link AbstractValidatingInterceptor}.
@@ -48,6 +43,8 @@ import org.xml.sax.SAXParseException;
  */
 public class SchemaRequestValidator implements InitializingBean, RequestProcessor, Ordered{
 
+	private SchemaValidator schemaValidator = new SchemaValidator();
+	
     private XmlValidator validator;
     
     private String schemaLanguage = XmlValidatorFactory.SCHEMA_W3C_XML;
@@ -65,36 +62,14 @@ public class SchemaRequestValidator implements InitializingBean, RequestProcesso
     	validateRequest(uri, request);
     	return null;
     }
-    //TODO remove uri attribute and rename, maybe make public
+
 	protected void validateRequest(URI uri, WebServiceMessage message) throws IOException{
-		 Source requestSource = message.getPayloadSource();
-         if (requestSource != null) {
-             SAXParseException[] errors = validator.validate(requestSource);
-             if (!ObjectUtils.isEmpty(errors)) {
-                 handleRequestValidationErrors(message, errors);
-             }
-             logger.debug("Request message validated");
-         }
-         else
-         {
-        	 logger.warn("Request source is null");
-         }
-	}
-	
-    protected void handleRequestValidationErrors(WebServiceMessage message, SAXParseException[] errors) {
-		throw new WsTestException("Request not valid. "+Arrays.toString(errors));
+		 schemaValidator.validate(message, validator);
 	}
 
 	public void afterPropertiesSet() throws IOException {
         if (validator == null && !ObjectUtils.isEmpty(schemas)) {
-            Assert.hasLength(schemaLanguage, "schemaLanguage is required");
-            for (int i = 0; i < schemas.length; i++) {
-                Assert.isTrue(schemas[i].exists(), "schema [" + schemas[i] + "] does not exist");
-            }
-            if (logger.isInfoEnabled()) {
-                logger.info("Validating using \"" + StringUtils.arrayToCommaDelimitedString(schemas)+"\"");
-            }
-            validator = XmlValidatorFactory.createValidator(schemas, schemaLanguage);
+            validator = getSchemaValidator().createValidatorFromSchemas(schemas, schemaLanguage);
         }
         Assert.notNull(validator, "Setting 'schema', 'schemas', 'xsdSchema', or 'xsdSchemaCollection' is required");
     }
@@ -179,6 +154,14 @@ public class SchemaRequestValidator implements InitializingBean, RequestProcesso
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public SchemaValidator getSchemaValidator() {
+		return schemaValidator;
+	}
+
+	public void setSchemaValidator(SchemaValidator schemaValidator) {
+		this.schemaValidator = schemaValidator;
 	}
 
 
