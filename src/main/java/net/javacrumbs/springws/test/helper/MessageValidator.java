@@ -36,6 +36,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.SoapEnvelopeException;
+import org.springframework.ws.soap.SoapFault;
 import org.springframework.ws.soap.SoapMessage;
 import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.springframework.xml.validation.XmlValidator;
@@ -245,6 +246,41 @@ public class MessageValidator {
 		}
 	}
 	
+	private SoapFault getFault() {
+		assertSoapFault();	
+		return getSoapMessage().getSoapBody().getFault();
+	}
+	
+	/**
+	 * Compares fault code.
+	 * @param expectedFaultCode
+	 * @return
+	 */
+	public MessageValidator assertFaultCode(String expectedFaultCode) {
+		String faultCode = getFault().getFaultCode().getLocalPart();
+		if (!expectedFaultCode.equals(faultCode))
+		{
+			throw new WsTestException("Expected fault code \""+expectedFaultCode+"\", get \""+faultCode+"\"");
+		}
+		return this;
+	}
+
+	/**
+	 * Compares faultsting or fault reason. See {@link SoapFault#getFaultStringOrReason()}.
+	 * @param expectedStringOrReason
+	 * @return 
+	 */
+	public MessageValidator assertFaultStringOrReason(String expectedStringOrReason) {
+		String faultStringOrReason = getFault().getFaultStringOrReason();
+		if (!expectedStringOrReason.equals(faultStringOrReason))
+		{
+			throw new WsTestException("Expected fault string or reason \""+expectedStringOrReason+"\", get \""+faultStringOrReason+"\"");
+		}
+		return this;
+	}
+
+
+	
 	/**
 	 * Does resource preprocessing. In default implementation just evaluates a template.
 	 * @param resource
@@ -291,6 +327,8 @@ public class MessageValidator {
 		freemarkerTemplateProcessor.afterPropertiesSet();
 		return useTemplateProcessor(freemarkerTemplateProcessor);
 	}
+	
+	
 	
 	/**
 	 * From now on use XSLT for templates.
@@ -355,18 +393,5 @@ public class MessageValidator {
 		return this;
 	}
 
-	/**
-	 * Compares fault code.
-	 * @param expectedFaultCode
-	 * @return
-	 */
-	public MessageValidator assertFaultCode(String expectedFaultCode) {
-		assertSoapFault();
-		String faultCode = getSoapMessage().getSoapBody().getFault().getFaultCode().getLocalPart();
-		if (!expectedFaultCode.equals(faultCode))
-		{
-			throw new WsTestException("Expected fault code \""+expectedFaultCode+"\", get \""+faultCode+"\"");
-		}
-		return this;
-	}
+
 }
