@@ -235,7 +235,11 @@ public class MessageValidator {
 		}
 	}
 
-	private SoapMessage getSoapMessage() {
+	/**
+	 * Returns soap message.
+	 * @return
+	 */
+	public SoapMessage getSoapMessage() {
 		if (message instanceof SoapMessage)
 		{
 			return (SoapMessage)message;
