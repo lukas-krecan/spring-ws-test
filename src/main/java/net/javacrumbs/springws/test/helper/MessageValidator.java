@@ -246,7 +246,11 @@ public class MessageValidator {
 		}
 	}
 	
-	private SoapFault getFault() {
+	/**
+	 * Returns SOAP fault.
+	 * @return
+	 */
+	public SoapFault getSoapFault() {
 		assertSoapFault();	
 		return getSoapMessage().getSoapBody().getFault();
 	}
@@ -257,7 +261,7 @@ public class MessageValidator {
 	 * @return
 	 */
 	public MessageValidator assertFaultCode(String expectedFaultCode) {
-		String faultCode = getFault().getFaultCode().getLocalPart();
+		String faultCode = getSoapFault().getFaultCode().getLocalPart();
 		if (!expectedFaultCode.equals(faultCode))
 		{
 			throw new WsTestException("Expected fault code \""+expectedFaultCode+"\", get \""+faultCode+"\"");
@@ -271,7 +275,7 @@ public class MessageValidator {
 	 * @return 
 	 */
 	public MessageValidator assertFaultStringOrReason(String expectedStringOrReason) {
-		String faultStringOrReason = getFault().getFaultStringOrReason();
+		String faultStringOrReason = getSoapFault().getFaultStringOrReason();
 		if (!expectedStringOrReason.equals(faultStringOrReason))
 		{
 			throw new WsTestException("Expected fault string or reason \""+expectedStringOrReason+"\", get \""+faultStringOrReason+"\"");
@@ -284,7 +288,7 @@ public class MessageValidator {
 	 * @return 
 	 */
 	public MessageValidator assertFaultActorOrRole(String expectedActorOrRole) {
-		String faultActorOrRole = getFault().getFaultActorOrRole();
+		String faultActorOrRole = getSoapFault().getFaultActorOrRole();
 		if (!expectedActorOrRole.equals(faultActorOrRole))
 		{
 			throw new WsTestException("Expected fault actor or role \""+expectedActorOrRole+"\", get \""+faultActorOrRole+"\"");

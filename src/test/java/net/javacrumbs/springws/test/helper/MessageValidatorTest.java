@@ -143,18 +143,14 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 		WebServiceMessage message = createMessage("xml/valid-message.xml");
 		new MessageValidator(message).assertSoapFault();
 	}
-	@Test
-	public void testAssertSoapFaultFail() throws Exception
-	{
-		WebServiceMessage message = createMessage("xml/fault.xml");
-		new MessageValidator(message).assertSoapFault();
-	}
+
 	@Test
 	public void testAssertSoapMessageFault() throws Exception
 	{
 		WebServiceMessage message = createMessage("xml/fault.xml");
-		new MessageValidator(message).assertSoapMessage().assertFaultCode("FaultCode").assertFaultStringOrReason("FaultString").assertFaultActorOrRole("FaultActor");
+		new MessageValidator(message).assertSoapMessage().assertSoapFault().assertFaultCode("FaultCode").assertFaultStringOrReason("FaultString").assertFaultActorOrRole("FaultActor");
 	}
+
 	@Test(expected=WsTestException.class)
 	public void testAssertSoapMessageFaultDiffernentCode() throws Exception
 	{
@@ -198,8 +194,4 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 		
 		WsTestContextHolder.getTestContext().clear();
 	}
-	//TODO add SOAP 1.2 tests
-
-
-
 }
