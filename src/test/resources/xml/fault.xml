@@ -3,8 +3,8 @@
 	<soapenv:Header />
 	<soapenv:Body>
 		<soapenv:Fault>
-			<faultcode>Fault</faultcode>
-			<faultstring>Fault</faultstring>
+			<faultcode>FaultCode</faultcode>
+			<faultstring>FaultString</faultstring>
 		</soapenv:Fault>
 	</soapenv:Body>
 </soapenv:Envelope>

@@ -32,7 +32,7 @@ import org.springframework.ws.WebServiceMessageFactory;
  * @author Lukas Krecan
  *
  */
-public abstract class AbstractExpressionEvaluator implements RequestProcessor {
+public abstract class AbstractExpressionProcessor implements RequestProcessor {
 
 	private static final String TRUE = Boolean.TRUE.toString();
 	
@@ -41,7 +41,7 @@ public abstract class AbstractExpressionEvaluator implements RequestProcessor {
 	private Map<String, String> exceptionMapping;
 	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 
-	public AbstractExpressionEvaluator() {
+	public AbstractExpressionProcessor() {
 		super();
 	}
 

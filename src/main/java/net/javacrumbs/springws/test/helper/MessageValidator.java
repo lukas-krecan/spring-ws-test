@@ -17,28 +17,39 @@
 package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.common.DefaultMessageComparator;
+import net.javacrumbs.springws.test.common.ExpressionEvaluator;
 import net.javacrumbs.springws.test.common.MessageComparator;
 import net.javacrumbs.springws.test.common.SchemaValidator;
-import net.javacrumbs.springws.test.expression.XPathExpressionResolver;
+import net.javacrumbs.springws.test.common.XPathExpressionEvaluator;
 import net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
-import net.javacrumbs.springws.test.validator.ExpressionAssertRequestValidator;
+import net.javacrumbs.springws.test.util.DefaultXmlUtil;
+import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.ws.FaultAwareWebServiceMessage;
 import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.soap.SoapEnvelopeException;
+import org.springframework.ws.soap.SoapMessage;
+import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.springframework.xml.validation.XmlValidator;
 import org.springframework.xml.validation.XmlValidatorFactory;
 
+
+/**
+ * Contains methods simplifying message validation.
+ * @author Lukas Krecan
+ *
+ */
 public class MessageValidator {
+
+	private static final String TRUE = Boolean.TRUE.toString();
 
 	private final WebServiceMessage message;
 	
@@ -46,13 +57,17 @@ public class MessageValidator {
 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 
-	private Map<String, String> namespaceMapping = new HashMap<String, String>();
+	private SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
 	
 	private MessageComparator messageComparator = new DefaultMessageComparator();
 	
 	private SchemaValidator schemaValidator = new SchemaValidator();
 
 	private String schemaLanguage = XmlValidatorFactory.SCHEMA_W3C_XML;
+	
+	private ExpressionEvaluator expressionEvaluator = new XPathExpressionEvaluator();
+	
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
 	public MessageValidator(WebServiceMessage message) {
 		this.message = message;
@@ -123,7 +138,8 @@ public class MessageValidator {
 	 * @return
 	 */
 	public MessageValidator useNamespaceMapping(Map<String, String> namespaceMapping) {
-		this.namespaceMapping  = new HashMap<String, String>(namespaceMapping);
+		namespaceContext = new SimpleNamespaceContext();
+		namespaceContext.setBindings(namespaceMapping);
 		return this;
 	}
 	
@@ -135,7 +151,7 @@ public class MessageValidator {
 	 */
 	public MessageValidator addNamespaceMapping(String prefix, String namespace)
 	{
-		this.namespaceMapping.put(prefix, namespace);
+		namespaceContext.bindNamespaceUri(prefix, namespace);
 		return this;
 	}
 	
@@ -146,17 +162,20 @@ public class MessageValidator {
 	 * @return
 	 */
 	public MessageValidator assertXPath(String xpath) {
-		ExpressionAssertRequestValidator validator = new ExpressionAssertRequestValidator();
-		validator.setAssertExpression(xpath);
-		XPathExpressionResolver expressionResolver = new XPathExpressionResolver();
-		expressionResolver.setNamespaceMap(namespaceMapping);
-		validator.setExpressionResolver(expressionResolver);
-		try {
-			validator.processRequest(null, null, message);
-		} catch (IOException e) {
-			processIOException(e);
+		if (!TRUE.equals(evaluateExpression(xpath)))
+		{
+			throw new WsTestException("Expression \""+xpath+"\" does not evaluate to true.");
 		}
 		return this;
+	}
+
+	/**
+	 * Evaluates expression
+	 * @param expression
+	 * @return
+	 */
+	protected String evaluateExpression(String expression) {
+		return expressionEvaluator.evaluateExpression(xmlUtil.loadDocument(message), expression, null, namespaceContext);
 	}
 	
 
@@ -175,6 +194,21 @@ public class MessageValidator {
 	
 	
 	/**
+	 * Assert that message is SOAP message (wrapped in SOAP envelope).
+	 */
+	public MessageValidator assertSoapMessage() {
+		SoapMessage soapMessage = getSoapMessage();
+		try
+		{
+			soapMessage.getEnvelope();
+		}
+		catch(SoapEnvelopeException e)
+		{
+			throw new WsTestException("Message is not a SOAP message",e);
+		}
+		return this;
+	}
+	/**
 	 * Assert that message is SOAP fault.
 	 */
 	public MessageValidator assertSoapFault() {
@@ -190,15 +224,25 @@ public class MessageValidator {
 	 * @return
 	 */
 	protected boolean isSoapFault() {
-		if (message instanceof FaultAwareWebServiceMessage)
+		if (getSoapMessage().hasFault()) 
 		{
-			FaultAwareWebServiceMessage faMessage = (FaultAwareWebServiceMessage)message;
-			if (faMessage.hasFault()) 
-			{
-				return true;
-			}
+			return true;
 		}
-		return false;
+		else
+		{
+			return false;
+		}
+	}
+
+	private SoapMessage getSoapMessage() {
+		if (message instanceof SoapMessage)
+		{
+			return (SoapMessage)message;
+		}
+		else
+		{
+			throw new WsTestException("The message is not SOAP message");
+		}
 	}
 	
 	/**
@@ -298,7 +342,31 @@ public class MessageValidator {
 		return this;		
 	}
 
+	public ExpressionEvaluator getExpressionEvaluator() {
+		return expressionEvaluator;
+	}
 
+	public void setExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
+		this.expressionEvaluator = expressionEvaluator;
+	}
 
+	public MessageValidator useExpressionEvaluator(ExpressionEvaluator expressionEvaluator) {
+		setExpressionEvaluator(expressionEvaluator);
+		return this;
+	}
 
+	/**
+	 * Compares fault code.
+	 * @param expectedFaultCode
+	 * @return
+	 */
+	public MessageValidator assertFaultCode(String expectedFaultCode) {
+		assertSoapFault();
+		String faultCode = getSoapMessage().getSoapBody().getFault().getFaultCode().getLocalPart();
+		if (!expectedFaultCode.equals(faultCode))
+		{
+			throw new WsTestException("Expected fault code \""+expectedFaultCode+"\", get \""+faultCode+"\"");
+		}
+		return this;
+	}
 }

@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.javacrumbs.springws.test.WsTestException;
-import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
+import net.javacrumbs.springws.test.expression.AbstractExpressionProcessor;
 import net.javacrumbs.springws.test.expression.ExpressionResolver;
 
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		String expression1 = "//ns:number = 0";
 		Map<String, String> expressionMap = Collections.singletonMap(expression1, ERROR_MESSAGE+"1");
 		
-		AbstractExpressionEvaluator validator = new XPathRequestValidator();
+		AbstractExpressionProcessor validator = new XPathRequestValidator();
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
 		validator.setExpressionResolver(resolver);
 		
@@ -80,7 +80,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		expressionMap.put(expression1, ERROR_MESSAGE+"1");
 		expressionMap.put(expression2, ERROR_MESSAGE+"2");
 		
-		AbstractExpressionEvaluator validator = new XPathRequestValidator();
+		AbstractExpressionProcessor validator = new XPathRequestValidator();
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
 		validator.setExpressionResolver(resolver);
 		
@@ -111,7 +111,7 @@ public class XPathRequestValidatorTest extends AbstractValidatorTest{
 		expressionMap.put(expression1, ERROR_MESSAGE+"1");
 		expressionMap.put(expression2, ERROR_MESSAGE+"2");
 		
-		AbstractExpressionEvaluator validator = new XPathRequestValidator();
+		AbstractExpressionProcessor validator = new XPathRequestValidator();
 		ExpressionResolver resolver = createMock(ExpressionResolver.class);
 		validator.setExpressionResolver(resolver);
 		

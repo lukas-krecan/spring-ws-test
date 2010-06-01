@@ -19,12 +19,10 @@ import java.net.URI;
 import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.javacrumbs.springws.test.common.ExpressionEvaluator;
+import net.javacrumbs.springws.test.common.XPathExpressionEvaluator;
+
 import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.w3c.dom.Document;
 
@@ -35,7 +33,8 @@ import org.w3c.dom.Document;
  */
 public class XPathExpressionResolver implements ExpressionResolver{
 	
-	private final Log logger = LogFactory.getLog(getClass());
+
+	private ExpressionEvaluator expressionEvaluator = new XPathExpressionEvaluator();
 
 	private NamespaceContext namespaceContext;
 
@@ -48,20 +47,7 @@ public class XPathExpressionResolver implements ExpressionResolver{
 	 * @return
 	 */
 	public String resolveExpression(String expression, URI uri, Document document) {
-		XPathFactory factory = XPathFactory.newInstance();
-		factory.setXPathVariableResolver(new WsTestXPathVariableResolver(uri));
-		try {
-			XPath xpath = factory.newXPath();
-			if (getNamespaceContext()!=null)
-			{
-				xpath.setNamespaceContext(getNamespaceContext());
-			}
-			String result = xpath.evaluate(expression, document);
-			logger.debug("Expression \"" + expression + "\" resolved to \"" + result+"\"");
-			return result;
-		} catch (XPathExpressionException e) {
-			throw new ExpressionResolverException("Could not evaluate XPath expression \"" + expression + "\" : \"" + e.getMessage()+"\"", e);
-		}
+		return expressionEvaluator.evaluateExpression(document, expression, uri, getNamespaceContext());
 	}
 
 	public void setNamespaceMap(Map<String, String> namespaceMap) {

@@ -150,6 +150,30 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 		new MessageValidator(message).assertSoapFault();
 	}
 	@Test
+	public void testAssertSoapMessageFault() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/fault.xml");
+		new MessageValidator(message).assertSoapMessage().assertFaultCode("FaultCode");
+	}
+	@Test(expected=WsTestException.class)
+	public void testAssertSoapMessageFaultDiffernentCode() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/fault.xml");
+		new MessageValidator(message).assertSoapMessage().assertFaultCode("XXX");
+	}
+	@Test
+	public void testAssertSoapMessage() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message.xml");
+		new MessageValidator(message).assertSoapMessage();
+	}
+	@Test(expected=WsTestException.class)
+	public void testAssertSoapMessageFail() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message-payload.xml");
+		new MessageValidator(message).assertSoapMessage();
+	}
+	@Test
 	public void testUseFreeMarker() throws Exception
 	{
 		WsTestContextHolder.getTestContext().setAttribute("a", 1);
@@ -162,5 +186,7 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 		
 		WsTestContextHolder.getTestContext().clear();
 	}
+
+
 
 }

@@ -17,7 +17,7 @@ package net.javacrumbs.springws.test.generator;
 
 
 import net.javacrumbs.springws.test.RequestProcessor;
-import net.javacrumbs.springws.test.expression.AbstractExpressionEvaluator;
+import net.javacrumbs.springws.test.expression.AbstractExpressionProcessor;
 
 import org.springframework.core.Ordered;
 import org.springframework.ws.client.WebServiceTransportException;
@@ -27,7 +27,7 @@ import org.springframework.ws.client.WebServiceTransportException;
  * @author Lukas Krecan
  *
  */
-public class WebServiceTransportExceptionGenerator extends AbstractExpressionEvaluator implements RequestProcessor, Ordered {
+public class WebServiceTransportExceptionGenerator extends AbstractExpressionProcessor implements RequestProcessor, Ordered {
 	
 
 	static final int DEFAULT_ORDER = 40;
