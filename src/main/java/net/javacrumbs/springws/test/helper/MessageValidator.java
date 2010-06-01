@@ -299,6 +299,16 @@ public class MessageValidator {
 		}
 		return this;
 	}
+	
+	/**
+	 * Asserts that the message contains element with given name. Namespace is ignored.
+	 * @param elementName
+	 * @return 
+	 */
+	public MessageValidator assertContainsElement(String elementName) {
+		assertXPath("count(//*[local-name()='"+elementName+"'])>0");
+		return this;		
+	}
 
 
 	
@@ -413,6 +423,8 @@ public class MessageValidator {
 		setExpressionEvaluator(expressionEvaluator);
 		return this;
 	}
+
+
 
 
 }
