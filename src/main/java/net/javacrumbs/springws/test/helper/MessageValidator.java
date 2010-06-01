@@ -266,7 +266,7 @@ public class MessageValidator {
 	}
 
 	/**
-	 * Compares faultsting or fault reason. See {@link SoapFault#getFaultStringOrReason()}.
+	 * Compares fault string or reason. See {@link SoapFault#getFaultStringOrReason()}.
 	 * @param expectedStringOrReason
 	 * @return 
 	 */
@@ -275,6 +275,19 @@ public class MessageValidator {
 		if (!expectedStringOrReason.equals(faultStringOrReason))
 		{
 			throw new WsTestException("Expected fault string or reason \""+expectedStringOrReason+"\", get \""+faultStringOrReason+"\"");
+		}
+		return this;
+	}
+	/**
+	 * Compares fault actor or role. See {@link SoapFault#getFaultActorOrRole()}.
+	 * @param expectedActorOrRole
+	 * @return 
+	 */
+	public MessageValidator assertFaultActorOrRole(String expectedActorOrRole) {
+		String faultActorOrRole = getFault().getFaultActorOrRole();
+		if (!expectedActorOrRole.equals(faultActorOrRole))
+		{
+			throw new WsTestException("Expected fault actor or role \""+expectedActorOrRole+"\", get \""+faultActorOrRole+"\"");
 		}
 		return this;
 	}

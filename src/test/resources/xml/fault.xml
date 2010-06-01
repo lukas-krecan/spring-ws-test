@@ -5,6 +5,7 @@
 		<soapenv:Fault>
 			<faultcode>FaultCode</faultcode>
 			<faultstring>FaultString</faultstring>
+			<faultactor>FaultActor</faultactor>
 		</soapenv:Fault>
 	</soapenv:Body>
 </soapenv:Envelope>

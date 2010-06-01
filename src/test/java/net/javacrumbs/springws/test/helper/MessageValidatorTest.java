@@ -153,7 +153,7 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 	public void testAssertSoapMessageFault() throws Exception
 	{
 		WebServiceMessage message = createMessage("xml/fault.xml");
-		new MessageValidator(message).assertSoapMessage().assertFaultCode("FaultCode").assertFaultStringOrReason("FaultString");
+		new MessageValidator(message).assertSoapMessage().assertFaultCode("FaultCode").assertFaultStringOrReason("FaultString").assertFaultActorOrRole("FaultActor");
 	}
 	@Test(expected=WsTestException.class)
 	public void testAssertSoapMessageFaultDiffernentCode() throws Exception
@@ -166,6 +166,12 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 	{
 		WebServiceMessage message = createMessage("xml/fault.xml");
 		new MessageValidator(message).assertSoapMessage().assertFaultCode("FaultCode").assertFaultStringOrReason("XXX");
+	}
+	@Test(expected=WsTestException.class)
+	public void testAssertSoapMessageFaultDifferentActor() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/fault.xml");
+		new MessageValidator(message).assertSoapMessage().assertFaultCode("FaultCode").assertFaultStringOrReason("FaultString").assertFaultActorOrRole("XXX");
 	}
 	@Test
 	public void testAssertSoapMessage() throws Exception
