@@ -47,7 +47,6 @@ public class InvalidMessagesTest extends AbstractValidatorTest{
 		responseGenerator.setNeverCreateEnvelope(true);
 		SimpleResourceLookup resourceLookup = new SimpleResourceLookup(new ClassPathResource("mock-responses/test/default-response-invalid.xml"));
 		resourceLookup.setTemplateProcessor(new TemplateProcessor() {
-			@Override
 			public Resource processTemplate(Resource resource, WebServiceMessage message) throws IOException {
 				return resource;
 			}
