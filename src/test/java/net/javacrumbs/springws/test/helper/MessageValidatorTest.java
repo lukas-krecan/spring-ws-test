@@ -126,17 +126,56 @@ public class MessageValidatorTest extends AbstractValidatorTest{
 	}
 	
 	@Test
-	public void testContainsElement() throws Exception
+	public void testContainElement() throws Exception
 	{
 		WebServiceMessage message = createMessage("xml/valid-message.xml");
-		new MessageValidator(message).assertContainsElement("number");
+		new MessageValidator(message).assertContainElement("number");
 	}
 	@Test(expected=WsTestException.class)
-	public void testContainsElementFail() throws Exception
+	public void testContainElementFail() throws Exception
 	{
 		WebServiceMessage message = createMessage("xml/valid-message.xml");
-		new MessageValidator(message).assertContainsElement("xxx");
+		new MessageValidator(message).assertContainElement("xxx");
 	}
+	@Test
+	public void testNotContainElement() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message.xml");
+		new MessageValidator(message).assertNotContainElement("xxx");
+	}
+	@Test(expected=WsTestException.class)
+	public void testNotContainElementFail() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message.xml");
+		new MessageValidator(message).assertNotContainElement("number");
+	}
+	
+	
+	@Test
+	public void testContain() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message.xml");
+		new MessageValidator(message).assertContain("<number>0</");
+	}
+	@Test(expected=WsTestException.class)
+	public void testContainFail() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message.xml");
+		new MessageValidator(message).assertContain("<number>1</");
+	}
+	@Test
+	public void testNotContain() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message.xml");
+		new MessageValidator(message).assertNotContain("<number>\\s*1</");
+	}
+	@Test(expected=WsTestException.class)
+	public void testNotContainFail() throws Exception
+	{
+		WebServiceMessage message = createMessage("xml/valid-message.xml");
+		new MessageValidator(message).assertNotContain("<number>0</");
+	}
+	
 	
 	@Test
 	public void testAssertNotSoapFault() throws Exception

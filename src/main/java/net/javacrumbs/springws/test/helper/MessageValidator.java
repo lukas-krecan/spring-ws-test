@@ -18,6 +18,7 @@ package net.javacrumbs.springws.test.helper;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.common.DefaultMessageComparator;
@@ -305,9 +306,57 @@ public class MessageValidator {
 	 * @param elementName
 	 * @return 
 	 */
-	public MessageValidator assertContainsElement(String elementName) {
+	public MessageValidator assertContainElement(String elementName) {
 		assertXPath("count(//*[local-name()='"+elementName+"'])>0");
 		return this;		
+	}
+
+	/**
+	 * Asserts that message does not contain given element. Namespace is ignored.
+	 * @param string
+	 * @return 
+	 */
+	public MessageValidator assertNotContainElement(String elementName) {
+		assertXPath("count(//*[local-name()='"+elementName+"'])=0");
+		return this;
+	}
+	
+
+	/**
+	 * Asserts that the message contains given reqular expression. The message is processed as text, so whitespaces are taken into account
+	 * @param string
+	 * @return 
+	 */
+	public MessageValidator assertContain(String regexp) {
+		if (!contains(regexp))
+		{
+			throw new WsTestException("Message does not contain regular expression \""+regexp+"\"");
+		}
+		return this;
+	}
+	
+	/**
+	 * Asserts that the message does not contain given reqular expression. The message is processed as text, so whitespaces are taken into account
+	 * @param string
+	 * @return 
+	 * @return 
+	 */
+	public MessageValidator assertNotContain(String regexp) {
+		if (contains(regexp))
+		{
+			throw new WsTestException("Message contains regular expression \""+regexp+"\"");
+		}
+		return this;
+	}
+	/**
+	 * Returns true if message contains regexp.
+	 * @param regexp
+	 * @return 
+	 */
+	private boolean contains(String regexp) {
+		String messageAsText = xmlUtil.serializeDocument(message);
+		Pattern pattern = Pattern.compile(regexp);
+		return pattern.matcher(messageAsText).find();
 	}
 
 
@@ -423,8 +472,4 @@ public class MessageValidator {
 		setExpressionEvaluator(expressionEvaluator);
 		return this;
 	}
-
-
-
-
 }
