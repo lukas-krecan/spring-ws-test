@@ -21,6 +21,8 @@ import java.io.IOException;
 import net.javacrumbs.springws.test.common.MessageGenerator;
 import net.javacrumbs.springws.test.template.TemplateProcessor;
 import net.javacrumbs.springws.test.template.XsltTemplateProcessor;
+import net.javacrumbs.springws.test.util.DefaultXmlUtil;
+import net.javacrumbs.springws.test.util.XmlUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,8 +71,9 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	private final Log logger = LogFactory.getLog(getClass());
 
 	private MessageGenerator generator = new MessageGenerator();
-
-
+	
+	private XmlUtil xmlUtil = new DefaultXmlUtil();
+	
 	/**
 	 * Creates a {@link MessageContext} from the message and calls  {@link WebServiceMessageReceiver#receive(MessageContext)}
 	 * @param message
@@ -79,7 +82,11 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 */
 	public MessageContext receiveMessage(WebServiceMessage message) throws Exception {
 		MessageContext context = createMessageContext(message);
-		getWebServiceMessageReceiver().receive(context);		
+		getWebServiceMessageReceiver().receive(context);	
+		if (logger.isTraceEnabled())
+		{
+			logger.trace("Retreived message: \""+getXmlUtil().serializeDocument(context.getResponse())+"\"");
+		}
 		return context;
 	}
 	/**
@@ -310,6 +317,12 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 
 	public void setGenerator(MessageGenerator generator) {
 		this.generator = generator;
+	}
+	public XmlUtil getXmlUtil() {
+		return xmlUtil;
+	}
+	public void setXmlUtil(XmlUtil xmlUtil) {
+		this.xmlUtil = xmlUtil;
 	}
 
 
