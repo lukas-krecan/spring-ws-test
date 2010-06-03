@@ -70,7 +70,18 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 
 	private MessageGenerator generator = new MessageGenerator();
 
-	
+
+	/**
+	 * Creates a {@link MessageContext} from the message and calls  {@link WebServiceMessageReceiver#receive(MessageContext)}
+	 * @param message
+	 * @return
+	 * @throws Exception
+	 */
+	public MessageContext receiveMessage(WebServiceMessage message) throws Exception {
+		MessageContext context = createMessageContext(message);
+		getWebServiceMessageReceiver().receive(context);		
+		return context;
+	}
 	/**
 	 * Creates a {@link MessageContext} from the resource and calls  {@link WebServiceMessageReceiver#receive(MessageContext)}
 	 * @param request
@@ -79,14 +90,9 @@ public class WsTestHelper implements ApplicationContextAware, InitializingBean, 
 	 */
 	//TODO rename
 	public MessageContext receiveMessage(Resource request) throws Exception {
-
 		WebServiceMessage message = loadMessage(request);		
-		
-		MessageContext context = createMessageContext(message);
-		getWebServiceMessageReceiver().receive(context);		
-		return context;
+		return receiveMessage(message);
 	}
-
 
 
 	/**
