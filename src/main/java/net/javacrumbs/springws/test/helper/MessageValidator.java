@@ -164,9 +164,18 @@ public class MessageValidator {
 	 * @return
 	 */
 	public MessageValidator assertXPath(String xpath) {
+		return assertXPath(xpath, "Expression \""+xpath+"\" does not evaluate to true.");
+	}
+	/**
+	 * Asserts XPath expression. If the expression is not evaluated to true, throws {@link WsTestException}.
+	 * It is possible to set namespace mapping using {@link #useNamespaceMapping(Map)}.
+	 * @param xpath
+	 * @return
+	 */
+	public MessageValidator assertXPath(String xpath, String errorMessage) {
 		if (!TRUE.equals(evaluateExpression(xpath)))
 		{
-			throw new WsTestException("Expression \""+xpath+"\" does not evaluate to true.");
+			throw new WsTestException(errorMessage);
 		}
 		return this;
 	}
@@ -307,8 +316,7 @@ public class MessageValidator {
 	 * @return 
 	 */
 	public MessageValidator assertContainElement(String elementName) {
-		assertXPath("count(//*[local-name()='"+elementName+"'])>0");
-		return this;		
+		return assertXPath("count(//*[local-name()='"+elementName+"'])>0", "Element \""+elementName+"\" not found.");
 	}
 
 	/**
@@ -317,8 +325,7 @@ public class MessageValidator {
 	 * @return 
 	 */
 	public MessageValidator assertNotContainElement(String elementName) {
-		assertXPath("count(//*[local-name()='"+elementName+"'])=0");
-		return this;
+		return assertXPath("count(//*[local-name()='"+elementName+"'])=0", "Element \""+elementName+"\" found.");
 	}
 	
 
