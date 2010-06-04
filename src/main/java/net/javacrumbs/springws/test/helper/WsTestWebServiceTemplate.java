@@ -97,7 +97,7 @@ public class WsTestWebServiceTemplate extends WebServiceTemplate implements Init
 	 * @param context
 	 * @throws IOException
 	 */
-	public void send(MessageContext context) throws IOException {
+	protected void send(MessageContext context) throws IOException {
 		WebServiceConnection connection = getMessageSenders()[0].createConnection(URI.create(getDefaultUri()));
 		doSendAndReceive(context, connection, DUMMY_REQUEST_CALLBACK, DUMMY_MESSAGE_EXTRACTOR); 			
 	}
