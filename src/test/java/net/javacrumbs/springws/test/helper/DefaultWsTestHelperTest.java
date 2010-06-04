@@ -200,7 +200,9 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 
 		DefaultWsTestHelper wsTestHelper = new DefaultWsTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setInterceptors(new ClientInterceptor[]{interceptor});
+		WsTestWebServiceTemplate webServiceTemplate = new WsTestWebServiceTemplate();
+		webServiceTemplate.setInterceptors(new ClientInterceptor[]{interceptor});
+		wsTestHelper.setWebServiceTemplate(webServiceTemplate);
 		wsTestHelper.setApplicationContext(applicationContext);
 		wsTestHelper.afterPropertiesSet();
 		

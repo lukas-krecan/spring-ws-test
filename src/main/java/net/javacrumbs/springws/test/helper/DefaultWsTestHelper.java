@@ -38,8 +38,6 @@ import org.springframework.util.Assert;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.core.FaultMessageResolver;
-import org.springframework.ws.client.core.WebServiceOperations;
-import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.DefaultMessageContext;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.support.DefaultStrategiesHelper;
@@ -76,9 +74,7 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 	
 	private XmlUtil xmlUtil = new DefaultXmlUtil();
 	
-	private ClientInterceptor[] interceptors = new ClientInterceptor[0];
-	
-	private InMemoryWebServiceTemplate webServiceTemplate;
+	private WsTestWebServiceTemplate webServiceTemplate;
 	
 	private static final FaultMessageResolver DUMMY_FAULT_MESSAGE_RESOLVER = new FaultMessageResolver()
 	{
@@ -245,12 +241,17 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 
 
 	protected void initializeWebServiceTemplate() {
-		webServiceTemplate = new InMemoryWebServiceTemplate();
+		if (webServiceTemplate==null)
+		{
+			webServiceTemplate = new WsTestWebServiceTemplate();
+			webServiceTemplate.setFaultMessageResolver(DUMMY_FAULT_MESSAGE_RESOLVER);
+		}
+		if (webServiceTemplate.getDefaultUri()==null)
+		{
+			webServiceTemplate.setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
+		}
+		//Replace default message sender.
 		webServiceTemplate.setMessageSender(new InMemoryWebServiceMessageSender(getMessageFactory(), getWebServiceMessageReceiver()));
-		webServiceTemplate.setInterceptors(interceptors);
-		webServiceTemplate.setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
-		webServiceTemplate.setFaultMessageResolver(DUMMY_FAULT_MESSAGE_RESOLVER);
-		webServiceTemplate.afterPropertiesSet();
 	}
 	
 	protected void initializeMessageFactory() throws Exception {
@@ -330,17 +331,15 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 	public void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
 	}
-	public ClientInterceptor[] getInterceptors() {
-		return interceptors;
-	}
-	public void setInterceptors(ClientInterceptor[] interceptors) {
-		this.interceptors = interceptors;
-	}
+
 	/* (non-Javadoc)
 	 * @see net.javacrumbs.springws.test.helper.WsTestHelper#getWebServiceTemplate()
 	 */
-	public WebServiceOperations getWebServiceTemplate() {
+	public WsTestWebServiceTemplate getWebServiceTemplate() {
 		return webServiceTemplate;
+	}
+	public void setWebServiceTemplate(WsTestWebServiceTemplate webServiceTemplate) {
+		this.webServiceTemplate = webServiceTemplate;
 	}
 
 

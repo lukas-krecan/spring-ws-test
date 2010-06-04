@@ -13,11 +13,11 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.transport.WebServiceConnection;
 
 /**
- * WebService template altered to be easy to use when sending messages in memory.
+ * WebService template to be used when testing WS server.
  * @author Lukas Krecan
  *
  */
-class InMemoryWebServiceTemplate extends WebServiceTemplate {
+public class WsTestWebServiceTemplate extends WebServiceTemplate {
 	private static final WebServiceMessageCallback DUMMY_REQUEST_CALLBACK = new WebServiceMessageCallback()
 	{
 		public void doWithMessage(WebServiceMessage message) throws IOException ,TransformerException {};
