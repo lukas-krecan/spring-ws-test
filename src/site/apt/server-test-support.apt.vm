@@ -62,22 +62,20 @@ Server test support
   
 ---
 @RunWith(SpringJUnit4ClassRunner.class)
-
-//your endpoint configuration + Default helper config
-@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/spring-ws-servlet.xml",
-      WsTestHelper.DEFAULT_CONFIG_PATH
-})
+// your endpoint configuration + Default helper config
+@ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring-ws-servlet.xml",
+		WsTestHelper.DEFAULT_CONFIG_PATH })
 public class EndpointTest {
 
-    @Autowired
-    private WsTestHelper helper;
- 
+	@Autowired
+	private WsTestHelper helper;
+
 	@Test
 	public void testSimple() throws Exception {
 		// simulates request coming to MessageDispatcherServlet
 		MessageContext message = helper.receiveMessage("request1.xml");
-		// compare response with control response
-		helper.createMessageValidator(message.getResponse()).assertNotSoapFault().compare("response1.xml");
+		// assert that response is not fault
+		helper.createMessageValidator(message.getResponse()).assertNotSoapFault();
 	}
 }
 ---
@@ -175,11 +173,76 @@ public class AlternativeEndpointTest {
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean class="net.javacrumbs.springws.test.helper.WsTestHelper">
+	<bean class="net.javacrumbs.springws.test.helper.DefaultWsTestHelper">
 		<property name="templateProcessor">
 			<bean class="net.javacrumbs.springws.test.template.FreeMarkerTemplateProcessor"/>
 		</property>
 	</bean>
 
 </beans>
----   
+---
+
+* WebServiceTemplate test
+
+   It's not necessary to use WsTestHelper for test. It's also possible to use <<<WebServiceTemplate>>> for the test. In order to do this, you have to configure it
+   
+---
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="contextPath" value="net.javacrumbs.calc.model" />
+	</bean>
+
+	<bean id="webServiceTemplate" class="net.javacrumbs.springws.test.helper.WsTestWebServiceTemplate">
+		<property name="marshaller" ref="marshaller"/>
+		<property name="unmarshaller" ref="marshaller"/>
+	</bean>
+	
+</beans>
+---
+
+   Then, you can write test as normal Spring WS client. For example:
+   
+---
+@RunWith(SpringJUnit4ClassRunner.class)
+// your endpoint configuration + extended config
+@ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring-ws-servlet.xml",
+		"classpath:spring/marshalling-helper-config.xml" })
+public class MarshallingEndpointTest {
+
+	@Autowired
+	private WebServiceOperations wsTemplate;
+	
+	@Test
+	public void testSimple() throws Exception {
+		PlusRequest request = new PlusRequest();
+		request.setA(1);
+		request.setB(2);
+		
+		PlusResponse response = (PlusResponse) wsTemplate.marshalSendAndReceive(request);
+		// assert that response is not fault
+		assertEquals(3, response.getResult());
+	}
+	@Test
+	public void testError() throws Exception {
+		PlusRequest request = new PlusRequest();
+		request.setA(Integer.MAX_VALUE);
+		request.setB(2);
+		
+		try
+		{
+			wsTemplate.marshalSendAndReceive(request);
+			fail("Exception expected");
+		}
+		catch(SoapFaultClientException e)
+		{
+			assertEquals("Values are too big.",e.getSoapFault().getFaultStringOrReason());
+			//or an alternative error validation 
+			new MessageValidator(e.getWebServiceMessage()).assertSoapFault().assertFaultStringOrReason("Values are too big.");
+		}
+
+	}
+}
+---     
