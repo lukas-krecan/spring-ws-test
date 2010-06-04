@@ -65,7 +65,7 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 
 	private MessageGenerator generator = new MessageGenerator();
 	
-	private XmlUtil xmlUtil = new DefaultXmlUtil();
+	private XmlUtil xmlUtil = DefaultXmlUtil.getInstance();
 	
 	private WsTestWebServiceTemplate webServiceTemplate;
 	
