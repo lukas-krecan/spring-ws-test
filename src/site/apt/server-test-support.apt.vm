@@ -77,17 +77,40 @@ public class EndpointTest {
 		// assert that response is not fault
 		helper.createMessageValidator(message.getResponse()).assertNotSoapFault();
 	}
+	
+	@Test
+	public void testCompare() throws Exception {
+		// simulates request coming to MessageDispatcherServlet
+		MessageContext message = helper.receiveMessage("request1.xml");
+		// compare response with control response
+		helper.createMessageValidator(message.getResponse()).assertNotSoapFault().compare("response1.xml");
+	}
 }
 ---
 
   This test loads <<<request1.xml>>> and simulates that its content came as a SOAP request. Tested application processes the request and returns a
-  response. The response can be compared with expected value. In the example above the response is compared to <<<response1.xml>>>.
+  response. The response can be either just validated that it does not contain error or it can be compared with expected value. In the example above the response is compared to <<<response1.xml>>>.
   
   Both request and response can be defined as payload only. If the message does not contain SOAP envelope, the message is automatically wrapped to one.
 
-  Please note, that you do not have to start servlet engine. The test can run as normal unit test. Web.xml is ignored, if you have multiple servers to test, 
+  Please note, that you do not have to start servlet engine. The test can run as normal unit test. Web.xml is ignored, if you have multiple servlets to test, 
   it's possible to write multiple test classes each of them using configuration for given servlet.  
-  
+
+* Response validation
+
+   It's also possible to use more sophisticated validation assertions  
+   
+---
+	@Test
+	public void testAssertXPath() throws Exception {
+		// simulates request coming to MessageDispatcherServlet
+		MessageContext message = helper.receiveMessage("request1.xml");
+		//validate response
+		helper.createMessageValidator(message.getResponse()).assertNotSoapFault().validate("xsd/calc.xsd")
+			.addNamespaceMapping("ns", "http://javacrumbs.net/calc").assertXPath("//ns:result=3");
+	}
+---  
+
 * Templates
   
   It is possible to use templates for both request and response. One possible example can look like this.
@@ -101,7 +124,8 @@ public void testResponseTemplate() throws Exception {
 	// simulates request coming to MessageDispatcherServlet
 	MessageContext message = helper.receiveMessage("request-context-xslt.xml");
 	// compare response with control response
-	helper.compareMessage("response-context-xslt.xml", message.getResponse());
+	helper.createMessageValidator(message.getResponse()).assertNotSoapFault().compare("response-context-xslt.xml");
+	
 	WsTestContextHolder.getTestContext().clear();
 }
 ---   
@@ -125,20 +149,7 @@ public void testResponseTemplate() throws Exception {
 	</xsl:template>
 </xsl:stylesheet>
 ---
-* Response validation
 
-   It's also possible to use more sophisticated validation assertions  
-   
----
-	@Test
-	public void testAssertXPath() throws Exception {
-		// simulates request coming to MessageDispatcherServlet
-		MessageContext message = helper.receiveMessage("request1.xml");
-		//validate response
-		helper.createMessageValidator(message.getResponse()).assertNotSoapFault().validate("xsd/calc.xsd")
-			.addNamespaceMapping("ns", "http://javacrumbs.net/calc").assertXPath("//ns:result=3");
-	}
----
 
 * Alternative configuration
 
@@ -184,7 +195,7 @@ public class AlternativeEndpointTest {
 
 * WebServiceTemplate test
 
-   It's not necessary to use WsTestHelper for test. It's also possible to use <<<WebServiceTemplate>>> for the test. In order to do this, you have to configure it
+   It's not necessary to use WsTestHelper for the test. It's also possible to use <<<WebServiceTemplate>>>. In order to do this, you have to configure it
    
 ---
 <beans xmlns="http://www.springframework.org/schema/beans"
