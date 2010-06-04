@@ -94,7 +94,6 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		assertEquals(applicationContext.getBean("messageFactory"),wsTestHelper.getMessageFactory());
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendMessageAndCompareResponse() throws Exception
 	{
@@ -102,9 +101,8 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		assertNotNull(message);
 		assertNotNull(message.getResponse().getPayloadSource());
 		
-		wsTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
+		wsTestHelper.createMessageValidator(message.getResponse()).compare("mock-responses/test/default-response.xml");
 	}
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendPayloadMessageAndCompareResponse() throws Exception
 	{
@@ -112,9 +110,8 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		assertNotNull(message);
 		assertNotNull(message.getResponse().getPayloadSource());
 		
-		wsTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
+		wsTestHelper.createMessageValidator(message.getResponse()).compare("mock-responses/test/default-response.xml");
 	}
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendMessageAndCompareResponseFail() throws Exception
 	{
@@ -124,7 +121,7 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		
 		try
 		{
-			wsTestHelper.compareMessage("mock-responses/test/different-response.xml", message.getResponse());
+			wsTestHelper.createMessageValidator(message.getResponse()).compare("mock-responses/test/different-response.xml");
 			fail("Exception expected");
 		}
 		catch(WsTestException e)
@@ -152,42 +149,6 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		assertTrue(diff.toString(), diff.similar());
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Test(expected=WsTestException.class)
-	public void testValidateResponseFail() throws Exception
-	{
-		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
-		wsTestHelper.validateMessage(message, "xml/schema.xsd");
-	}
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testValidateResponseOk() throws Exception
-	{
-		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
-		wsTestHelper.validateMessage(message, "xml/schema.xsd");
-	}
-	@SuppressWarnings("deprecation")
-	@Test(expected=WsTestException.class)
-	public void testValidateResponseMultipleSchemesFail() throws Exception
-	{
-		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
-		wsTestHelper.validateMessage(message, "xml/calc.xsd", "xml/schema.xsd");
-	}
-	@SuppressWarnings("deprecation")
-	@Test(expected=WsTestException.class)
-	public void testValidateResponseMultipleSchemesFail2() throws Exception
-	{
-		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
-		wsTestHelper.validateMessage(message, "xml/schema.xsd", "xml/calc.xsd");
-	}
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testValidateResponseMultipleSchemesOk() throws Exception
-	{
-		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
-		wsTestHelper.validateMessage(message, "xml/calc.xsd", "xml/schema.xsd");
-		wsTestHelper.validateMessage(message, "xml/schema.xsd", "xml/calc.xsd");
-	}
 	
 	@Test
 	public void testInterceptorOk() throws Exception
@@ -200,9 +161,7 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 
 		DefaultWsTestHelper wsTestHelper = new DefaultWsTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		WsTestWebServiceTemplate webServiceTemplate = new WsTestWebServiceTemplate();
-		webServiceTemplate.setInterceptors(new ClientInterceptor[]{interceptor});
-		wsTestHelper.setWebServiceTemplate(webServiceTemplate);
+		wsTestHelper.setInterceptors(new ClientInterceptor[]{interceptor});
 		wsTestHelper.setApplicationContext(applicationContext);
 		wsTestHelper.afterPropertiesSet();
 		

@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.core.FaultMessageResolver;
+import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.DefaultMessageContext;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.support.DefaultStrategiesHelper;
@@ -75,6 +76,8 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 	private XmlUtil xmlUtil = new DefaultXmlUtil();
 	
 	private WsTestWebServiceTemplate webServiceTemplate;
+	
+	private ClientInterceptor[] interceptors;
 	
 	private static final FaultMessageResolver DUMMY_FAULT_MESSAGE_RESOLVER = new FaultMessageResolver()
 	{
@@ -159,44 +162,7 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 		messageValidator.setTemplateProcessor(templateProcessor);
 		return messageValidator;
 	}
-	/* (non-Javadoc)
-	 * @see net.javacrumbs.springws.test.helper.WsTestHelper#compareMessage(org.springframework.core.io.Resource, org.springframework.ws.WebServiceMessage)
-	 */
-	@Deprecated
-	public void compareMessage(Resource resource, WebServiceMessage message) throws IOException {
-		createMessageValidator(message).compare(resource);
-	}
 
-
-	/* (non-Javadoc)
-	 * @see net.javacrumbs.springws.test.helper.WsTestHelper#compareMessage(java.lang.String, org.springframework.ws.WebServiceMessage)
-	 */
-	@Deprecated 
-	public void compareMessage(String resourcePath, WebServiceMessage message) throws IOException {
-		compareMessage(resourceLoader.getResource(resourcePath), message);		
-	}
-
-	/**
-	 * Validates if the message corresponds to given XSD.
-	 * @param message
-	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
-	 */
-	@Deprecated
-	public void validateMessage(WebServiceMessage message, Resource schema, Resource... schemas) throws IOException{
-		createMessageValidator(message).validate(schema, schemas);
-	}
-	
-	/**
-	 * Validates if the message corresponds to given XSDs.
-	 * @param message
-	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
-	 */
-	@Deprecated
-	public void validateMessage(WebServiceMessage message, String schemaPath, String... schemaPaths) throws IOException{
-		createMessageValidator(message).validate(schemaPath, schemaPaths);
-	}
-
-	
 	/* (non-Javadoc)
 	 * @see net.javacrumbs.springws.test.helper.WsTestHelper#getWebServiceMessageReceiver()
 	 */
@@ -241,18 +207,15 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 
 
 	protected void initializeWebServiceTemplate() {
-		if (webServiceTemplate==null)
-		{
-			webServiceTemplate = new WsTestWebServiceTemplate();
-		}
-		if (webServiceTemplate.getDefaultUri()==null)
-		{
-			webServiceTemplate.setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
-		}
-		//usually we are not interested in client SOAP faults.
+		webServiceTemplate = new WsTestWebServiceTemplate();
+		webServiceTemplate.setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
+		//we are not interested in client SOAP faults.
 		webServiceTemplate.setFaultMessageResolver(DUMMY_FAULT_MESSAGE_RESOLVER);
 		//Replace default message sender.
 		webServiceTemplate.setMessageSender(new InMemoryWebServiceMessageSender(getMessageFactory(), getWebServiceMessageReceiver()));
+		
+		webServiceTemplate.setInterceptors(interceptors);
+		webServiceTemplate.afterPropertiesSet();
 	}
 	
 	protected void initializeMessageFactory() throws Exception {
@@ -332,17 +295,10 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 	public void setXmlUtil(XmlUtil xmlUtil) {
 		this.xmlUtil = xmlUtil;
 	}
-
-	/* (non-Javadoc)
-	 * @see net.javacrumbs.springws.test.helper.WsTestHelper#getWebServiceTemplate()
-	 */
-	public WsTestWebServiceTemplate getWebServiceTemplate() {
-		return webServiceTemplate;
+	public ClientInterceptor[] getInterceptors() {
+		return interceptors;
 	}
-	public void setWebServiceTemplate(WsTestWebServiceTemplate webServiceTemplate) {
-		this.webServiceTemplate = webServiceTemplate;
+	public void setInterceptors(ClientInterceptor[] interceptors) {
+		this.interceptors = interceptors;
 	}
-
-
-
 }

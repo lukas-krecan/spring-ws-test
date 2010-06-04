@@ -7,7 +7,6 @@ import net.javacrumbs.springws.test.util.XmlUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
-import org.springframework.ws.client.core.WebServiceOperations;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.transport.WebServiceMessageReceiver;
 
@@ -86,32 +85,9 @@ public interface WsTestHelper {
 	 */
 	public abstract MessageValidator createMessageValidator(WebServiceMessage message);
 
-	/**
-	 * Compares message with the resource. 
-	 * @param resource
-	 * @param message
-	 * @throws IOException
-	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
-	 */
-	@Deprecated
-	public abstract void compareMessage(Resource resource, WebServiceMessage message) throws IOException;
-
-	/**
-	 * Compares message with the resource.
-	 * @deprecated use {@link #createMessageValidator(WebServiceMessage)} instead
-	 * @param resourcePath
-	 * @param message
-	 * @throws IOException
-	 */
-	@Deprecated
-	public abstract void compareMessage(String resourcePath, WebServiceMessage message) throws IOException;
-
 	public abstract WebServiceMessageReceiver getWebServiceMessageReceiver();
 
 	public abstract WebServiceMessageFactory getMessageFactory();
 
 	public abstract XmlUtil getXmlUtil();
-
-	public abstract WebServiceOperations getWebServiceTemplate();
-
 }

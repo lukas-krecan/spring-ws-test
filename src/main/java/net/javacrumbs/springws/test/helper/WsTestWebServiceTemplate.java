@@ -17,7 +17,7 @@ import org.springframework.ws.transport.WebServiceConnection;
  * @author Lukas Krecan
  *
  */
-public class WsTestWebServiceTemplate extends WebServiceTemplate  {
+class WsTestWebServiceTemplate extends WebServiceTemplate  {
 	
 	private static final WebServiceMessageCallback DUMMY_REQUEST_CALLBACK = new WebServiceMessageCallback()
 	{
