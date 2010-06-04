@@ -5,7 +5,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 		
-	<bean id="messageReceiver" class="org.springframework.ws.server.MessageDispatcher"/>
+	<bean id="messageReceiver" class="org.springframework.ws.server.MessageDispatcher">
+		<property name="endpointExceptionResolvers">
+			<list>
+				<bean class="org.springframework.ws.soap.server.endpoint.SimpleSoapExceptionResolver"/>
+			</list>
+		</property>
+	</bean>
 	
 	<bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
 	

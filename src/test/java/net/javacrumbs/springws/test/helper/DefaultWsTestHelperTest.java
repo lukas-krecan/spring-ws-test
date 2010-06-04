@@ -16,6 +16,11 @@
 
 package net.javacrumbs.springws.test.helper;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -27,23 +32,37 @@ import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 
 import org.custommonkey.xmlunit.Diff;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
+import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.server.MessageDispatcher;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageReceiver;
 import org.w3c.dom.Document;
 
-public class WsTestHelperTest extends AbstractMessageTest{
+public class DefaultWsTestHelperTest extends AbstractMessageTest{
 
+	private DefaultWsTestHelper wsTestHelper;
+	
+	
+	@Before
+	public void setUp() throws Exception
+	{
+		wsTestHelper = new DefaultWsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+	}
+	
 	@Test
 	public void testCreateDefault() throws Exception
 	{
-		WsTestHelper wsServerTestHelper = new WsTestHelper();
+		DefaultWsTestHelper wsServerTestHelper = new DefaultWsTestHelper();
 		wsServerTestHelper.afterPropertiesSet();
 		assertTrue(wsServerTestHelper.getWebServiceMessageReceiver() instanceof WebServiceMessageReceiver);
 		assertTrue(wsServerTestHelper.getMessageFactory() instanceof WebServiceMessageFactory);
@@ -51,7 +70,7 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test
 	public void testInitializeSet() throws Exception
 	{
-		WsTestHelper wsServerTestHelper = new WsTestHelper();
+		DefaultWsTestHelper wsServerTestHelper = new DefaultWsTestHelper();
 		MessageDispatcher dispatcher = new MessageDispatcher();
 		wsServerTestHelper.setWebServiceMessageReceiver(dispatcher);
 		wsServerTestHelper.afterPropertiesSet();
@@ -65,60 +84,47 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test
 	public void testInitializeFromApplicationContext() throws Exception
 	{
-		
-		WsTestHelper wsServerTestHelper = new WsTestHelper();
+		DefaultWsTestHelper wsTestHelper = new DefaultWsTestHelper();
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsServerTestHelper.setApplicationContext(applicationContext);
-		wsServerTestHelper.afterPropertiesSet();
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
 		
-		assertTrue(wsServerTestHelper.getWebServiceMessageReceiver() instanceof WebServiceMessageReceiver);
-		assertEquals(applicationContext.getBean("messageReceiver"),wsServerTestHelper.getWebServiceMessageReceiver());
-		assertEquals(applicationContext.getBean("messageFactory"),wsServerTestHelper.getMessageFactory());
+		assertTrue(wsTestHelper.getWebServiceMessageReceiver() instanceof WebServiceMessageReceiver);
+		assertEquals(applicationContext.getBean("messageReceiver"),wsTestHelper.getWebServiceMessageReceiver());
+		assertEquals(applicationContext.getBean("messageFactory"),wsTestHelper.getMessageFactory());
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendMessageAndCompareResponse() throws Exception
 	{
-		WsTestHelper wsServerTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsServerTestHelper.setApplicationContext(applicationContext);
-		wsServerTestHelper.afterPropertiesSet();
-		MessageContext message = wsServerTestHelper.receiveMessage("xml/valid-message.xml");
+		MessageContext message = wsTestHelper.receiveMessage("xml/valid-message.xml");
 		assertNotNull(message);
 		assertNotNull(message.getResponse().getPayloadSource());
 		
-		wsServerTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
+		wsTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
 	}
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendPayloadMessageAndCompareResponse() throws Exception
 	{
-		WsTestHelper wsServerTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsServerTestHelper.setApplicationContext(applicationContext);
-		wsServerTestHelper.afterPropertiesSet();
-		MessageContext message = wsServerTestHelper.receiveMessage("xml/valid-message-payload.xml");
+		MessageContext message = wsTestHelper.receiveMessage("xml/valid-message-payload.xml");
 		assertNotNull(message);
 		assertNotNull(message.getResponse().getPayloadSource());
 		
-		wsServerTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
+		wsTestHelper.compareMessage("mock-responses/test/default-response.xml", message.getResponse());
 	}
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testSendMessageAndCompareResponseFail() throws Exception
 	{
-		WsTestHelper wsServerTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsServerTestHelper.setApplicationContext(applicationContext);
-		wsServerTestHelper.afterPropertiesSet();
-		MessageContext message = wsServerTestHelper.receiveMessage("xml/valid-message.xml");
+		MessageContext message = wsTestHelper.receiveMessage("xml/valid-message.xml");
 		assertNotNull(message);
 		assertNotNull(message.getResponse().getPayloadSource());
 		
 		try
 		{
-			wsServerTestHelper.compareMessage("mock-responses/test/different-response.xml", message.getResponse());
+			wsTestHelper.compareMessage("mock-responses/test/different-response.xml", message.getResponse());
 			fail("Exception expected");
 		}
 		catch(WsTestException e)
@@ -129,11 +135,6 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test
 	public void testLoadMessage() throws Exception
 	{
-		WsTestHelper wsTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setApplicationContext(applicationContext);
-		wsTestHelper.afterPropertiesSet();
-		
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
 		assertNotNull(message);
 		Document document = DefaultXmlUtil.getInstance().loadDocument(message.getPayloadSource());
@@ -142,12 +143,6 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test
 	public void testLoadTemplate() throws Exception
 	{
-		
-		WsTestHelper wsTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setApplicationContext(applicationContext);
-		wsTestHelper.afterPropertiesSet();
-		
 		WsTestContextHolder.getTestContext().setAttribute("a", 1);
 		WsTestContextHolder.getTestContext().setAttribute("b", 2);
 
@@ -161,11 +156,6 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testValidateResponseFail() throws Exception
 	{
-		WsTestHelper wsTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setApplicationContext(applicationContext);
-		wsTestHelper.afterPropertiesSet();
-		
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/schema.xsd");
 	}
@@ -173,11 +163,6 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test
 	public void testValidateResponseOk() throws Exception
 	{
-		WsTestHelper wsTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setApplicationContext(applicationContext);
-		wsTestHelper.afterPropertiesSet();
-		
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/schema.xsd");
 	}
@@ -185,11 +170,6 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testValidateResponseMultipleSchemesFail() throws Exception
 	{
-		WsTestHelper wsTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setApplicationContext(applicationContext);
-		wsTestHelper.afterPropertiesSet();
-		
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/calc.xsd", "xml/schema.xsd");
 	}
@@ -197,11 +177,6 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test(expected=WsTestException.class)
 	public void testValidateResponseMultipleSchemesFail2() throws Exception
 	{
-		WsTestHelper wsTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setApplicationContext(applicationContext);
-		wsTestHelper.afterPropertiesSet();
-		
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/invalid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/schema.xsd", "xml/calc.xsd");
 	}
@@ -209,14 +184,37 @@ public class WsTestHelperTest extends AbstractMessageTest{
 	@Test
 	public void testValidateResponseMultipleSchemesOk() throws Exception
 	{
-		WsTestHelper wsTestHelper = new WsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
-		wsTestHelper.setApplicationContext(applicationContext);
-		wsTestHelper.afterPropertiesSet();
-		
 		WebServiceMessage message = wsTestHelper.loadMessage("xml/valid-message.xml");
 		wsTestHelper.validateMessage(message, "xml/calc.xsd", "xml/schema.xsd");
 		wsTestHelper.validateMessage(message, "xml/schema.xsd", "xml/calc.xsd");
+	}
+	
+	@Test
+	public void testInterceptorOk() throws Exception
+	{
+		ClientInterceptor interceptor = createMock(ClientInterceptor.class);
+		expect(interceptor.handleRequest((MessageContext)anyObject())).andReturn(true);
+		expect(interceptor.handleResponse((MessageContext)anyObject())).andReturn(true);
+		
+		replay(interceptor);
+
+		DefaultWsTestHelper wsTestHelper = new DefaultWsTestHelper();
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		wsTestHelper.setInterceptors(new ClientInterceptor[]{interceptor});
+		wsTestHelper.setApplicationContext(applicationContext);
+		wsTestHelper.afterPropertiesSet();
+		
+		wsTestHelper.receiveMessage("xml/valid-message.xml");
+		
+		verify(interceptor);
+				
+	}
+	
+	@Test
+	public void testReceiveError() throws Exception
+	{
+		MessageContext context = wsTestHelper.receiveMessage("xml/invalid-message.xml");
+		assertNotNull(context);		
 	}
 	
 }

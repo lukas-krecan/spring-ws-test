@@ -16,15 +16,38 @@
 
 package net.javacrumbs.springws.test.helper;
 
+import java.util.Collections;
+
 import javax.xml.transform.Source;
 
+import net.javacrumbs.springws.test.common.XPathExpressionEvaluator;
+import net.javacrumbs.springws.test.util.DefaultXmlUtil;
+
 import org.springframework.ws.server.endpoint.PayloadEndpoint;
+import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.springframework.xml.transform.StringSource;
+import org.w3c.dom.Document;
 
 public class DummyEndpoint implements PayloadEndpoint {
 
 	public Source invoke(Source request) throws Exception {
-		return new StringSource("<test xmlns=\"http://www.example.org/schema\"><number>0</number><text>text</text></test>");
+		if (!shoulReturnError(request))
+		{
+			return new StringSource("<test xmlns=\"http://www.example.org/schema\"><number>0</number><text>text</text></test>");	
+		}
+		else
+		{
+			throw new RuntimeException("Test exception, do not panic.");
+		}
+		
+	}
+
+	private boolean shoulReturnError(Source request) {
+		XPathExpressionEvaluator evaluator = new XPathExpressionEvaluator();
+		Document document = DefaultXmlUtil.getInstance().loadDocument(request);
+		SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
+		namespaceContext.setBindings(Collections.singletonMap("ns", "http://www.example.org/schema"));
+		return "true".equals(evaluator.evaluateExpression(document, "//ns:number='not-number'", null, namespaceContext));
 	}
 
 }

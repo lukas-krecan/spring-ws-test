@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ws.context.MessageContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:context/server/dispatcher.xml", WsTestHelper.DEFAULT_CONFIG_PATH})
+@ContextConfiguration(locations={"classpath:context/server/dispatcher.xml", DefaultWsTestHelper.DEFAULT_CONFIG_PATH})
 public class AnnotationConfigTest {
 
 	@Autowired
