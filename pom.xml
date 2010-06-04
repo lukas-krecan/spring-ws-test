@@ -235,6 +235,17 @@
 			</build>
 		</profile>
 	</profiles>
+	
+	<mailingLists>
+	    <mailingList>
+	      <name>Spring WS Test mailing list</name>
+	      <subscribe>spring-ws-test+subscribe@googlegroups.com</subscribe>
+	      <unsubscribe>spring-ws-test+unsubscribe@googlegroups.com</unsubscribe>
+	      <post>spring-ws-test@googlegroups.com</post>
+	      <archive>http://groups.google.com/group/spring-ws-test/</archive>
+	    </mailingList>
+	</mailingLists>
+	
 
 <!--		<pluginRepositories>-->
 <!--			<pluginRepository>-->
