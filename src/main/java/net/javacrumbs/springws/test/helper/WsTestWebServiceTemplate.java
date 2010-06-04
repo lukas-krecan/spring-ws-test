@@ -17,7 +17,8 @@ import org.springframework.ws.transport.WebServiceConnection;
  * @author Lukas Krecan
  *
  */
-public class WsTestWebServiceTemplate extends WebServiceTemplate {
+public class WsTestWebServiceTemplate extends WebServiceTemplate  {
+	
 	private static final WebServiceMessageCallback DUMMY_REQUEST_CALLBACK = new WebServiceMessageCallback()
 	{
 		public void doWithMessage(WebServiceMessage message) throws IOException ,TransformerException {};
@@ -29,8 +30,17 @@ public class WsTestWebServiceTemplate extends WebServiceTemplate {
 		}
 	};
 	
+	/* (non-Javadoc)
+	 * @see net.javacrumbs.springws.test.helper.WsTestWebServiceTemplate#send(org.springframework.ws.context.MessageContext)
+	 */
 	public void send(MessageContext context) throws IOException {
 		WebServiceConnection connection = getMessageSenders()[0].createConnection(URI.create(getDefaultUri()));
 		doSendAndReceive(context, connection, DUMMY_REQUEST_CALLBACK, DUMMY_MESSAGE_EXTRACTOR); 			
+	}
+	
+	@Override
+	public void afterPropertiesSet() {
+		super.afterPropertiesSet();
+		
 	}
 }

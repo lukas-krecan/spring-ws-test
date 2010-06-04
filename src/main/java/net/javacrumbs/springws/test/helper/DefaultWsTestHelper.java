@@ -244,12 +244,13 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 		if (webServiceTemplate==null)
 		{
 			webServiceTemplate = new WsTestWebServiceTemplate();
-			webServiceTemplate.setFaultMessageResolver(DUMMY_FAULT_MESSAGE_RESOLVER);
 		}
 		if (webServiceTemplate.getDefaultUri()==null)
 		{
 			webServiceTemplate.setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
 		}
+		//usually we are not interested in client SOAP faults.
+		webServiceTemplate.setFaultMessageResolver(DUMMY_FAULT_MESSAGE_RESOLVER);
 		//Replace default message sender.
 		webServiceTemplate.setMessageSender(new InMemoryWebServiceMessageSender(getMessageFactory(), getWebServiceMessageReceiver()));
 	}
