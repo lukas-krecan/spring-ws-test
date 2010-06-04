@@ -6,6 +6,7 @@ import static org.junit.Assert.assertSame;
 
 import java.net.URI;
 
+
 import org.junit.Test;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageReceiver;

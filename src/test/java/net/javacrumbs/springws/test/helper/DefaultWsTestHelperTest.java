@@ -40,9 +40,7 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.MessageContext;
-import org.springframework.ws.server.MessageDispatcher;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
-import org.springframework.ws.transport.WebServiceMessageReceiver;
 import org.w3c.dom.Document;
 
 public class DefaultWsTestHelperTest extends AbstractMessageTest{
@@ -64,21 +62,20 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 	{
 		DefaultWsTestHelper wsServerTestHelper = new DefaultWsTestHelper();
 		wsServerTestHelper.afterPropertiesSet();
-		assertTrue(wsServerTestHelper.getWebServiceMessageReceiver() instanceof WebServiceMessageReceiver);
+		assertTrue(wsServerTestHelper.getWebServiceTemplate() instanceof WsTestWebServiceTemplate);
 		assertTrue(wsServerTestHelper.getMessageFactory() instanceof WebServiceMessageFactory);
+		
+		assertNotNull(((InMemoryWebServiceMessageSender)wsTestHelper.getWebServiceTemplate().getMessageSenders()[0]).getWebServiceMessageReceiver());
 	}
 	@Test
 	public void testInitializeSet() throws Exception
 	{
 		DefaultWsTestHelper wsServerTestHelper = new DefaultWsTestHelper();
-		MessageDispatcher dispatcher = new MessageDispatcher();
-		wsServerTestHelper.setWebServiceMessageReceiver(dispatcher);
 		wsServerTestHelper.afterPropertiesSet();
 		
 		WebServiceMessageFactory messageFactory = new SaajSoapMessageFactory();
 		wsServerTestHelper.setMessageFactory(messageFactory);
 		
-		assertSame(dispatcher, wsServerTestHelper.getWebServiceMessageReceiver());
 		assertSame(messageFactory, wsServerTestHelper.getMessageFactory());
 	}
 	@Test
@@ -89,8 +86,7 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		wsTestHelper.setApplicationContext(applicationContext);
 		wsTestHelper.afterPropertiesSet();
 		
-		assertTrue(wsTestHelper.getWebServiceMessageReceiver() instanceof WebServiceMessageReceiver);
-		assertEquals(applicationContext.getBean("messageReceiver"),wsTestHelper.getWebServiceMessageReceiver());
+		assertEquals(applicationContext.getBean("messageReceiver"),((InMemoryWebServiceMessageSender)wsTestHelper.getWebServiceTemplate().getMessageSenders()[0]).getWebServiceMessageReceiver());
 		assertEquals(applicationContext.getBean("messageFactory"),wsTestHelper.getMessageFactory());
 	}
 	

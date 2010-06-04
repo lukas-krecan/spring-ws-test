@@ -32,7 +32,7 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 
 /**
- * Generates SOPA message from given resource. Does NOT do template processing, it just loads resource, 
+ * Generates SOAP message from given resource. Does NOT do template processing, it just loads resource, 
  * wraps it into SOAP envelope if necessary and that's all.
  * @author Lukas Krecan
  *

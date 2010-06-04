@@ -85,8 +85,6 @@ public interface WsTestHelper {
 	 */
 	public abstract MessageValidator createMessageValidator(WebServiceMessage message);
 
-	public abstract WebServiceMessageReceiver getWebServiceMessageReceiver();
-
 	public abstract WebServiceMessageFactory getMessageFactory();
 
 	public abstract XmlUtil getXmlUtil();

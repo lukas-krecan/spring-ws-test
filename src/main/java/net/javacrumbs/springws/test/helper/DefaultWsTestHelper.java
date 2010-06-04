@@ -16,6 +16,8 @@
 
 package net.javacrumbs.springws.test.helper;
 
+import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.getDefaultStrategiesHelper;
+
 import java.io.IOException;
 
 import net.javacrumbs.springws.test.common.MessageGenerator;
@@ -30,7 +32,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -41,9 +42,6 @@ import org.springframework.ws.client.core.FaultMessageResolver;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.DefaultMessageContext;
 import org.springframework.ws.context.MessageContext;
-import org.springframework.ws.support.DefaultStrategiesHelper;
-import org.springframework.ws.transport.WebServiceMessageReceiver;
-import org.springframework.ws.transport.http.HttpTransportException;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 /**
@@ -55,17 +53,11 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 
 	private static final String DEFAULT_MESSAGE_FACTORY_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_FACTORY_BEAN_NAME;
 
-	private static final String DEFAULT_MESSAGE_RECEIVER_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_RECEIVER_BEAN_NAME;
-	
 	private ApplicationContext applicationContext;
-	
-    private static final String DEFAULT_STRATEGIES_PATH = "MessageDispatcherServlet.properties";
        
     private WebServiceMessageFactory messageFactory;
     
-    private WebServiceMessageReceiver webServiceMessageReceiver;   
-    
-    private ResourceLoader resourceLoader = new DefaultResourceLoader();
+    private ResourceLoader resourceLoader;
 
 	private TemplateProcessor templateProcessor = new XsltTemplateProcessor();
 	
@@ -163,19 +155,6 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 		return messageValidator;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.javacrumbs.springws.test.helper.WsTestHelper#getWebServiceMessageReceiver()
-	 */
-	public WebServiceMessageReceiver getWebServiceMessageReceiver() {
-		return webServiceMessageReceiver;
-	}
-
-
-	public void setWebServiceMessageReceiver(WebServiceMessageReceiver webServiceMessageReceiver) {
-		this.webServiceMessageReceiver = webServiceMessageReceiver;
-	}
-
-
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
@@ -200,22 +179,37 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 
 
 	public void afterPropertiesSet() throws Exception {
-		initializeWebServiceMessageReceiver();
 		initializeMessageFactory();
 		initializeWebServiceTemplate();
+		initializeResourceLoader();
 	}
 
 
+	protected void initializeResourceLoader() {
+		if (resourceLoader==null)
+		{
+			if (applicationContext!=null)
+			{
+				resourceLoader = applicationContext;
+			}
+			else
+			{
+				resourceLoader = new DefaultResourceLoader();
+			}
+		}
+	}
+	
 	protected void initializeWebServiceTemplate() {
-		webServiceTemplate = new WsTestWebServiceTemplate();
-		webServiceTemplate.setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
-		//we are not interested in client SOAP faults.
-		webServiceTemplate.setFaultMessageResolver(DUMMY_FAULT_MESSAGE_RESOLVER);
-		//Replace default message sender.
-		webServiceTemplate.setMessageSender(new InMemoryWebServiceMessageSender(getMessageFactory(), getWebServiceMessageReceiver()));
-		
-		webServiceTemplate.setInterceptors(interceptors);
-		webServiceTemplate.afterPropertiesSet();
+		if (webServiceTemplate==null)
+		{
+			webServiceTemplate = new WsTestWebServiceTemplate();
+			//we are not interested in client SOAP faults.
+			webServiceTemplate.setFaultMessageResolver(DUMMY_FAULT_MESSAGE_RESOLVER);
+			webServiceTemplate.setApplicationContext(applicationContext);
+			//Replace default message sender.
+			webServiceTemplate.setInterceptors(interceptors);
+			webServiceTemplate.afterPropertiesSet();
+		}
 	}
 	
 	protected void initializeMessageFactory() throws Exception {
@@ -231,28 +225,6 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 				messageFactory = (WebServiceMessageFactory) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageFactory.class, applicationContext);
 			}
 		}
-	}
-
-
-	protected void initializeWebServiceMessageReceiver() {
-		if (webServiceMessageReceiver==null)
-		{
-			if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME))
-			{
-				webServiceMessageReceiver = (WebServiceMessageReceiver) applicationContext.getBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME, WebServiceMessageReceiver.class);
-			}
-			else
-			{
-				logger.debug("No WebServiceMessageReceiver found, using default");
-				webServiceMessageReceiver = (WebServiceMessageReceiver) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageReceiver.class, applicationContext);		
-			}
-		}
-	}
-
-
-	private DefaultStrategiesHelper getDefaultStrategiesHelper() {
-		//should be MessageDispatcherServlet.class but it would require servlet-api in the classpath. So we use HttpTransportException instead.
-		return new DefaultStrategiesHelper(new ClassPathResource(DEFAULT_STRATEGIES_PATH, HttpTransportException.class));
 	}
 
 
@@ -300,5 +272,11 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 	}
 	public void setInterceptors(ClientInterceptor[] interceptors) {
 		this.interceptors = interceptors;
+	}
+	public WsTestWebServiceTemplate getWebServiceTemplate() {
+		return webServiceTemplate;
+	}
+	public void setWebServiceTemplate(WsTestWebServiceTemplate webServiceTemplate) {
+		this.webServiceTemplate = webServiceTemplate;
 	}
 }
