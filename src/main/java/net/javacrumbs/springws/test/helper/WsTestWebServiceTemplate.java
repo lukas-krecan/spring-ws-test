@@ -44,11 +44,17 @@ public class WsTestWebServiceTemplate extends WebServiceTemplate implements Init
 	
 	private static final String DEFAULT_MESSAGE_RECEIVER_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_RECEIVER_BEAN_NAME;
 	
+	/**
+	 * Empty {@link WebServiceMessageCallback}.
+	 */
 	private static final WebServiceMessageCallback DUMMY_REQUEST_CALLBACK = new WebServiceMessageCallback()
 	{
 		public void doWithMessage(WebServiceMessage message) throws IOException ,TransformerException {};
 	};
 	
+	/**
+	 * Empty {@link WebServiceMessageExtractor}.
+	 */
 	private static final WebServiceMessageExtractor DUMMY_MESSAGE_EXTRACTOR = new WebServiceMessageExtractor() {
 		public Object extractData(WebServiceMessage message) throws IOException, TransformerException {
 			return null;
@@ -65,10 +71,14 @@ public class WsTestWebServiceTemplate extends WebServiceTemplate implements Init
 		{
 			setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
 		}
-		setMessageSender(new InMemoryWebServiceMessageSender(getMessageFactory(), createWebServiceMessageReceiver()));
+		WebServiceMessageReceiver messageReceiver = createWebServiceMessageReceiver();
+		setMessageSender(new InMemoryWebServiceMessageSender(getMessageFactory(), messageReceiver));
 	};
 	
-	
+	/**
+	 * Creates {@link WebServiceMessageReceiver}. If it's not in the applicationContext, uses {@link DefaultWsTestHelper} to create it.
+	 * @return
+	 */
 	protected WebServiceMessageReceiver createWebServiceMessageReceiver() {
 		if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME))
 		{
