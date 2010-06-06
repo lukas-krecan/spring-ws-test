@@ -17,25 +17,32 @@
 package net.javacrumbs.springws.test.helper;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.ws.context.MessageContext;
+import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"dispatcher.xml", DefaultWsTestHelper.DEFAULT_CONFIG_PATH})
-public class AnnotationConfigTest {
+//your endpoint configuration + Default helper config
+@ContextConfiguration(locations={"dispatcher.xml","message-sender-config.xml"})
+public class InMemoryWebServiceMessageSenderSpringTest {
 
 	@Autowired
-	private WsTestHelper helper;
+	private InMemoryWebServiceMessageSender messageSender;
+	
+	@Autowired 
+	private ApplicationContext applicationContext;
 	
 	@Test
-	public void testCallWs() throws Exception
+	public void testCreateConnection() throws Exception
 	{
-		MessageContext message = helper.receiveMessage("xml/valid-message.xml");
-		assertNotNull(message);
+		assertNotNull(messageSender);
+		assertSame(applicationContext.getBean(MessageDispatcherServlet.DEFAULT_MESSAGE_FACTORY_BEAN_NAME), messageSender.getMessageFactory());
+		assertSame(applicationContext.getBean(MessageDispatcherServlet.DEFAULT_MESSAGE_RECEIVER_BEAN_NAME), messageSender.getWebServiceMessageReceiver());
 	}
 }

@@ -16,9 +16,14 @@
 
 package net.javacrumbs.springws.test.helper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.support.DefaultStrategiesHelper;
 import org.springframework.ws.transport.http.HttpTransportException;
+import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 /**
  * Creates Default strategies helper
@@ -28,8 +33,25 @@ import org.springframework.ws.transport.http.HttpTransportException;
 class DefaultStrategiesHelperFactory {
 	private static final String DEFAULT_STRATEGIES_PATH = "MessageDispatcherServlet.properties";
 	
+	private static final Log logger = LogFactory.getLog(DefaultStrategiesHelperFactory.class);
+	
+	private static final String DEFAULT_MESSAGE_FACTORY_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_FACTORY_BEAN_NAME;
+	
 	public static DefaultStrategiesHelper getDefaultStrategiesHelper() {
 		//should be MessageDispatcherServlet.class but it would require servlet-api in the classpath. So we use HttpTransportException instead.
 		return new DefaultStrategiesHelper(new ClassPathResource(DEFAULT_STRATEGIES_PATH, HttpTransportException.class));
+	}
+	
+	public static WebServiceMessageFactory createMessageFactory(ApplicationContext applicationContext)
+	{
+		if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_FACTORY_BEAN_NAME))
+		{
+			return (WebServiceMessageFactory)applicationContext.getBean(DEFAULT_MESSAGE_FACTORY_BEAN_NAME, WebServiceMessageFactory.class);
+		}
+		else
+		{
+			logger.debug("No WebServiceMessageFactory found, using default");
+			return (WebServiceMessageFactory) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageFactory.class, applicationContext);
+		}
 	}
 }

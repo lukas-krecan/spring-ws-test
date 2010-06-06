@@ -40,11 +40,14 @@ import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.MessageContext;
+import org.springframework.ws.soap.SoapMessageFactory;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+import org.springframework.ws.transport.WebServiceMessageReceiver;
 import org.w3c.dom.Document;
 
 public class DefaultWsTestHelperTest extends AbstractMessageTest{
 
+	private static final String CONTEXT_SERVER_DISPATCHER_PATH = "net/javacrumbs/springws/test/helper/dispatcher.xml";
 	private DefaultWsTestHelper wsTestHelper;
 	
 	
@@ -52,7 +55,7 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 	public void setUp() throws Exception
 	{
 		wsTestHelper = new DefaultWsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONTEXT_SERVER_DISPATCHER_PATH);
 		wsTestHelper.setApplicationContext(applicationContext);
 		wsTestHelper.afterPropertiesSet();
 	}
@@ -82,12 +85,16 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 	public void testInitializeFromApplicationContext() throws Exception
 	{
 		DefaultWsTestHelper wsTestHelper = new DefaultWsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONTEXT_SERVER_DISPATCHER_PATH);
 		wsTestHelper.setApplicationContext(applicationContext);
 		wsTestHelper.afterPropertiesSet();
 		
-		assertEquals(applicationContext.getBean("messageReceiver"),((InMemoryWebServiceMessageSender)wsTestHelper.getWebServiceTemplate().getMessageSenders()[0]).getWebServiceMessageReceiver());
-		assertEquals(applicationContext.getBean("messageFactory"),wsTestHelper.getMessageFactory());
+		WebServiceMessageReceiver messageReceiver = (WebServiceMessageReceiver) applicationContext.getBean("messageReceiver");
+		SoapMessageFactory messageFactory = (SoapMessageFactory) applicationContext.getBean("messageFactory");
+		InMemoryWebServiceMessageSender messageSender = (InMemoryWebServiceMessageSender)wsTestHelper.getWebServiceTemplate().getMessageSenders()[0];
+		assertEquals(messageReceiver,messageSender.getWebServiceMessageReceiver());
+		assertEquals(messageFactory,messageSender.getMessageFactory());
+		assertEquals(messageFactory,wsTestHelper.getMessageFactory());
 	}
 	
 	@Test
@@ -156,7 +163,7 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		replay(interceptor);
 
 		DefaultWsTestHelper wsTestHelper = new DefaultWsTestHelper();
-		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("context/server/dispatcher.xml");
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONTEXT_SERVER_DISPATCHER_PATH);
 		wsTestHelper.setInterceptors(new ClientInterceptor[]{interceptor});
 		wsTestHelper.setApplicationContext(applicationContext);
 		wsTestHelper.afterPropertiesSet();

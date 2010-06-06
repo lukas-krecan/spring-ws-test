@@ -16,8 +16,6 @@
 
 package net.javacrumbs.springws.test.helper;
 
-import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.getDefaultStrategiesHelper;
-
 import java.io.IOException;
 import java.net.URI;
 
@@ -32,8 +30,6 @@ import org.springframework.ws.client.core.WebServiceMessageExtractor;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.transport.WebServiceConnection;
-import org.springframework.ws.transport.WebServiceMessageReceiver;
-import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 /**
  * WebService template to be used when testing WS server.
@@ -41,8 +37,6 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet;
  *
  */
 public class WsTestWebServiceTemplate extends WebServiceTemplate implements InitializingBean, ApplicationContextAware {
-	
-	private static final String DEFAULT_MESSAGE_RECEIVER_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_RECEIVER_BEAN_NAME;
 	
 	/**
 	 * Empty {@link WebServiceMessageCallback}.
@@ -71,27 +65,14 @@ public class WsTestWebServiceTemplate extends WebServiceTemplate implements Init
 		{
 			setDefaultUri("http://test-uri-from-spring-ws-test-should-not-be-vissible");
 		}
-		WebServiceMessageReceiver messageReceiver = createWebServiceMessageReceiver();
-		setMessageSender(new InMemoryWebServiceMessageSender(getMessageFactory(), messageReceiver));
+		InMemoryWebServiceMessageSender messageSender = new InMemoryWebServiceMessageSender();
+		messageSender.setApplicationContext(applicationContext);
+		messageSender.setMessageFactory(getMessageFactory());
+		messageSender.afterPropertiesSet();
+		setMessageSender(messageSender);
 	};
 	
-	/**
-	 * Creates {@link WebServiceMessageReceiver}. If it's not in the applicationContext, uses {@link DefaultWsTestHelper} to create it.
-	 * @return
-	 */
-	protected WebServiceMessageReceiver createWebServiceMessageReceiver() {
-		if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME))
-		{
-			return (WebServiceMessageReceiver) applicationContext.getBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME, WebServiceMessageReceiver.class);
-		}
-		else
-		{
-			logger.debug("No WebServiceMessageReceiver found, using default");
-			return (WebServiceMessageReceiver) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageReceiver.class, applicationContext);		
-		}
-	}
-
-
+	
 	/**
 	 * Sends message directly.
 	 * @param context

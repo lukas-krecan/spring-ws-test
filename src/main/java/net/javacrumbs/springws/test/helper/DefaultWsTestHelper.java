@@ -16,7 +16,7 @@
 
 package net.javacrumbs.springws.test.helper;
 
-import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.getDefaultStrategiesHelper;
+import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.createMessageFactory;
 
 import java.io.IOException;
 
@@ -42,7 +42,6 @@ import org.springframework.ws.client.core.FaultMessageResolver;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.DefaultMessageContext;
 import org.springframework.ws.context.MessageContext;
-import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 /**
  * Default {@link WsTestHelper} implementation.
@@ -50,8 +49,6 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet;
  *
  */
 public class DefaultWsTestHelper implements ApplicationContextAware, InitializingBean, ResourceLoaderAware, WsTestHelper{
-
-	private static final String DEFAULT_MESSAGE_FACTORY_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_FACTORY_BEAN_NAME;
 
 	private ApplicationContext applicationContext;
        
@@ -180,8 +177,8 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 
 	public void afterPropertiesSet() throws Exception {
 		initializeMessageFactory();
-		initializeWebServiceTemplate();
 		initializeResourceLoader();
+		initializeWebServiceTemplate();
 	}
 
 
@@ -208,6 +205,7 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 			webServiceTemplate.setApplicationContext(applicationContext);
 			//Replace default message sender.
 			webServiceTemplate.setInterceptors(interceptors);
+			webServiceTemplate.setMessageFactory(messageFactory);
 			webServiceTemplate.afterPropertiesSet();
 		}
 	}
@@ -215,15 +213,7 @@ public class DefaultWsTestHelper implements ApplicationContextAware, Initializin
 	protected void initializeMessageFactory() throws Exception {
 		if (messageFactory==null)
 		{
-			if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_FACTORY_BEAN_NAME))
-			{
-				messageFactory = (WebServiceMessageFactory)applicationContext.getBean(DEFAULT_MESSAGE_FACTORY_BEAN_NAME, WebServiceMessageFactory.class);
-			}
-			else
-			{
-				logger.debug("No WebServiceMessageFactory found, using default");
-				messageFactory = (WebServiceMessageFactory) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageFactory.class, applicationContext);
-			}
+			messageFactory = createMessageFactory(applicationContext);
 		}
 	}
 

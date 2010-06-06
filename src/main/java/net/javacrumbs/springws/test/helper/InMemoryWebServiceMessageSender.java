@@ -16,28 +16,38 @@
 
 package net.javacrumbs.springws.test.helper;
 
+import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.*;
+
 import java.io.IOException;
 import java.net.URI;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.transport.WebServiceMessageReceiver;
 import org.springframework.ws.transport.WebServiceMessageSender;
+import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 /**
- * Sends messages locally in memory. Used for server side test.
+ * Sends messages locally in memory.  Cretes {@link InMemoryWebServiceConnection} that sends the message directly to {@link WebServiceMessageReceiver}.  Used for server side test.
  * @author Lukas Krecan
  *
  */
-class InMemoryWebServiceMessageSender implements WebServiceMessageSender {
+public class InMemoryWebServiceMessageSender implements WebServiceMessageSender, ApplicationContextAware, InitializingBean {
 
-	private final WebServiceMessageFactory messageFactory;
+	private WebServiceMessageFactory messageFactory;
 	
-	private final WebServiceMessageReceiver webServiceMessageReceiver;
+	private WebServiceMessageReceiver webServiceMessageReceiver;
+	
+	private ApplicationContext applicationContext;
+	
+	private static final String DEFAULT_MESSAGE_RECEIVER_BEAN_NAME = MessageDispatcherServlet.DEFAULT_MESSAGE_RECEIVER_BEAN_NAME;
+	
+	private final Log logger = LogFactory.getLog(getClass());
 
-	public InMemoryWebServiceMessageSender(WebServiceMessageFactory messageFactory, WebServiceMessageReceiver webServiceMessageReceiver) {
-		this.messageFactory = messageFactory;
-		this.webServiceMessageReceiver = webServiceMessageReceiver;
-	}
 	
 	public InMemoryWebServiceConnection createConnection(URI uri) throws IOException {
 		return new InMemoryWebServiceConnection(uri, messageFactory, webServiceMessageReceiver);
@@ -54,5 +64,58 @@ class InMemoryWebServiceMessageSender implements WebServiceMessageSender {
 	public WebServiceMessageReceiver getWebServiceMessageReceiver() {
 		return webServiceMessageReceiver;
 	}
+	
+	/**
+	 * Creates {@link WebServiceMessageReceiver}. If it's not in the applicationContext, uses {@link DefaultWsTestHelper} to create it.
+	 * @return
+	 */
+	protected WebServiceMessageReceiver createWebServiceMessageReceiver() {
+		if (applicationContext!=null && applicationContext.containsBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME))
+		{
+			return (WebServiceMessageReceiver) applicationContext.getBean(DEFAULT_MESSAGE_RECEIVER_BEAN_NAME, WebServiceMessageReceiver.class);
+		}
+		else
+		{
+			logger.debug("No WebServiceMessageReceiver found, using default");
+			return (WebServiceMessageReceiver) getDefaultStrategiesHelper().getDefaultStrategy(WebServiceMessageReceiver.class, applicationContext);		
+		}
+	}
+	
+	public void afterPropertiesSet(){
+		initializeMessageReceiver();
+		initializeMessageFactory();
+	}
+
+	protected void initializeMessageReceiver() {
+		if (webServiceMessageReceiver==null)
+		{
+			webServiceMessageReceiver = createWebServiceMessageReceiver();
+		}
+	}
+
+	protected void initializeMessageFactory() {
+		if (messageFactory==null)
+		{
+			messageFactory = createMessageFactory(applicationContext);
+		}
+	}
+
+	void setWebServiceMessageReceiver(WebServiceMessageReceiver webServiceMessageReceiver) {
+		this.webServiceMessageReceiver = webServiceMessageReceiver;
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+
+	void setMessageFactory(WebServiceMessageFactory messageFactory) {
+		this.messageFactory = messageFactory;
+	}
+
+
 
 }
