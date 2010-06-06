@@ -55,7 +55,7 @@
 	</distributionManagement>
 
 	<properties>
-		<currentVersion>0.18</currentVersion>
+		<currentVersion>0.19</currentVersion>
 	</properties>
 
 	<dependencies>
