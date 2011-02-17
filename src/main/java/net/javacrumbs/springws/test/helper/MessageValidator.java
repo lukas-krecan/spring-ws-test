@@ -175,7 +175,7 @@ public class MessageValidator {
 	public MessageValidator assertXPath(String xpath, String errorMessage) {
 		if (!TRUE.equals(evaluateExpression(xpath)))
 		{
-			throw new WsTestException(errorMessage);
+			throw new WsTestException(errorMessage, message);
 		}
 		return this;
 	}
@@ -197,7 +197,7 @@ public class MessageValidator {
 	public MessageValidator assertNotSoapFault() {
 		if (isSoapFault())
 		{
-			throw new WsTestException("Message is SOAP fault");
+			throw new WsTestException("Message is SOAP fault", message);
 		}
 		return this;
 	}
@@ -225,7 +225,7 @@ public class MessageValidator {
 	public MessageValidator assertSoapFault() {
 		if (!isSoapFault())
 		{
-			throw new WsTestException("Message is not SOAP fault");
+			throw new WsTestException("Message is not SOAP fault", message);
 		}
 		return this;
 	}
@@ -278,7 +278,7 @@ public class MessageValidator {
 		String faultCode = getSoapFault().getFaultCode().getLocalPart();
 		if (!expectedFaultCode.equals(faultCode))
 		{
-			throw new WsTestException("Expected fault code \""+expectedFaultCode+"\", get \""+faultCode+"\"");
+			throw new WsTestException("Expected fault code \""+expectedFaultCode+"\", get \""+faultCode+"\"", message);
 		}
 		return this;
 	}
@@ -292,7 +292,7 @@ public class MessageValidator {
 		String faultStringOrReason = getSoapFault().getFaultStringOrReason();
 		if (!expectedStringOrReason.equals(faultStringOrReason))
 		{
-			throw new WsTestException("Expected fault string or reason \""+expectedStringOrReason+"\", get \""+faultStringOrReason+"\"");
+			throw new WsTestException("Expected fault string or reason \""+expectedStringOrReason+"\", get \""+faultStringOrReason+"\"", message);
 		}
 		return this;
 	}
@@ -305,7 +305,7 @@ public class MessageValidator {
 		String faultActorOrRole = getSoapFault().getFaultActorOrRole();
 		if (!expectedActorOrRole.equals(faultActorOrRole))
 		{
-			throw new WsTestException("Expected fault actor or role \""+expectedActorOrRole+"\", get \""+faultActorOrRole+"\"");
+			throw new WsTestException("Expected fault actor or role \""+expectedActorOrRole+"\", get \""+faultActorOrRole+"\"", message);
 		}
 		return this;
 	}
@@ -337,7 +337,7 @@ public class MessageValidator {
 	public MessageValidator assertContain(String regexp) {
 		if (!contains(regexp))
 		{
-			throw new WsTestException("Message does not contain regular expression \""+regexp+"\"");
+			throw new WsTestException("Message does not contain regular expression \""+regexp+"\"", message);
 		}
 		return this;
 	}
@@ -351,7 +351,7 @@ public class MessageValidator {
 	public MessageValidator assertNotContain(String regexp) {
 		if (contains(regexp))
 		{
-			throw new WsTestException("Message contains regular expression \""+regexp+"\"");
+			throw new WsTestException("Message contains regular expression \""+regexp+"\"", message);
 		}
 		return this;
 	}

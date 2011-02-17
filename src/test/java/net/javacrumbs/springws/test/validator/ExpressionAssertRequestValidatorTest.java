@@ -22,6 +22,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,7 +37,7 @@ import org.w3c.dom.Document;
 
 public class ExpressionAssertRequestValidatorTest extends AbstractValidatorTest{
 
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testFail() throws IOException
 	{
 		ExpressionAssertRequestValidator validator = new ExpressionAssertRequestValidator();
@@ -47,7 +49,15 @@ public class ExpressionAssertRequestValidatorTest extends AbstractValidatorTest{
 		
 		replay(expressionResolver);
 		
-		validator.processRequest(null, null, getValidMessage());
+		try
+		{
+			validator.processRequest(null, null, getValidMessage());
+			fail("exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertTrue(e.getMessage().contains("Source message:"));
+		}
 	}
 	@Test
 	public void testOk() throws IOException

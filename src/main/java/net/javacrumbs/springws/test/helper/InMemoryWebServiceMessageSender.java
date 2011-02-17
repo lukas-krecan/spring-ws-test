@@ -16,7 +16,8 @@
 
 package net.javacrumbs.springws.test.helper;
 
-import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.*;
+import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.createMessageFactory;
+import static net.javacrumbs.springws.test.helper.DefaultStrategiesHelperFactory.getDefaultStrategiesHelper;
 
 import java.io.IOException;
 import java.net.URI;

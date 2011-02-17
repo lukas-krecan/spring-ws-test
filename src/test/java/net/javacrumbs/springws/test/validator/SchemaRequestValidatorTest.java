@@ -22,6 +22,8 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import net.javacrumbs.springws.test.WsTestException;
 
 import org.junit.Test;
@@ -41,7 +43,7 @@ public class SchemaRequestValidatorTest extends AbstractValidatorTest {
 
 	}
 
-	private SchemaRequestValidator createValidator() throws Exception {
+	protected SchemaRequestValidator createValidator() throws Exception {
 		SchemaRequestValidator validator = new SchemaRequestValidator();
 		validator.setSchema(new ClassPathResource("xml/schema.xsd"));
 		validator.setSchemaLanguage(XmlValidatorFactory.SCHEMA_W3C_XML);
@@ -76,14 +78,22 @@ public class SchemaRequestValidatorTest extends AbstractValidatorTest {
 		validator.afterPropertiesSet();
 	}
 
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testInvalid() throws Exception
 	{
 		WebServiceMessage message = getInvalidMessage();
-		createValidator().validateRequest(null, message);
+		try
+		{
+			createValidator().validateRequest(null, message);
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertTrue(e.getMessage().contains("Source message:"));
+		}
 	}
 	
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testSetSchema() throws Exception
 	{
 		SchemaRequestValidator validator = new SchemaRequestValidator();
@@ -92,9 +102,17 @@ public class SchemaRequestValidatorTest extends AbstractValidatorTest {
 		assertNotNull(validator.getValidator());
 		
 		WebServiceMessage message = getInvalidMessage();
-		validator.validateRequest(null, message);
+		try
+		{
+			createValidator().validateRequest(null, message);
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertTrue(e.getMessage().contains("Source message:"));
+		}
 	}
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testSetSchemaCollection() throws Exception
 	{
 		SchemaRequestValidator validator = new SchemaRequestValidator();
@@ -105,7 +123,15 @@ public class SchemaRequestValidatorTest extends AbstractValidatorTest {
 		assertNotNull(validator.getValidator());
 		
 		WebServiceMessage message = getInvalidMessage();
-		validator.validateRequest(null, message);
+		try
+		{
+			createValidator().validateRequest(null, message);
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertTrue(e.getMessage().contains("Source message:"));
+		}
 	}
 
 }

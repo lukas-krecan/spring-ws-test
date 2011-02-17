@@ -16,6 +16,13 @@
 
 package net.javacrumbs.springws.test.helper;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -31,9 +38,6 @@ import org.junit.Test;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.xml.validation.XmlValidator;
 import org.xml.sax.SAXParseException;
-
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
 
 
 public class MessageValidatorTest extends AbstractValidatorTest{

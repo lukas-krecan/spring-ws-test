@@ -78,6 +78,6 @@ public class SchemaValidator {
 	
 	
     protected void handleRequestValidationErrors(WebServiceMessage message, SAXParseException[] errors) {
-		throw new WsTestException("Request not valid. "+Arrays.toString(errors));
+		throw new WsTestException("Request not valid. "+Arrays.toString(errors),message);
 	}
 }

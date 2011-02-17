@@ -15,6 +15,18 @@
  */
 package net.javacrumbs.springws.test.validator;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import net.javacrumbs.springws.test.WsTestException;
+
+import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.xml.xsd.SimpleXsdSchema;
+import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection;
+
 public class AxiomSchemaValidatorTest extends SchemaRequestValidatorTest {
 
 	public AxiomSchemaValidatorTest() throws Exception {
@@ -24,5 +36,37 @@ public class AxiomSchemaValidatorTest extends SchemaRequestValidatorTest {
 	@Override
 	protected void initializeMessageFactory() {
 		initializeAxiomMessageFactory();
+	}
+	
+	@Test(expected=WsTestException.class)
+	public void testInvalid() throws Exception
+	{
+		WebServiceMessage message = getInvalidMessage();
+		createValidator().validateRequest(null, message);
+	}
+	
+	@Test(expected=WsTestException.class)
+	public void testSetSchema() throws Exception
+	{
+		SchemaRequestValidator validator = new SchemaRequestValidator();
+		validator.setXsdSchema(new SimpleXsdSchema(new ClassPathResource("xml/schema.xsd")));
+		validator.afterPropertiesSet();
+		assertNotNull(validator.getValidator());
+		
+		WebServiceMessage message = getInvalidMessage();
+		createValidator().validateRequest(null, message);
+	}
+	@Test(expected=WsTestException.class)
+	public void testSetSchemaCollection() throws Exception
+	{
+		SchemaRequestValidator validator = new SchemaRequestValidator();
+		CommonsXsdSchemaCollection schemaCollection = new CommonsXsdSchemaCollection(new Resource[]{new ClassPathResource("xml/schema.xsd")});
+		schemaCollection.afterPropertiesSet();
+		validator.setXsdSchemaCollection(schemaCollection);
+		validator.afterPropertiesSet();
+		assertNotNull(validator.getValidator());
+		
+		WebServiceMessage message = getInvalidMessage();
+		createValidator().validateRequest(null, message);
 	}
 }

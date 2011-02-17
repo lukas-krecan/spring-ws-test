@@ -19,6 +19,7 @@ package net.javacrumbs.springws.test.common;
 import java.io.IOException;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
 
 import net.javacrumbs.springws.test.WsTestException;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
@@ -75,7 +76,7 @@ public class DefaultMessageComparator implements MessageComparator {
 		Diff diff = createDiff(controlDocument, messageDocument);
 		if (!diff.similar()) {
 			logger.debug("Messages different, throwing exception");
-			throw new WsTestException("Message is different " + diff.toString());
+			throw new WsTestException("Message is different " + diff.toString(),new DOMSource(messageDocument), new DOMSource(controlDocument));
 		}
 	}
 	

@@ -65,20 +65,48 @@ public class DefaultMessageComparatorTest extends AbstractValidatorTest {
 	{
 		compareDocuments("xml/namespace-message1.xml","xml/namespace-message4-no-prefix.xml");
 	}
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testValidTestDifferentNsPrefixesNoPrefixNoDefaultNamespace() throws IOException
 	{
-		compareDocuments("xml/namespace-message1.xml","xml/namespace-message6-no-prefix-no-default-namespace.xml");
+		try
+		{
+			compareDocuments("xml/namespace-message1.xml","xml/namespace-message6-no-prefix-no-default-namespace.xml");
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertTrue(e.getMessage().contains("Source message:"));
+			assertTrue(e.getMessage().contains("Control message:"));
+		}
+		
 	}
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testValidTestDifferentNsPrefixesNotResolved() throws IOException
 	{
-		compareDocuments("xml/namespace-message1.xml","xml/namespace-message3-ns-not-resolved.xml");
+		try
+		{
+			compareDocuments("xml/namespace-message1.xml","xml/namespace-message3-ns-not-resolved.xml");
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertTrue(e.getMessage().contains("Source message:"));
+			assertTrue(e.getMessage().contains("Control message:"));
+		}
 	}
-	@Test(expected=WsTestException.class)
+	@Test
 	public void testValidTestDifferentNsPrefixesNotResolvedinBothFiles() throws IOException
 	{
-		compareDocuments("xml/namespace-message5-ns-not-resolved.xml","xml/namespace-message3-ns-not-resolved.xml");
+		try
+		{
+			compareDocuments("xml/namespace-message5-ns-not-resolved.xml","xml/namespace-message3-ns-not-resolved.xml");
+			fail("Exception expected");
+		}
+		catch(WsTestException e)
+		{
+			assertTrue(e.getMessage().contains("Source message:"));
+			assertTrue(e.getMessage().contains("Control message:"));
+		}
 	}
 	@Test
 	public void testValidDifferent() throws IOException
