@@ -48,6 +48,8 @@
 ~~ limitations under the License.
 ~~
 Simplify your WS tests
+
+  <<Update: Spring WS 2.0 contains support for both {{{http://static.springsource.org/spring-ws/sites/2.0/reference/html/server.html#d0e3303}server side}} and {{{http://static.springsource.org/spring-ws/sites/2.0/reference/html/server.html#d0e3303}client side}} testing. If you are using Spring WS 2, use that. If you are Axis2, CXF or Metro user, take a look at {{{http://code.google.com/p/smock/ek0}Smock}} library.>>
   
   Do you need to test you web-service client layer? Do you wan to run your end-to-end test without having to set-up a mock server? 
   Do you want to simplify your server side tests?  
@@ -128,6 +130,6 @@ public class AirlineWsClient4Test {
      
   
   <<Note: I really want to hear your feedback. The project is in very early stage so you have unique opportunity to drive its development. 
-   If you find a bug, please report it in project {{{http://mvnindex.org/jira/browse/SWST}JIRA}}. If you encounter any issue, do not hesitate and contact me on lukas at krecan dot net.
+   If you find a bug, please report it in project {{{http://javacrumbs.net/jira/browse/SWST}JIRA}}. If you encounter any issue, do not hesitate and contact me on lukas at krecan dot net.
    If you like it, please let me now on my {{{http://blog.krecan.net/2009/09/02/spring-ws-test/}blog}}>>
  

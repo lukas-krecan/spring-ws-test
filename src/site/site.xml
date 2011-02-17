@@ -28,7 +28,7 @@
 <!--  </skin>-->
   <body>
     <links>
-      <item name="JIRA" href="http://mvnindex.org/jira/browse/SWST" />
+      <item name="JIRA" href="http://javacrumbs.net/jira/browse/SWST" />
       <item name="Spring WS" href="http://static.springsource.org/spring-ws/sites/1.5/" />
     </links>
 

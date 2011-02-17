@@ -37,7 +37,7 @@
 		<site>
 			<id>website</id>
 			<url>
-				scp://mvnindex.org:/var/www/vhosts/javacrumbs.net/httpdocs/spring-ws-test
+				scp://admin@r35123.ovh.net:/var/www/javacrumbs.net/httpdocs/spring-ws-test
 			</url>
 		</site>
 		<repository>
