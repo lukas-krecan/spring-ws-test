@@ -49,7 +49,7 @@
 ~~
 Simplify your WS tests
 
-  <<Update: Spring WS 2.0 contains support for both {{{http://static.springsource.org/spring-ws/sites/2.0/reference/html/server.html#d0e3303}server side}} and {{{http://static.springsource.org/spring-ws/sites/2.0/reference/html/server.html#d0e3303}client side}} testing. If you are using Spring WS 2, use that. If you are Axis2, CXF or Metro user, take a look at {{{http://code.google.com/p/smock/ek0}Smock}} library.>>
+  <<Update: Spring WS 2.0 contains support for both {{{http://static.springsource.org/spring-ws/sites/2.0/reference/html/server.html#d0e3303}server side}} and {{{http://static.springsource.org/spring-ws/sites/2.0/reference/html/server.html#d0e3303}client side}} testing. If you are using Spring WS 2, use that. If you are Axis2, CXF or Metro user, take a look at {{{http://code.google.com/p/smock/}Smock}} library.>>
   
   Do you need to test you web-service client layer? Do you wan to run your end-to-end test without having to set-up a mock server? 
   Do you want to simplify your server side tests?  
