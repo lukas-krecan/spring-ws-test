@@ -50,7 +50,7 @@ public class DefaultXmlUtil implements XmlUtil {
 	
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 	
-	private static final XmlUtil INSTANCE = new DefaultXmlUtil();
+	private static XmlUtil instance = new DefaultXmlUtil();
 	
 	private static final String SOAP11_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
 	private static final String SOAP12_NAMESPACE = "http://www.w3.org/2003/05/soap-envelope";
@@ -68,9 +68,17 @@ public class DefaultXmlUtil implements XmlUtil {
 
 	public static final XmlUtil getInstance()
 	{
-		return INSTANCE;
+		return instance;
 	}
 	
+	/**
+	 * Sets default {@link XmlUtil} implementation.
+	 * @param instance
+	 */
+	public static void setInstance(XmlUtil instance) {
+		DefaultXmlUtil.instance = instance;
+	}
+
 	/* (non-Javadoc)
 	 * @see net.javacrumbs.springws.test.util.XmlUtil#loadDocument(javax.xml.transform.Source)
 	 */

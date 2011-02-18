@@ -80,7 +80,7 @@ public class WsTestException extends RuntimeException {
 	private String serializeSource(String label, Source source) {
 		try
 		{
-			return sourceMessage!=null?"\n"+SEPARATOR+label+"\n"+DefaultXmlUtil.getInstance().serializeDocument(source):"";
+			return source!=null?"\n"+SEPARATOR+label+"\n"+DefaultXmlUtil.getInstance().serializeDocument(source):"";
 		}
 		catch(Exception e)
 		{
