@@ -16,6 +16,7 @@
 package net.javacrumbs.springws.test.context;
 
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Context that can be used for test specific data. Its attributes could be set in the test method and the 
@@ -49,6 +50,19 @@ public interface WsTestContext {
 	 * @return
 	 */
 	public Map<String, Object> getAttributeMap();
+	
+	/**
+	 * Sets attribute values.
+	 * @param attributes
+	 */
+	public void setAttributes(Map<String, Object> attributes);
+
+	/**
+	 * Sets attribute values.
+	 * @param attributes
+	 */
+	public void setAttributes(Properties attributes);
+	
 
 	/**
 	 * Clear all attributes.

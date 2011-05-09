@@ -17,6 +17,7 @@ package net.javacrumbs.springws.test.context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Default {@link WsTestContext} implementation.
@@ -41,6 +42,16 @@ class DefaultWsTestContext implements WsTestContext {
 
 	public void clear() {
 		attributeMap.clear();
+	}
+
+	public void setAttributes(Map<String, Object> attributes)  {
+		attributeMap.putAll(attributes);
+	}
+
+	public void setAttributes(Properties attributes) {
+		for(String key : attributes.stringPropertyNames()) {
+			attributeMap.put(key, attributes.getProperty(key));
+		}
 	}
 
 }

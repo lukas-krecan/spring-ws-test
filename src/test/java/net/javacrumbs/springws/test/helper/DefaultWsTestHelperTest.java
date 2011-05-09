@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import net.javacrumbs.springws.test.AbstractMessageTest;
 import net.javacrumbs.springws.test.WsTestException;
+import net.javacrumbs.springws.test.context.WsTestContext;
 import net.javacrumbs.springws.test.context.WsTestContextHolder;
 import net.javacrumbs.springws.test.util.DefaultXmlUtil;
 
@@ -36,6 +37,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
@@ -150,6 +153,19 @@ public class DefaultWsTestHelperTest extends AbstractMessageTest{
 		Document controlDocument = loadDocument("xml/request1-envelope.xml");
 		Diff diff = new Diff(controlDocument, loadDocument(message));
 		assertTrue(diff.toString(), diff.similar());
+	}
+	
+	@Test
+	public void testLoadAttributesFromPropertiesFile() throws Exception{	
+
+		WsTestContext wsContext = WsTestContextHolder.getTestContext();
+		
+		wsContext.setAttributes(PropertiesLoaderUtils.loadProperties(new ClassPathResource("properties/variables.properties")));
+		String a= (String)wsContext.getAttribute("a");
+		assertEquals(a, "1");
+		
+		String b= (String)wsContext.getAttribute("b");
+		assertEquals(b, "2");
 	}
 	
 	
