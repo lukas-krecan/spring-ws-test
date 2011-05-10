@@ -44,12 +44,12 @@ public class TransportInputStreamWrapper extends TransportInputStream {
 	}
 
 	@Override
-	public Iterator<?> getHeaderNames() throws IOException {
-		return Collections.emptyList().iterator();
+	public Iterator<String> getHeaderNames() throws IOException {
+		return Collections.<String>emptyList().iterator();
 	}
 
 	@Override
-	public Iterator<?> getHeaders(String name) throws IOException {
-		return Collections.emptyList().iterator();
+	public Iterator<String> getHeaders(String name) throws IOException {
+		return Collections.<String>emptyList().iterator();
 	}
 }

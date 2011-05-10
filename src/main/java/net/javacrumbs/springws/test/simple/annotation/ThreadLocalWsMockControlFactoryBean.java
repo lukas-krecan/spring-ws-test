@@ -32,7 +32,7 @@ class ThreadLocalWsMockControlFactoryBean implements FactoryBean {
 	{
 		protected WsMockControl initialValue() {
 			return createNew();			
-		};
+		}
 	};
 		
 	public Object getObject() throws Exception {

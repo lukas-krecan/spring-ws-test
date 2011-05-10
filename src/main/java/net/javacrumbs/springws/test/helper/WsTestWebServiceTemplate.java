@@ -43,7 +43,7 @@ public class WsTestWebServiceTemplate extends WebServiceTemplate implements Init
 	 */
 	private static final WebServiceMessageCallback DUMMY_REQUEST_CALLBACK = new WebServiceMessageCallback()
 	{
-		public void doWithMessage(WebServiceMessage message) throws IOException ,TransformerException {};
+		public void doWithMessage(WebServiceMessage message) throws IOException ,TransformerException {}
 	};
 	
 	/**
@@ -70,7 +70,7 @@ public class WsTestWebServiceTemplate extends WebServiceTemplate implements Init
 		messageSender.setMessageFactory(getMessageFactory());
 		messageSender.afterPropertiesSet();
 		setMessageSender(messageSender);
-	};
+	}
 	
 	
 	/**
