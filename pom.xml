@@ -28,7 +28,7 @@
 
 	<issueManagement>
 		<system>JIRA</system>
-		<url>http://mvnindex.org/jira/browse/SWST</url>
+		<url>http://javacrumbs.net/jira/browse/SWST</url>
 	</issueManagement>
 
 
@@ -55,7 +55,7 @@
 	</distributionManagement>
 
 	<properties>
-		<currentVersion>0.21</currentVersion>
+		<currentVersion>0.22</currentVersion>
 	</properties>
 
 	<dependencies>
